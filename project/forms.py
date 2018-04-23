@@ -219,3 +219,13 @@ class EditTaskForm(ModelForm):
         if enddate < startdate:
             msg = _("End date is less than start date")
             self.add_error('enddate', msg)
+
+
+class EvaluationForm(ModelForm):
+    class Meta:
+        model = EvaluationResult
+        fields = ['q_1']
+        labels = {
+            'q_1': _('File Name'),
+
+        }

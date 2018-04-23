@@ -34,6 +34,17 @@ class EmployeeAdmin(admin.ModelAdmin):
     show_full_result_count=True
     
 
+@admin.register(EvaluationItem)
+class EvaluationItem(admin.ModelAdmin):
+    model = EvaluationItem
+    fk_name = "id"
+    fields = ( 'evaluation_fom_id', 'evaluation_group_id', 'title','max_degree_a','max_degree_b','is_class_a','is_class_b','degree')
+    list_display = ( 'evaluation_fom_id', 'evaluation_group_id', 'title','max_degree_a','max_degree_b','is_class_a','is_class_b','degree')
+    list_per_page=100
+    ordering = ['id',]
+   # search_fields = ['deptname', 'managerid', 'deptcode']
+    show_full_result_count=True
+
 @admin.register(Department)
 class DepartmentAdmin(admin.ModelAdmin):
     model = Department

@@ -1,0 +1,24 @@
+{% load i18n %} {% load user_group %}
+<div class="left_col scroll-view">
+	<div class="navbar nav_title" style="border: 0;">
+		<a href="{% url 'ns-project:employee-list' %}" class="site_title">
+			<img src="/static/images/stats_logo.png" alt="..." class="img-rounded  profile_img" style="width: 50px;">
+
+		</a>
+	</div>
+	<div class="clearfix"></div>
+	<br />
+	<!-- sidebar menu -->
+	<div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+		<div class="menu_section">
+			<!-- <h3>{%  trans "General" %}</h3> -->
+			<ul class="nav side-menu">
+			
+				<li><a href="{% url 'ns-project:employee-list'  %}"><i class="fa fa-home"></i> {% trans "employees of department" %} <span class="fa"></span></a>
+				</li> 
+			
+			</ul>
+		</div>
+	</div>
+	<!-- /sidebar menu -->
+</div>

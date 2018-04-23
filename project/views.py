@@ -182,7 +182,7 @@ def EmployeeList(request):
    
 
 @login_required
-def EvaluationForm(request,empid):
+def EvaluationPage(request,empid):
     employee= Employee.objects.get(Q(managercode__exact=request.session['EmpID']) & Q(empid__exact=empid))
     empView= ApIpCurrJobDataView.objects.get(Q(employee_id__exact=empid))
     emp=dict()
@@ -195,7 +195,25 @@ def EvaluationForm(request,empid):
          'orgStartDate':empView.org_start_date,
        
         }
-    context={'emp':emp}
+    
+    #load form evaluation items
+    if int(empView.job_grade) >= 47 and int(empView.job_grade) <= 49 :
+        evaluationItems= EvaluationItem.objects.filter(Q(is_class_a__exact = 1)).order_by('id')
+        emp['cat']="a"
+    elif int(empView.job_grade) <= 46 :
+        evaluationItems= EvaluationItem.objects.filter(is_class_b__exact = 1).order_by('id')
+        emp['cat']="b"
+        
+    if request.method == 'POST':
+        form = EvaluationForm(request.POST)
+        if form.is_valid():
+            evObject= form.save(commit=False) 
+            evObject.save()
+    else :
+         form = EvaluationForm()  
+        
+    
+    context={'emp':emp,'evItems':evaluationItems,'form':form}
     return render(request, 'project/evaluation_form.html', context)
  
 

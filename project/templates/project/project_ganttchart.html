@@ -1,0 +1,100 @@
+from pygments import style
+{% extends "project/base_site.html" %}
+{% load i18n %}
+{% block title %} Plain Page {% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+{% endblock stylesheets %}
+
+{% block content %}
+    <div class="right_col" role="main">
+      <div class="">
+       
+      <!-- top menu bar -->
+{% include "project/project_nave.html" %}
+
+
+
+     
+
+        <div class="row">
+          <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+     <div class="x_title">
+
+              <h2>{% trans "Gantt Chart" %}  </h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                                    <a href="{{request.META.HTTP_REFERER}}" >  <button type="button" class="btn btn-primary">{{ _('Back')}} <i class="fa fa-angle-double-left"></i> </button></a>
+                  
+                  </ul>
+                  <div class="clearfix"></div>
+              </div>
+             
+                <div class="x_content">
+                          <div class="col-md-12 col-sm-12 col-xs-12">
+
+              
+                <div id="timeline" style="height:100%;"></div>
+            </div>
+            
+       </div>
+       
+        </div>
+      </div>
+    </div>
+    
+
+  {% if tasks.count  > 0 %}
+  
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['timeline']});
+      google.charts.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var container = document.getElementById('timeline');
+        var chart = new google.visualization.Timeline(container);
+        var dataTable = new google.visualization.DataTable();
+
+        dataTable.addColumn({ type: 'string', id: 'President' });
+        dataTable.addColumn({ type: 'string', id: 'dummy bar label' });
+        dataTable.addColumn({ type: 'string', role: 'tooltip' ,'p': {'html': true}});
+        dataTable.addColumn({ type: 'date', id: 'Start' });
+        dataTable.addColumn({ type: 'date', id: 'End' });
+        dataTable.addRows([
+            {% for task in tasks %}
+          [ '{{task.name}}',' {{task.progress}}%- {{ task.startdate|date:"Y/m/d"  }}',createCustomHTMLContent('{{task.name}}','{{ task.startdate|date:"Y/m/d"  }}','{{ task.enddate|date:"Y/m/d"  }}','{{ task.startdate|timesince:task.enddate }}','{{task.progress}}'),  new Date( {{ task.startdate|date:"Y , m-1 ,d"  }}),new Date({{ task.enddate|date:"Y , m-1 ,d"  }}) ],
+     {% endfor %}
+                         ]);
+
+    var options = {
+          title: '{{task.project.name}}',
+          tooltip: {isHtml: true},
+          legend: 'none'
+        };
+        chart.draw(dataTable);
+      }
+      
+      function createCustomHTMLContent(title,start,end,duration,progress) {
+     return'<div   style="padding:10px"> <div style="padding:5px;width:300px;color:#000000;"><strong>'+title+'</strong></div>'
+   +'<div style="padding:5px;"><span style="margin-left:10px;">{{_('Progress')}} : </span>'+progress+' %</div>'
+   +'<div style="padding:5px;"><span style="float:right;">'+start+'   </span><span span style="float:right;margin:0px 5px 0px 5px;"> - </span>  <span style="float:right;"> '+end+'</span></div><br>'
+   +'<div style="padding:5px;"><span style="margin-left:10px;">{{_('Duration')}} : </span>'+duration+'</div> </div>'
+      
+    }
+
+    </script>
+
+    {%endif%}
+
+
+</div>
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+  {{ block.super }}
+  
+  
+{% endblock javascripts %}
+

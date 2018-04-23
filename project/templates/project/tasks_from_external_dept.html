@@ -1,0 +1,311 @@
+{% extends "project/base_site.html" %}
+{% load i18n %}
+{% load user_group %}
+{% block title %} {% trans "Projects" %} {% endblock title %}
+{% block stylesheets %}
+{{ block.super }}
+{% endblock stylesheets %}
+
+{% block content %}
+    <div class="right_col" role="main">
+      <div class="">
+        <div class="page-title">
+          <div class="title_left">
+            <h3></h3>
+          </div>
+
+          <div class="title_right">
+            <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
+       
+            </div>
+          </div>
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div class="row">
+          <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+              <div class="x_title">
+                <h2>{% trans "Tasks assigned to departement" %}</h2>
+              
+                <div class="clearfix"></div>
+              </div>
+              <div class="x_content">
+              <!--  messages  -->
+                 <ul class="messages">
+                     {% if messages %}
+                     {% for message in messages %}
+                     <li{% if message.tags %} class="alert {{ message.tags }}"{% endif %}>
+                     {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+                     {{ message|safe }}
+                     </li>
+                     {% endfor %}
+                     {% endif %}
+                  </ul>
+                 
+                   <!-- start tasks list -->
+                  <table class="table table-striped projects" id="task-table">
+                     <thead>
+                        <tr>
+                           <th style="width: 1%">ID</th>
+                           <th>{% trans "Task Name" %}</th>
+                           <th>{% trans "Projct Name" %}</th>
+                           <th>{% trans "Start Date" %}</th>
+                           <th>{% trans "End Date" %}</th>
+                           <th>{% trans "Status" %}</th>
+                           {% if request.user|has_group:"ismanager" %}
+
+                           {% endif %}
+                           <th>{% trans "AssignedTo" %}</th>
+
+                           <th>{% trans "Progress" %}
+                         <!--   <th>{% trans "Finshed By" %}</th> -->
+                           <th>{% trans "Finshed Date" %}</th>
+                           <th style="width: 20%">{% trans "Actions" %}</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        {% for task in tasks %}
+                        <tr>
+                           <td><a href="{% url 'ns-project:project-task-detail' task.project.id task.id   %}" class=" btn-link">{{task.id }}</a> </td>
+                         
+                           <td><a href="{% url 'ns-project:project-task-detail' task.project.id task.id   %}" class=" btn-link" title="{{task.name}}">{{ task.name|truncatechars:20 }}</a></td>
+                         
+                           <td><a href="{% url 'ns-project:project-detail' task.project.id   %}" class=" btn-link" title="{{task.project.name}}">{{ task.project.name|truncatechars:20 }}</a></td>
+                           <td>{{  task.startdate|date:"Y-m-d" }} </td>
+                           <td>{{  task.enddate|date:"Y-m-d" }} </td>
+                           <td id="status_{{task.id}}">
+                              {% if task.status == 'Closed' %}
+                              <span class="btn btn-dark btn-xs"> {{task.get_status_display }}</span>
+                              {% endif %}
+                              {% if task.status == 'Cancelled' %}
+                              <span  class="btn btn-danger btn-xs"> {{task.get_status_display }}</span>
+                              {% endif %}
+                              {% if task.status == 'Hold' %}
+                              <button type="button" class="btn btn-danger btn-xs"> {{task.get_status_display }}</button>
+                              {% endif %}
+                              {% if task.status == 'Done' %}
+                              <button type="button" class="btn btn-success btn-xs"> {{task.get_status_display }}</button>
+                              {% endif %}
+                              {% if task.status == 'InProgress' %}
+                              <span class="btn btn-warning btn-xs"> {{task.get_status_display }}</span>
+                              {% endif %}
+                              {% if task.status == 'New' %}
+                              <span class="btn btn-info btn-xs"> {{task.get_status_display }}</span>
+                              {% endif %}
+                           </td>
+                           {% if request.user|has_group:"ismanager" %}
+                           {% endif %}
+                           <td>
+
+                            {% if task.assignedto.empname%}
+                       {{task.assignedto.empname|truncatewords:4}}        
+                       {% elif task.departement.deptname %}
+                       {{task.departement.deptname|truncatewords:4}} 
+                      {% endif %}
+                                </td>
+                           <td>% {{task.progress }}
+                          <!--  {{ task.startdate|timesince:task.enddate }} -->
+                           <!-- {{ task.enddate|timeuntil }} -->
+
+
+                           <!-- delyaed -->
+                           {% if task.finisheddate %}
+                                {% if  task.finisheddate|date:"Ymd"  >  task.enddate|date:"Ymd" %}
+                                  <small class="text-danger"> ( {{ _('Delayed')}} )</small>
+                                {% endif%}
+                          {%else %}
+                            {% now "Ymd" as current_date  %}
+                                  {% if  current_date > task.enddate|date:"Ymd"%}
+                                 <small class="text-danger"> ( {{ _('Delayed')}} )</small>
+                                   {% endif %}
+                         {% endif %}
+
+
+
+
+                           </td>
+                         <!--  <td>{{task.finishedby }}</td> -->
+                           <td>{{  task.finisheddate|date:"d-m-Y" }} </td>
+                           <td>
+                      
+                            <ul class="nav nav-pills left float-left task-ctions" role="tablist">
+                     
+                     {% if  task.status == "Cancelled" or task.status == "Done" or task.status == "Closed" %}
+                          <li id="task-start"> <a href="#"    class="btn btn-app btn_app_custom disabled"><i class="fa fa-play fa-2x paction text-default "></i> </a> </li>
+                                                       <li  id="task-progress"> <a href="#"  class="btn btn-app btn_app_custom disabled"><i class="fa fa-clock-o right fa-2x paction text-default" title="{{_('Task Progress')}}"></i></a> </li>
+
+                           <li  id="task-finish"> <a href="#"  class="btn btn-app btn_app_custom disabled"><i class="fa fa-check-square-o fa-2x paction text-default disabled" title="{{_('Finish Task')}}"></i></a> </li>
+                           <li  id="task-cancel"> <a href="#"  class="btn btn-app btn_app_custom disabled"><i class="fa fa-ban fa-2x paction text-default" title="{{_('Cancel Task')}}"></i></a> </li>
+                   
+                      {% else %}
+                      
+                          {% if  task.status == "InProgress"    %}
+                           <li id="task-puse">   <a href="#" data-url="{% url 'ns-project:update-pause-task' task.id %}" class="btn btn-app btn_app_custom update-task-pause"  class="btn btn-app" title="{{_('Pause Task')}}"> <i class="fa fa-pause fa-2x paction text-primary"></i> </a> </li>
+                          {% elif   task.status == "New" or   task.status == "Hold"  %}
+                           <li id="task-start">   <a href="#" data-url="{% url 'ns-project:task-update-start' task.id %}" class="btn btn-app btn_app_custom update-task-start"  class="btn btn-app" title="{{_('Start Task')}}"> <i class="fa fa-play fa-2x paction text-primary"></i> </a> </li>
+                          {% endif %}
+                            <li  id="task-progress"> 
+                           <a href="#" data-url="{% url 'ns-project:update-progress-task' task.id %}" class="btn btn-app btn_app_custom update-task-progress"><i class="fa fa-clock-o fa-2x paction text-primary" title="{{_('Task Progress')}}"></i></a>
+                            </li> 
+                           <li  id="task-finish"> <a href="#" data-url="{% url 'ns-project:update-finish-task' task.id %}" class="btn btn-app btn_app_custom update-task-finish"><i class="fa fa-check-square-o fa-2x paction text-primary" title="{{_('Finish Task')}}"></i></a> </li>
+                           <li  id="task-cancel"> <a href="#" data-url="{% url 'ns-project:update-cancel-task' task.id %}" class="btn btn-app btn_app_custom update-task-cancel "><i class="fa fa-ban fa-2x paction text-danger" title="{{_('Cancel Task')}}"></i></a> </li> 
+                   
+                      {% endif %}
+                        {% load user_group %}
+                       
+                        {% if  task.project.delegationto.empid == request.session.EmpID or task.project.createdby.empid == request.session.EmpID  or task.departement.managerid == request.session.EmpID %}
+                     		 {% if  task.status == "Closed"  %}
+                   			                                   <li  id="task-assignto">  <a href="#"  class="btn btn-app btn_app_custom disabled"> <i class="fa fa-hand-o-right fa-2x paction text-default" title="{{_('Assign To')}}"></i>  </a> </li>
+
+                                {% else %}
+                                                                  <li  id="task-assignto">  <a href="#" data-url="{% url 'ns-project:update-assignto-task' task.id %}" class="btn btn-app btn_app_custom update-task-assignto"> <i class="fa fa-hand-o-right fa-2x paction text-primary" title="{{_('Assign To')}}"></i>  </a> </li>
+
+                    		  {% endif %}
+                        {% endif %}
+                           </ul>  
+                              
+                           </td>
+                        </tr>
+                        {% endfor %}
+                     </tbody>
+                  </table>
+                  <!-- end project list -->
+                  <!--  pager -->
+                  <div>
+                     {% if tasks.has_other_pages %}
+                     <ul class="pagination">
+                        {% if tasks.has_previous %}
+                        <li><a href="?page={{ tasks.previous_page_number }}">&laquo;</a></li>
+                        {% else %}
+                        <li class="disabled"><span>&laquo;</span></li>
+                        {% endif %}
+                        {% for i in tasks.paginator.page_range %}
+                        {% if tasks.number == i %}
+                        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                        {% else %}
+                        <li><a href="?page={{ i }}">{{ i }}</a></li>
+                        {% endif %}
+                        {% endfor %}
+                        {% if tasks.has_next %}
+                        <li><a href="?page={{ tasks.next_page_number }}">&raquo;</a></li>
+                        {% else %}
+                        <li class="disabled"><span>&raquo;</span></li>
+                        {% endif %}
+                     </ul>
+                     {% endif %}
+                     <ul class="pagination" >
+                        <li>
+                           <span class="current">
+                           {{ _('Page') }} {{ tasks.number }} of {{ tasks.paginator.num_pages }}
+                           </span>
+                        </li>
+                     </ul>
+                  </div>
+                  <!-- end pager -->
+                 
+                 
+                 <!--  x content end -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+<!-- THE MODAL WE WILL BE USING -->
+<div class="modal fade" id="modal-task">
+   <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+      </div>
+   </div>
+</div>
+{% endblock content %}
+{% block javascripts %}
+{{ block.super }}
+<script>
+   var loadForm = function () {
+   btn = $(this);
+   $.ajax({
+     url: $(this).attr("data-url"),
+     type: 'get',
+     dataType: 'json',
+     beforeSend: function () {
+       $("#modal-task").modal("show");
+     },
+     success: function (data) {
+       $("#modal-task .modal-content").html(data.html_form);
+     }
+   });
+
+   }; //end load form
+
+
+   var saveForm = function () {
+   var form = $(this);
+   $.ajax({
+     url: form.attr("action"),
+     data: form.serialize(),
+     type: form.attr("method"),
+     dataType: 'json',
+     success: function (data) {
+       if (data.form_is_valid) {
+        // $(".messages").html('<li class="alert alert-success">'+data.message+"</li>");
+        // $("#status_"+data.id).html('<span class=" btn btn-warning  task-'+data.status+'" >'+data.status+'</span>');
+
+       // $("#"+data.icon).addClass('paction_disable').closest('a').removeAttr("href").removeAttr("data-url").removeAttr("class");
+         $("#modal-task").modal("hide");
+          location.reload();
+       }
+       else {
+         $("#modal-task .modal-content").html(data.html_form);
+       }
+     }
+   });
+   return false;
+   }; //end save form
+
+
+ //Update task start date and status
+ $(".task-ctions").on("click", ".update-task-start", loadForm);
+ $("#modal-task").on("submit", ".task-update-start-form", saveForm);
+
+ //finish task 
+ $(".task-ctions").on("click", ".update-task-finish", loadForm);
+ $("#modal-task").on("submit", ".update-finish-task-form", saveForm);
+
+ //progress task 
+ $(".task-ctions").on("click", ".update-task-progress", loadForm);
+ $("#modal-task").on("submit", ".update-progress-task-form", saveForm);
+ 
+ //close task 
+ $(".task-ctions").on("click", ".update-task-close", loadForm);
+ $("#modal-task").on("submit", ".update-close-task-form", saveForm);
+
+ //cancel task 
+ $(".task-ctions").on("click", ".update-task-cancel", loadForm);
+ $("#modal-task").on("submit", ".update-cancel-task-form", saveForm);
+
+ //pause task
+ $(".task-ctions").on("click", ".update-task-pause", loadForm);
+ $("#modal-task").on("submit", ".update-pause-task-form", saveForm);
+
+ //assign to task 
+ $(".task-ctions").on("click", ".update-task-assignto", loadForm);
+ $("#modal-task").on("submit", ".update-assignto-task-form", saveForm);
+
+
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.2/chosen.jquery.js"></script>
+  <script>
+
+     $(".chosen").data("placeholder","Select Frameworks...").chosen();
+     $(".chosen").chosen({no_results_text: "Oops, nothing found!"});
+      $('.chosen').chosen({allow_single_deselect: true,no_results_text: "لا يوجد نتائج!"});
+
+
+
+
+</script>
+{% endblock javascripts %}

@@ -1,0 +1,202 @@
+{% extends "project/base_site.html" %}
+{% load i18n %}
+
+
+{% block title %} {% trans "Projects" %} {% endblock title %}
+
+{% block stylesheets %}
+{{ block.super }}
+<link href="/static/build/css/chosen.css" rel="stylesheet">
+{% endblock stylesheets %}
+
+{% block content %}
+{% get_current_language as LANGUAGE_CODE %}
+    <div class="right_col" role="main">
+      <div class="">
+
+        <div class="page-title">
+          <div class="title_left">
+            <h3></h3>
+          </div>
+
+          <div class="title_right">
+            <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
+       
+            </div>
+          </div>
+        </div>
+        <div class="clearfix"></div>
+
+        <div class="row">
+          <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+              <div class="x_title">
+                <h2>{% trans "Follow-up Administration"  %}</h2>
+               
+                <div class="clearfix"></div>
+              </div>
+              <div class="x_content">
+                <form method="Get" novalidate>
+                {% csrf_token %}
+
+               <div class="form-group col-md-3 col-sm-12 col-xs-12">
+              {{form.departement.label_tag}}
+               {{form.departement}}
+               </div>
+
+              <div class="form-group col-md-3 col-sm-12 col-xs-12">
+              {{form.employee.label_tag}}
+               {{form.employee}}
+               </div>
+
+                <div class="form-group col-md-2 col-sm-12 col-xs-12">
+
+              {{form.taskstatus.label_tag}}
+               {{form.taskstatus}}
+               </div>
+
+               <div class="form-group col-md-12">
+              <div class="form-group text-danger ">
+                {{ form.departement.errors }}
+                {{ form.employee.errors }}
+                {{ form.taskstatus.errors }}
+              </div>
+              </div>
+              <div class="form-group col-md-12 col-sm-12 col-xs-12">
+             <button type="submit" class="btn btn-success"><i class="fa fa-search"></i>     {{_('Search')}}</button>
+           <a href="{% url 'ns-project:project-follow-up' %}">  <button type="button" class="btn btn-danger"><i class="fa fa-refresh "></i> {{_('Reset')}}</button></a>
+
+             </div>
+
+                <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                  <div class="ln_solid"></div>
+               <div>  <i class="fa  fa-eye"></i> {% trans "Result Number :" %} <span>{{res}} </span> </div>
+             </div>
+</form>
+
+
+
+               {% if tasks %}
+                <!-- start task  list -->
+              <table class="table table-striped followup" id="followup-task-table">
+                <thead>
+                  <tr>
+                    <th style="width: 1%">ID</th>
+                    <th>{% trans "Task Name" %}</th>
+                    <th>{% trans "Project Name" %}</th>
+                    <th>{% trans "Assigned to" %}</th>
+                    <th>{% trans "Status" %}</th>
+
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for task in tasks %}
+                  {%if task.projectid%}
+                  <tr>
+                  <td>{{task.id}}</td>
+                    <td><a href="{% url 'ns-project:project-task-detail' task.projectid task.id %}" class=" btn-link">{{task.taskname }}</a> </td>
+                    <td>{{task.projectname }}</td>
+                    <td>{{task.empname }}</td>
+                    <td id="status_{{task.id}}">
+                      {% if task.status == 'Closed' %}
+                      <span class="btn btn-dark btn-xs">{%  trans task.status %}</span>
+                      {% endif %}
+                       {% if task.status == 'Cancelled' %}
+                      <span  class="btn btn-danger btn-xs"> {%  trans task.status %}</span>
+                      {% endif %}
+                       {% if task.status == 'Hold' %}
+                      <button type="button" class="btn btn-danger btn-xs"> {%  trans task.status %}</button>
+                      {% endif %}
+                       {% if task.status == 'Done' %}
+                      <button type="button" class="btn btn-success btn-xs"> {% trans task.status %}</button>
+                      {% endif %}
+                       {% if task.status == 'InProgress' %}
+                      <span class="btn btn-warning btn-xs"> {%  trans task.status %}</span>
+                      {% endif %}
+                          {% if task.status == 'New' %}
+                     <span class="btn btn-info btn-xs"> {% trans task.status %}</span>
+
+                      {% endif %}
+
+                    </td>
+
+
+                  </tr>
+{%endif%}
+                  {% endfor %}
+                </tbody>
+              </table>
+
+              <!-- end task list -->
+<!--  pager -->
+<div>
+
+{% if tasks.has_other_pages %}
+  <ul class="pagination">
+
+
+    {% if tasks.has_previous %}
+      <li><a href="?page={{ tasks.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+    {% for i in tasks.paginator.page_range %}
+      {% if tasks.number == i %}
+        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% else %}
+        <li><a href="?page={{ i }} {% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if tasks.has_next %}
+      <li><a href="?page={{ tasks.next_page_number }} {% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+  </ul>
+{% endif %}
+
+
+ <ul class="pagination" >
+ <li>
+<span class="current">
+            {{ _('Page') }} {{ tasks.number }} of {{ tasks.paginator.num_pages }}
+        </span>
+        </li>
+        </ul>
+
+
+</div>
+<!-- end pager -->
+ {% endif  %}
+
+
+
+               </div>
+
+
+           
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+   
+{% endblock content %}
+
+{% block javascripts %}
+  {{ block.super }}
+
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.2/chosen.jquery.js"></script>
+  <script>
+  $(document).ready(function(){
+     $(".chosen").data("placeholder","Select Frameworks...").chosen();
+     $(".chosen").chosen({no_results_text: "Oops, nothing found!"});
+      $('.chosen').chosen({allow_single_deselect: true,no_results_text: "لا يوجد نتائج!"});
+      
+
+});
+
+</script>
+{% endblock javascripts %}

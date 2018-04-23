@@ -15,7 +15,7 @@ urlpatterns = [
     url(r'^i18n/', include('django.conf.urls.i18n')),
     url(r'^$', views.EmployeeList, name='employee-list'),
     url(r'^employee_list/$', views.EmployeeList, name='employee_list'),
-    url(r'^evaluation_form/(?P<empid>\d+)$', views.EvaluationForm, name='evaluation-form'),
+    url(r'^evaluation_form/(?P<empid>\d+)$', views.EvaluationPage, name='evaluation-form'),
  
     #login from drupal
     url(r'^auth/(?P<email>.*)/(?P<signature>.*)/(?P<time>.*)/$', views.loginfromdrupal, name='loginfromdrupal'),

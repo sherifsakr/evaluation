@@ -1,0 +1,328 @@
+{% extends "project/base_site.html" %}
+{% load i18n %}
+{% block title %} {% trans "Project Details" %} {% endblock title %}
+
+{% block sidebar_class %}menu_fixed{% endblock sidebar_class %}
+
+{% block stylesheets %}
+  {{ block.super }}
+  
+  <style>
+ /* .scrollable-menu {
+    height: auto;
+    max-height: 200px;
+    overflow-x: hidden;
+    */
+}
+  </style>
+{% endblock stylesheets %}
+
+{% block content %}
+  <div class="right_col" role="main">
+    <div class="">
+   
+   <!-- top menu bar -->
+{% include "project/project_nave.html" %}
+   
+
+      <div class="clearfix"></div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="x_panel">
+            <div class="x_title">
+            <div class="col-md-7 col-sm-12 col-xs-12">
+          
+          
+        
+              <h2 class="right">  <div class="task_number"  >{{task.id}}</div>  {{task.name}}  </h2>
+              
+              </div>
+               <div class="col-md-5 col-sm-12 col-xs-12">
+                     <ul class="nav nav-pills left float-left task-ctions" role="tablist">
+                     
+                     
+                      <!-- user start task  -->
+                             {% if  task.status == "Cancelled" or task.status == "Done" or task.status == "Closed" %}
+                             <li id="task-start"> <a href="#"    class="btn btn-app disabled"><i class="fa fa-play fa-2x paction text-default "></i> </a> </li>
+                              {% else %}
+                                 {% if  task.status == "InProgress"    %}
+                             <li id="task-puse">   <a href="#" data-url="{% url 'ns-project:update-pause-task' task.id %}" class="btn btn-app update-task-pause"  class="btn btn-app" title="{{_('Pause Task')}}"> <i class="fa fa-pause fa-2x paction text-primary"></i> </a> </li>
+                                 {% elif   task.status == "New" or   task.status == "Hold"  %}
+                        	  <li id="task-start">   <a href="#" data-url="{% url 'ns-project:task-update-start' task.id %}" class="btn btn-app update-task-start"  class="btn btn-app" title="{{_('Start Task')}}"> <i class="fa fa-play fa-2x paction text-primary"></i> </a> </li>
+                                 {% endif %}
+                              {% endif %}
+                              
+                              <!-- user finish task -->
+                              {% if task.status == "Done"  or task.status == "Cancelled" or   task.status == "New"  or task.status == "Closed" %}
+                            <li  id="task-progress"><a href="#" class="btn btn-app disabled"><i class="fa fa-clock-o fa-2x paction text-default" title="{{_('Progress')}}"></i></a> </li> 
+                         <li  id="task-finish"> <a href="#"  class="btn btn-app disabled"><i class="fa fa-check-square-o fa-2x paction text-default disabled" title="{{_('Finish Task')}}"></i></a> </li>
+                         <li  id="task-cancel"> <a href="#"  class="btn btn-app disabled"><i class="fa fa-ban fa-2x paction text-default" title="{{_('Cancel Task')}}"></i></a> </li>
+                              {% else %}
+                              <li  id="task-progress"> <a href="#" data-url="{% url 'ns-project:update-progress-task' task.id %}" class="btn btn-app update-task-progress "><i class="fa fa-clock-o fa-2x paction text-primary" title="{{_('Progress')}}"></i></a> </li> 
+                             <li  id="task-finish"> <a href="#" data-url="{% url 'ns-project:update-finish-task' task.id %}" class="btn btn-app update-task-finish"><i class="fa fa-check-square-o fa-2x paction text-primary" title="{{_('Finish Task')}}"></i></a> </li>
+                             <li  id="task-cancel"> <a href="#" data-url="{% url 'ns-project:update-cancel-task' task.id %}" class="btn btn-app update-task-cancel"><i class="fa fa-ban fa-2x paction text-danger" title="{{_('Cancel Task')}}"></i></a> </li> 
+                            {% endif %}
+                              
+                              
+                     
+                        {% load user_group %}
+         {#  request.user|has_group:"ismanager"  and #}
+                        {% if   task.createdby.empid|slugify  == request.session.EmpID  or   request.session.EmpID == task.project.delegationto.empid or task.project.empid|slugify  == request.session.EmpID %}
+                     		 {% if  task.status != "Closed" %}
+                           <li  id="task-assignto">  <a href="#" data-url="{% url 'ns-project:update-assignto-task' task.id %}" class="btn btn-app update-task-assignto"> <i class="fa fa-hand-o-right fa-2x paction text-primary" title="{{_('Assign To')}}"></i>  </a> </li>
+                           <li  id="task-close">  <a href="#" data-url="{% url 'ns-project:update-close-task' task.id %}" class="btn btn-app update-task-close"> <i class="fa fa-power-off  fa-2x paction text-danger" title="{{_('Close Task')}}"></i></a> </li>
+                   			 {% else %}
+                           <li  id="task-assignto">  <a href="#"  class="btn btn-app disabled"> <i class="fa fa-hand-o-right fa-2x paction text-default" title="{{_('Assign To')}}"></i>  </a> </li>
+                           <li  id="task-close">  <a href="#"  class="btn btn-app disabled"> <i class="fa fa-power-off  fa-2x paction text-default" title="{{_('Close Task')}}"></i></a> </li>
+                    		  {% endif %}
+                    		  
+                    		 
+                           <li><a href="{% url 'ns-project:project-task-edit' project_detail.id task.id %}" class="btn btn-app" title="{{_('Edit Task')}}"> <i class="fa fa-edit fa-2x paction" title="{{_('Edit')}}"></i> </a> </li>
+                           <li><a href="{% url 'ns-project:project-task-delete' project_detail.id task.id %}" class="btn btn-app" title="{{_('Start Task')}}"> <i class="fa fa-trash fa-2x paction" title="{{_('Delete')}}"></i> </a> </li>
+                          {% endif %}
+                           </ul>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+
+
+            <div class="x_content">
+
+              <div class="col-md-8 col-sm-8 col-xs-12">
+    
+        {% if messages %}
+                  <ul class="messages">
+                     {% for message in messages %}
+                     <li{% if message.tags %} class="alert {{ message.tags }}"{% endif %}>
+                     {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+                     {{ message|safe }}
+                     </li>
+                     {% endfor %}
+                  </ul>
+                  {% endif %}
+ <!-- start task detail ------------------------------------- -->
+ <div class="col-md-12 col-sm-12 col-xs-12">
+
+<!--  decription -->
+<fieldset class="fieldset_normal">
+        <legend>{{ _('Task Description')}}</legend>
+        <div class="article-content">    <p>{% autoescape off  %}{{task.desc}} {% endautoescape %} </p></div>
+      </fieldset>
+          
+<!--  attachmenet -->
+<fieldset class="fieldset_normal">
+        <legend>{{ _('Attachment')}}</legend>
+      
+         <ul class="list-unstyled project_files">
+            {% for attach in attached_files%}
+                        <li>
+                        {% if attach.filepath  %}
+                        <a href="{% url 'ns-project:download' attach.filepath %}" style="text-decoration: underline;"> <span style="margin-left:5px;">{{attach.filename}} </span> {{attach.filepath}} </a>
+                        {% endif %}
+                        {# name, ext = os.path.splitext('file.txt')  #}
+                        {%endfor%}
+               <!--<li><a href=""><i class="fa fa-file-word-o"></i> Functional-requirements.docx</a>
+                      </li>
+                      <li><a href=""><i class="fa fa-file-pdf-o"></i> UAT.pdf</a>
+                      </li>
+                      <li><a href=""><i class="fa fa-mail-forward"></i> Email-from-flatbal.mln</a>
+                      </li>
+                      <li><a href=""><i class="fa fa-picture-o"></i> Logo.png</a>
+                      </li>
+                      <li><a href=""><i class="fa fa-file-word-o"></i> Contract-10_12_2014.docx</a>
+                      </li> -->
+                    </ul>
+        
+      </fieldset>
+                
+<!-- history -->
+<fieldset class="fieldset_normal">
+        <legend>{{ _('Recent Activity')}}</legend>
+        <div class="article-content">    
+         <ul class="list-unstyled project_files">
+         {% for h in history%}
+       <li style="word-wrap: break-word;"><i class="fa fa-clock-o"></i>  <span class="float-right"> {{h.lasteditdate }}  </span> , <span class="float-right">{{h.history_change_reason|safe}} </span>     </li>
+         {% endfor %}
+         </ul>
+        </div>
+      </fieldset>
+      
+          {% if  request.META.HTTP_REFERER ==  request.build_absolute_uri or request.META.HTTP_REFERER == None   %}     
+               <a href="{% url 'ns-project:project-task' project_detail.id  %}" >  <button type="button" class="btn btn-primary">{{ _('Back')}}</button></a>
+                {%else%}
+                 <a href="{{request.META.HTTP_REFERER}}" >  <button type="button" class="btn btn-primary"><i class="fa fa-angle-double-right"></i> {{ _('Back')}}</button></a>
+
+{%endif%}
+
+</div>
+          
+  
+              </div>
+              <!-- start project-detail sidebar -->
+              
+              <div class="col-md-4 col-sm-4 col-xs-12">
+                  
+        <fieldset class="fieldset_normal">
+        <legend>{{_("Basic Info")}}</legend>
+   
+   <ul class="list-unstyled">
+                      <li class="clearfix"><div class="basic_info_lable col-md-4 float-right">{{_("project Name")}}</div> <div class="basic_info  col-md-7">{{task.project.name}}</div>
+                      </li>
+                      <li class="clearfix"><div class="basic_info_lable  col-md-4 float-right">{{_("Assigned To")}}</div> <div class="basic_info col-md-7"> 
+                      {% if task.assignedto.empname  %}
+                      {{task.assignedto.empname}}
+                      {% elif task.departement.deptname  %}
+                      {{task.departement.deptname}}
+                      {% endif %}
+                                    
+                                                                                                                                                     
+                                                                                                                                                             </div>
+                      </li>
+                      <li class="clearfix"><div class="basic_info_lable  col-md-4 float-right">{{_("Task Status")}}</div><div class="basic_info col-md-7">  {% trans task.status %} </div>
+                      </li>
+                         <li class="clearfix"><div class="basic_info_lable  col-md-4 float-right">{{_("Progress")}}</div><div class="basic_info col-md-7">  {{ task.progress}} % </div>
+                      </li>
+                       <li class="clearfix"><div class="basic_info_lable  col-md-4 float-right">{{_("Start Date")}}</div><div class="basic_info col-md-7">  {{task.startdate|date:"d M Y"  }} </div>
+                      </li>
+                       <li class="clearfix"><div class="basic_info_lable  col-md-4 float-right">{{_("End Date")}}</div><div class="basic_info col-md-7">  {{ task.enddate|date:"d M Y"  }} </div>
+                      </li>
+                         <li class="clearfix"><div class="basic_info_lable  col-md-4 float-right">{{_("Finished Date")}}</div><div class="basic_info col-md-7">  {{ task.finisheddate|date:"d M Y"  }} </div>
+                      </li>
+                      <li class="clearfix"><div class="basic_info_lable  col-md-4 float-right">{{_("Mailto To")}}</div> <div class="basic_info col-md-7">{{ task.assignedto.email|urlizetrunc:25 }}</div>
+                      </li>
+                    </ul>
+
+      </fieldset>
+                  
+               <fieldset class="fieldset_normal">
+        <legend>{{_("Actions")}}</legend>
+   
+   <ul class="list-unstyled">
+                      <li class="clearfix"><div class="basic_info_lable col-md-4 float-right">{{_("Created By")}}</div> <div class="basic_info  col-md-7 float-right">{{ task.createdby.empname}}</div>
+                      </li>
+                      <li class="clearfix"><div class="basic_info_lable  col-md-4 float-right">{{_("Finished By")}}</div> <div class="basic_info col-md-7 float-right">  {{ finishedby.empname }}</div>
+                      </li>
+                      <li class="clearfix"><div class="basic_info_lable  col-md-4 float-right">{{_("Cancelled By")}}</div><div class="basic_info col-md-7 float-right">  {{cancelledby.empname}}</div>
+                      </li>
+                      <li class="clearfix"><div class="basic_info_lable  col-md-4 float-right">{{_("Closed By")}}</div> <div class="basic_info col-md-7 float-right">  {{closedby.empname}}</div>
+                      </li>
+                     <!--  <li class="clearfix"><div class="basic_info_lable  col-md-4 float-right">{{_("Cancelled Reason")}}</div> <div class="basic_info  col-md-7 float-right"> </div>
+                      </li> -->
+                      <li class="clearfix"><div class="basic_info_lable  col-md-4 float-right">{{_("Last Edited")}}</div> <div class="basic_info col-md-7 float-right"> {{  task.lasteditdate|date:"d M Y ,  h:i a" }}</div>
+                      </li>
+                    </ul>
+                    
+
+      </fieldset>
+                  <!--    <div class="text-center mtop20">
+                      <a href="#" class="btn btn-sm btn-primary">Add files</a>
+                      <a href="#" class="btn btn-sm btn-warning">Report contact</a>
+                    </div>  -->
+         
+
+              </div>
+              <!-- end project-detail sidebar -->
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- THE MODAL WE WILL BE USING -->
+<div class="modal fade" id="modal-task">
+   <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+      </div>
+   </div>
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+  {{ block.super }}
+
+<script>
+var loadForm = function () {
+btn = $(this);
+$.ajax({
+  url: $(this).attr("data-url"),
+  type: 'get',
+  dataType: 'json',
+  beforeSend: function () {
+    $("#modal-task").modal("show");
+  },
+  success: function (data) {
+    $("#modal-task .modal-content").html(data.html_form);
+  }
+});
+
+}; //end load form
+
+var saveForm = function () {
+var form = $(this);
+$.ajax({
+  url: form.attr("action"),
+  data: form.serialize(),
+  type: form.attr("method"),
+  dataType: 'json',
+  success: function (data) {
+    if (data.form_is_valid) {
+      $(".messages").html('<li class="alert alert-success">'+data.message+"</li>");
+      $("#status_"+data.id).html('<span class=" btn btn-warning  task-'+data.status+'" >'+data.status+'</span>');
+
+      $("#"+data.icon).addClass('paction_disable').closest('a').removeAttr("href").removeAttr("data-url").removeAttr("class");
+      $("#modal-task").modal("hide");
+      location.reload();
+    }
+    else {
+      $("#modal-task .modal-content").html(data.html_form);
+    }
+  }
+});
+return false;
+}; //end save form
+
+//Update task start date and status
+$(".task-ctions").on("click", ".update-task-start", loadForm);
+$("#modal-task").on("submit", ".task-update-start-form", saveForm);
+
+//finish task 
+$(".task-ctions").on("click", ".update-task-finish", loadForm);
+$("#modal-task").on("submit", ".update-finish-task-form", saveForm);
+
+//close task 
+$(".task-ctions").on("click", ".update-task-close", loadForm);
+$("#modal-task").on("submit", ".update-close-task-form", saveForm);
+
+//progress task
+$(".task-ctions").on("click", ".update-task-progress", loadForm);
+$("#modal-task").on("submit", ".update-progress-task-form", saveForm);
+
+//cancel task 
+$(".task-ctions").on("click", ".update-task-cancel", loadForm);
+$("#modal-task").on("submit", ".update-cancel-task-form", saveForm);
+
+//pause task
+$(".task-ctions").on("click", ".update-task-pause", loadForm);
+$("#modal-task").on("submit", ".update-pause-task-form", saveForm);
+
+//assign to task 
+$(".task-ctions").on("click", ".update-task-assignto", loadForm);
+$("#modal-task").on("submit", ".update-assignto-task-form", saveForm);
+</script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.2/chosen.jquery.js"></script>
+  <script>
+
+     $(".chosen").data("placeholder","Select Frameworks...").chosen();
+     $(".chosen").chosen({no_results_text: "Oops, nothing found!"}); 
+      $('.chosen').chosen({allow_single_deselect: true,no_results_text: "Ù„Ø§ ÙŠÙˆØ¬Ø¯ Ù†ØªØ§Ø¦Ø¬!"});
+
+
+      
+      
+</script>
+{% endblock javascripts %}

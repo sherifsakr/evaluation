@@ -144,6 +144,29 @@ class TaskStatus(models.Model):
         db_table = 'task_status'
 
 
+class EvaluationItem(models.Model):
+    evaluation_fom_id = models.IntegerField(blank=True, null=True)
+    evaluation_group_id = models.CharField(max_length=45, blank=True, null=True)
+    title = models.CharField(max_length=200, blank=True, null=True)
+    max_degree_a = models.IntegerField(blank=True, null=True)
+    max_degree_b = models.IntegerField(blank=True, null=True)
+    is_class_a = models.IntegerField(blank=True, null=True)
+    is_class_b = models.IntegerField()
+    degree = models.IntegerField()
+
+    class Meta:
+        managed = True
+        db_table = 'evaluation_item'
+        
+        
+class EvaluationResult(models.Model):
+    id = models.IntegerField(primary_key=True)
+    q_1 = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'evaluation_result'
+               
 
 class AuthUser(models.Model):
     password = models.CharField(max_length=128)

@@ -1,0 +1,69 @@
+  {% load i18n %}
+  
+  <div class="panel panel-default">
+  <div class="panel-heading">{% trans "Status" %}</div>
+  <div class="panel-body">
+  
+    <!--  chart -->
+       <div class="col-md-6 col-sm-12 col-xs-12" > 
+       <div id="piechart-status" ></div>
+       </div>
+        <!--  table -->
+       <div class="col-md-6 col-sm-12 col-xs-12"> 
+       
+        
+        
+        
+        <table class="table table-bordered table-striped jambo_table">
+                      <thead>
+                        <tr>
+                          <th>{% trans "Status" %}</th>
+                          <th style="width: 20%">{% trans "Tasks Count" %}</th>
+                          <th style="width: 20%">%</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      
+                  
+                      {% for object in list.status %}
+                     
+                        <tr>
+                          <td>{% trans object.name %}</td>
+                          <td>{{object.count}}</td>
+                          <td>{{object.precent|stringformat:"02d"}}</td>
+                        </tr>
+                     {% endfor%}
+                      </tbody>
+                    </table>
+        
+        
+        
+        </div>
+        </div>
+        
+          <!-- google chart -->
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+
+        var data = google.visualization.arrayToDataTable([
+        	
+          ['Task', 'Count'],
+          {% for object in list.status %}
+          ['{% trans object.name %}',   {{object.precent|stringformat:"02d"}}],
+          {% endfor%}
+         
+        
+        ]);
+
+        var options = {
+          title: ''
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart-status'));
+
+        chart.draw(data, options);
+      }
+      </script>

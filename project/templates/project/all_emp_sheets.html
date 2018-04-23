@@ -1,0 +1,110 @@
+{% extends "project/base_site.html" %}
+{% load i18n %}
+{% block title %} {% trans "Projects" %} {% endblock title %}
+
+{% block stylesheets %}
+{{ block.super }}
+{% endblock stylesheets %}
+
+{% block content %}
+  <div class="right_col" role="main">
+    <div class="">
+      <div class="page-title">
+        <div class="title_left">
+          <h3>{% trans "Tasks List All" %} </h3>
+        </div>
+        <div class="title_right">
+          <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
+            <div class="input-group">
+              <form method="GET" action="">
+              <input type="text" name="q" class="form-control" style="width:auto;" value="{{ request.GET.q}}" placeholder="{{_('Emp Or dept')}}...">
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="submit">{% trans "Go"  %}!</button>
+              </span>
+            </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="clearfix"></div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="x_panel">
+
+            <div class="x_content">
+              <!-- start project list -->
+              {% for message in messages %}
+                <div style="font-size: 20px;" class="alert {{ message.tags }} alert-dismissible" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                  {{ message }}
+                </div>
+              {% endfor %}
+              {% if count > 0 %}
+              <table class="table table-striped projects">
+                <thead>
+                  <tr>
+                    <th style="width: 1%">#</th>
+                    <th>{{ _('Name') }}</th>
+                    <th>{{ _('Department') }}</th>
+                    <th style="width: 10%">{% trans "Task count" %}</th>
+                    <th>{% trans "Task Submitted Count" %}</th>
+                    <th>{% trans "Task not submitted count" %}</th>
+                    <th>{% trans "View" %}</th>
+                  <!--  <th>{% trans "Status" %}</th> -->
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for data in allemp %}
+                  <tr>
+                    <td>#</td>
+                    <td>{{ data.employeename }}
+
+                    </td>
+                    <td>{{data.deptname}}</td>
+                    <td>
+                    {{ data.totaltask }}
+                    </td>
+                    <td>
+                      {{data.submitted }}
+
+                    </td>
+                    <td class="project_progress">
+                        {{ data.notsubmitted }}
+                    </td>
+
+                    <td>
+                      <a href="/sheet/{{data.empid}}/details" class="btn btn-primary btn-xm">{% trans "View" %}</a>
+                    </td>
+                    <!--  <td>
+                      {% if data.ifsubmitted == 0 %}
+                      <button type="button" class="btn btn-danger btn-xs">{% trans "not submitted" %}</button>
+                      {% endif %}
+                      {% if data.ifsubmitted == 1 %}
+                      <button type="button" class="btn btn-success btn-xs">{% trans "submitted" %}</button>
+                      {% endif %}
+                      {% if data.ifsubmitted == 2 %}
+                      <button type="button" class="btn btn-primary btn-xs">{% trans "in process" %}</button>
+                      {% endif %}
+                    </td>
+                  -->
+
+                    </tr>
+                  {% endfor %}
+          </tbody>
+              </table>
+              {%endif%}
+              <!-- end project list -->
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+
+{% block javascripts %}
+  {{ block.super }}
+{% endblock javascripts %}

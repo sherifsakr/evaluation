@@ -1,0 +1,481 @@
+{% extends "project/base_site.html" %}
+{% load i18n %}
+{% load widget_tweaks %}
+{% block title %} {% trans "Project Details" %} {% endblock title %}
+
+{% block sidebar_class %}menu_fixed{% endblock sidebar_class %}
+
+{% block stylesheets %}
+  {{ block.super }}
+{% endblock stylesheets %}
+
+
+  <link href="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css" rel="stylesheet">
+
+
+
+
+{% block content %}
+  <div class="right_col" role="main">
+    <div class="">
+
+   <!-- top menu bar -->
+{% include "project/project_nave.html" %}
+
+
+      <div class="clearfix"></div>
+ <form action="" method="post" class="form-horizontal form-label-left input_mask" novalidate enctype="multipart/form-data">
+{% csrf_token %}
+      <div class="row">
+        <div class="col-md-12">
+          <div class="x_panel">
+            <div class="x_title">
+            <div class="col-md-7 col-sm-12 col-xs-12">
+
+              <h2 class="right">  <div class="task_number"  >  {{task.id}}</div>  {{task.name}}  </h2>
+
+              </div>
+               <div class="col-md-5 col-sm-12 col-xs-12">
+                     <ul class="nav nav-pills left float-left task-ctions" role="tablist">
+
+
+                             <button type="submit" class="btn btn-success">  <li>   <i class="fa fa-save"></i>  {{_('Save Changes')}}</button></li>
+                           </ul>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+
+
+            <div class="x_content">
+
+              <div class="col-md-8 col-sm-8 col-xs-12">
+
+
+ <!-- start task detail -->
+ <div class="col-md-12 col-sm-12 col-xs-12">
+
+<div class="form-group">
+<!-- task title -->
+{{form.name.label_tag}}
+ {{form.name}}
+            </div>
+
+<!--  decription -->
+ <div class="form-group">
+ {{form.desc.label_tag}}
+    {{form.desc}}
+     </div>
+
+  <!--  decription -->
+ <div class="form-group">
+ {{form.note.label_tag}}
+    {{form.note}}
+     </div>
+
+
+
+ <!--  attachmenet -->
+                         {{ upload_file.management_form }}
+                         <fieldset>
+                            <legend> {% trans "Attached files " %}</legend>
+                         {% for form in upload_file%}
+                         <div class="item form-group">
+                           <div class="col-md-6">
+                           {{form.id}}
+                           {{form.filename.label_tag}}
+                          {{ form.filename|add_class:"form-control"}}
+                        </div>
+                          <div class="col-md-5">
+                          {{form.filepath.label_tag}}
+                         {{ form.filepath|add_class:"upload"}}
+                       </div>
+                           {# <span class="input-group-btn"><button class="delete btn btn-danger remove-form-row"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></button></span> #}
+                         </div>
+
+                        {% endfor%}
+                        <div class="col-md-12">
+                        <span id="add" class="input-group-btn"><button class="btn btn-success add-form-row"><span class="glyphicon glyphicon-plus" aria-hidden="true" style="margin-left:5px;"></span>{{_('add new file')}}</button></span>
+</div>
+                        </fieldset>
+
+
+
+           <div class="form-group text-danger ">
+     <div class="col-md-3"></div><div class="col-md-9 col-sm-12 col-xs-12">
+    {{ form.name.errors }}
+    {{ form.desc.errors }}
+    {{ form.startdate.errors}}
+    {{ form.enddate.errors  }}
+      {{ form.assigned_to.errors  }}
+       {{ form.departement.errors  }}
+       {{ form.status.errors  }}
+      {{ form.progress.errors  }}
+
+
+    </div>
+</div>
+
+
+      <!--  save and return control -->
+ <div class="form-group">
+  {% if  request.META.HTTP_REFERER ==  request.build_absolute_uri or request.META.HTTP_REFERER == None   %}
+   <a href="{% url 'ns-project:project-task-detail' project_detail.id task.id %}" >  <button type="button" class="btn btn-primary">{{ _('Back')}}</button></a>
+    {%else%}
+     <a href="{{request.META.HTTP_REFERER}}" >  <button type="button" class="btn btn-primary"><i class="fa fa-angle-double-right"></i> {{ _('Back')}}</button></a>
+     {%endif%}
+      <button type="submit" class="btn btn-success">    <i class="fa fa-save"></i>  {{_('Save Changes')}}</button>
+        </div>
+
+
+
+</div>
+
+
+
+              </div>
+              <!-- start project-detail sidebar -->
+
+              <div class="col-md-4 col-sm-4 col-xs-12">
+
+        <fieldset class="fieldset_normal">
+        <legend>{% trans "Basci Info" %}</legend>
+
+   <ul class="list-unstyled">
+                      <li class="clearfix"><div class="basic_info_lable col-md-4 float-right">{{_("project Name")}}</div> <div class="basic_info  col-md-7">{{project_detail.name}} </div>
+                      </li>
+                      <li class="clearfix task-ctions"><div class="basic_info_lable  col-md-4 float-right">{{_("Assigned To")}} </div> <div class="basic_info col-md-7" style="position:relative;">  {{form.assigned_to}}
+                         <a href="#" data-url="{% url 'ns-project:update-assignto-task' task.id 'False' %}" class="update-task-assignto" style="    position: absolute;
+    top: 0px;
+    left: 0px;
+    /* margin-top: 8px; */
+    height: 38px;
+    color: #bbb;
+    line-height: 24px;
+    font-size: 15px;
+    /* height: 5px; */
+    width: 51px;
+    display: inline-block;">
+
+                      <i class="fa fa-search form-control-feedback form-control-feedback-black right" aria-hidden="true"></i>
+
+                      </a>
+                      </div>
+                      </li>
+                      <li class="clearfix"><div class="basic_info_lable  col-md-4 float-right">{{_("Status")}}</div> <div class="basic_info col-md-7">  {{form.status}}</div>
+                        </li>
+                         <li class="clearfix"><div class="basic_info_lable  col-md-4 float-right">{{_("Progress")}}</div> <div class="basic_info col-md-7">  {{form.progress}} %  <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="" data-original-title="{% trans 'Rang from 0 t0 100' %}"></i> </div>
+
+                     <li class="clearfix"><div class="basic_info_lable  col-md-4 float-right">{{_("Start Date")}}</div> <div class="basic_info col-md-7">  {{form.startdate}}                 <span class="fa fa-calendar-o form-control-feedback form-control-feedback-black left"  aria-hidden="true"></span>
+</div>
+                        </li>
+                        <li class="clearfix"><div class="basic_info_lable  col-md-4 float-right">{{_("End Date")}}</div> <div class="basic_info col-md-7">  {{form.enddate}}                 <span class="fa fa-calendar-o form-control-feedback form-control-feedback-black left"  aria-hidden="true"></span>
+</div>
+                        </li>
+                         <li class="clearfix"><div class="basic_info_lable  col-md-4 float-right">{{_("Finished Date")}}</div> <div class="basic_info col-md-7">  {{form.finisheddate}}                 <span class="fa fa-calendar-o form-control-feedback form-control-feedback-black left"  aria-hidden="true"></span>
+</div>
+                        </li>
+                    </ul>
+
+      </fieldset>
+
+               <fieldset class="fieldset_normal">
+        <legend>{{_("Actions")}}</legend>
+
+   <ul class="list-unstyled">
+                      <li class="clearfix"><div class="basic_info_lable col-md-4 float-right">{{_("Created By")}}</div> <div class="basic_info  col-md-7 float-right">{{ task.createdby.empname}}</div>
+                      </li>
+                      <li class="clearfix"><div class="basic_info_lable  col-md-4 float-right">{{_("Finished By")}}</div> <div class="basic_info col-md-7 float-right">  {{ task.finishedby.empname }}</div>
+                      </li>
+                      <li class="clearfix"><div class="basic_info_lable  col-md-4 float-right">{{_("Cancelled By")}}</div><div class="basic_info col-md-7 float-right">  {{task.cancelledby.empname}}</div>
+                      </li>
+                      <li class="clearfix"><div class="basic_info_lable  col-md-4 float-right">{{_("Closed By")}}</div> <div class="basic_info col-md-7 float-right">  {{task.closedby.empname}}</div>
+                      </li>
+                      <li class="clearfix"><div class="basic_info_lable  col-md-4 float-right">{{_("Cancelled Reason")}}</div> <div class="basic_info  col-md-7 float-right"> {{task.mailto}}</div>
+                      </li>
+
+                    </ul>
+
+
+      </fieldset>
+                  <!--    <div class="text-center mtop20">
+                      <a href="#" class="btn btn-sm btn-primary">Add files</a>
+                      <a href="#" class="btn btn-sm btn-warning">Report contact</a>
+                    </div>  -->
+
+
+              </div>
+              <!-- end project-detail sidebar -->
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  </form>
+  <!-- THE MODAL WE WILL BE USING -->
+  <style>
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.2/chosen.css" />
+  </style>
+
+<div class="modal fade" id="modal-task">
+   <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+      </div>
+   </div>
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+  {{ block.super }}
+
+<script>
+var loadForm = function () {
+btn = $(this);
+$.ajax({
+  url: $(this).attr("data-url"),
+  type: 'get',
+  dataType: 'json',
+  beforeSend: function () {
+    $("#modal-task").modal("show");
+  },
+  success: function (data) {
+    $("#modal-task .modal-content").html(data.html_form);
+  }
+});
+
+}; //end load form
+
+var saveForm = function () {
+var form = $(this);
+$.ajax({
+  url: form.attr("action"),
+  data: form.serialize(),
+  type: form.attr("method"),
+  dataType: 'json',
+  success: function (data) {
+    if (data.form_is_valid) {
+      $(".messages").html('<li class="alert alert-success">'+data.message+"</li>");
+      $("#status_"+data.id).html('<span class=" btn btn-warning  task-'+data.status+'" >'+data.status+'</span>');
+
+      $("#"+data.icon).addClass('paction_disable').closest('a').removeAttr("href").removeAttr("data-url").removeAttr("class");
+      $("#modal-task").modal("hide");
+
+      if(data.assignedto_empid){
+      $("#id_assigned_to").val(data.assignedto_empid );
+      }
+      else if(data.assignedto_depid){
+      $("#id_assigned_to").val(data.assignedto_depid );
+      }
+     // location.reload();
+    }
+    else {
+      $("#modal-task .modal-content").html(data.html_form);
+    }
+  }
+});
+return false;
+}; //end save form
+
+//Update task start date and status
+$(".task-ctions").on("click", ".update-task-start", loadForm);
+$("#modal-task").on("submit", ".task-update-start-form", saveForm);
+
+//finish task
+$(".task-ctions").on("click", ".update-task-finish", loadForm);
+$("#modal-task").on("submit", ".update-finish-task-form", saveForm);
+
+//close task
+$(".task-ctions").on("click", ".update-task-close", loadForm);
+$("#modal-task").on("submit", ".update-close-task-form", saveForm);
+
+//cancel task
+$(".task-ctions").on("click", ".update-task-cancel", loadForm);
+$("#modal-task").on("submit", ".update-cancel-task-form", saveForm);
+
+//pause task
+$(".task-ctions").on("click", ".update-task-pause", loadForm);
+$("#modal-task").on("submit", ".update-pause-task-form", saveForm);
+
+//assign to task
+$(".task-ctions").on("click", ".update-task-assignto", loadForm);
+$("#modal-task").on("submit", ".update-assignto-task-form", saveForm);
+</script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.2/chosen.jquery.js"></script>
+  <script>
+
+     $(".chosen").data("placeholder","Select Frameworks...").chosen();
+     $(".chosen").chosen({no_results_text: "Oops, nothing found!"});
+      $('.chosen').chosen({allow_single_deselect: true,no_results_text: "Ã™â€žÃ˜Â§ Ã™Å Ã™Ë†Ã˜Â¬Ã˜Â¯ Ã™â€ Ã˜ÂªÃ˜Â§Ã˜Â¦Ã˜Â¬!"});
+
+
+
+
+</script>
+
+
+  <script>
+  $('#single_cal_1').daterangepicker({
+      singleDatePicker: true,
+      singleClasses: "picker_1",
+       locale: {
+            format: 'YYYY-MM-DD'
+        },
+  }, function(start, end, label) {
+
+  });
+
+  $('#single_cal_2,#single_cal_3').daterangepicker({
+      autoUpdateInput: true,
+      singleDatePicker: true,
+      singleClasses: "picker_1",
+      locale: {
+            format: 'YYYY-MM-DD',
+            language: 'ar-EG',
+        },
+  }, function(start, end, label) {
+
+  });
+//Code adapted from http://djangosnippets.org/snippets/1389/
+function updateElementIndex(el, prefix, ndx) {
+   var id_regex = new RegExp('(' + prefix + '-\\d+-)');
+   var replacement = prefix + '-' + ndx + '-';
+   if ($(el).attr("for")) $(el).attr("for", $(el).attr("for").replace(id_regex,
+   replacement));
+   if (el.id) el.id = el.id.replace(id_regex, replacement);
+   if (el.name) el.name = el.name.replace(id_regex, replacement);
+}
+
+function deleteForm(btn, prefix) {
+   var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+   if (formCount > 1) {
+       // Delete the item/form
+       $(btn).parents('.item').remove();
+       var forms = $('.item'); // Get all the forms
+       // Update the total number of forms (1 less than before)
+       $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
+       var i = 0;
+       // Go through the forms and set their indices, names and IDs
+       for (formCount = forms.length; i < formCount; i++) {
+           $(forms.get(i)).children().children().each(function () {
+               if ($(this).attr('type') == 'text') updateElementIndex(this, prefix, i);
+           });
+       }
+   } // End if
+   else {
+       alert("You have to enter at least one todo item!");
+   }
+   return false;
+}
+
+function addForm(btn, prefix) {
+   var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+   // You can only submit a maximum of 10 todo items
+   if (formCount < 10) {
+       // Clone a form (without event handlers) from the first form
+       var row = $(".item:first").clone(false).get(0);
+       // Insert it after the last form
+       $(row).removeAttr('id').hide().insertAfter(".item:last").slideDown(300);
+
+       // Remove the bits we don't want in the new row/form
+       // e.g. error messages
+       $(".errorlist", row).remove();
+       $(row).children().removeClass("error");
+
+       // Relabel or rename all the relevant bits
+       $(row).children().children().each(function () {
+           updateElementIndex(this, prefix, formCount);
+           $(this).val("");
+       });
+
+       // Add an event handler for the delete item/form link
+       $(row).find(".delete").click(function () {
+           return deleteForm(this, prefix);
+       });
+       // Update the total form count
+       $("#id_" + prefix + "-TOTAL_FORMS").val(formCount + 1);
+   } // End if
+   else {
+       alert("Sorry, you can only enter a maximum of ten items.");
+   }
+   return false;
+}
+//Register the click event handlers
+$("#add").click(function () {
+   return addForm(this, "form");
+});
+
+$(".delete").click(function () {
+   return deleteForm(this, "form");
+});
+
+
+function updateElementIndex(el, prefix, ndx) {
+    var id_regex = new RegExp('(' + prefix + '-\\d+)');
+    var replacement = prefix + '-' + ndx;
+    if ($(el).attr("for")) $(el).attr("for", $(el).attr("for").replace(id_regex, replacement));
+    if (el.id) el.id = el.id.replace(id_regex, replacement);
+    if (el.name) el.name = el.name.replace(id_regex, replacement);
+}
+function cloneMore(selector, prefix) {
+    var newElement = $(selector).clone(true);
+    var total = $('#id_' + prefix + '-TOTAL_FORMS').val();
+    newElement.find(':input').each(function() {
+        var name = $(this).attr('name').replace('-' + (total-1) + '-', '-' + total + '-');
+        var id = 'id_' + name;
+        $(this).attr({'name': name, 'id': id}).val('').removeAttr('checked');
+    });
+    total++;
+    $('#id_' + prefix + '-TOTAL_FORMS').val(total);
+    $(selector).after(newElement);
+    var conditionRow = $('.form-row:not(:last)');
+    conditionRow.find('.btn.add-form-row')
+    .removeClass('btn-success').addClass('btn-danger')
+    .removeClass('add-form-row').addClass('remove-form-row')
+    .html('<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>');
+    return false;
+}
+function deleteForm(prefix, btn) {
+    var total = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+    if (total > 1){
+        btn.closest('.form-row').remove();
+        var forms = $('.form-row');
+        $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
+        for (var i=0, formCount=forms.length; i<formCount; i++) {
+            $(forms.get(i)).find(':input').each(function() {
+                updateElementIndex(this, prefix, i);
+            });
+        }
+    }
+    return false;
+}
+
+  </script>
+
+
+  <link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.css" rel="stylesheet">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.js"></script>
+ <script>
+    $(document).ready(function() {
+        $('#summernote').summernote({
+        	 dialogsInBody: true,
+        	  toolbar: [
+        		    // [groupName, [list of button]]
+        		    ['style', ['bold', 'italic', 'underline', 'clear']],
+        		    ['font', ['strikethrough', 'superscript', 'subscript']],
+        		    ['fontsize', ['fontsize']],
+        		    ['color', ['color']],
+        		    ['para', ['ul', 'ol', 'paragraph']],
+        		    ['height', ['height']]
+        		  ]
+        	
+        });
+    });
+    </script>
+{% endblock javascripts %}

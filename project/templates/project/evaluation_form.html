@@ -1,0 +1,371 @@
+{% extends "project/base_site.html" %}
+{% load i18n %}
+{% block title %} {% trans "Projects" %} {% endblock title %}
+{% block stylesheets %}
+{{ block.super }}
+
+{% endblock stylesheets %}
+{% block content %}
+{% get_current_language as LANGUAGE_CODE %}
+
+<style>
+ table.jambo_table tbody tr:hover td {
+  background: none ;
+    border-top: none;
+    border-bottom: none;
+ }
+ ul.stats-overview {
+   border-bottom: none;
+ }
+</style>
+ <div class="right_col" role="main">
+    <div class="">
+      <div class="clearfix"></div>
+      <div class="row">
+ 
+        <div class="clearfix"></div>
+
+      <div class="clearfix"></div>
+
+        <div class="col-md-12 col-sm-12 col-xs-12">
+          <div class="x_panel">
+            <div class="x_title">
+          
+              <h2 class="text-danger">نموذج تقويم الاداء الوظيفى لشاغلى الوظائف التنفيذية(إدارية)</h2>
+              <ul class="nav navbar-right panel_toolbox">
+    
+              </ul>
+              <div class="clearfix"></div>
+            </div>
+
+            <div class="x_content">
+
+     
+    <form action="" method="post" id="myForm" class="form-horizontal form-label-left input_mask" novalidate enctype="multipart/form-data">
+     {% csrf_token %}      
+  <!--  basic info  -->
+  <fieldset class="fieldset_normal">
+    <legend>  <h2>  <i class="fa fa-clock-o"></i>  الأول : معلومات عامة</h2></legend>
+    <div class="table-responsive">
+     
+      
+      <table id="datatable-responsive" class="table  table-bordered jambo_table ">
+          <thead>
+            <tr class="headings">
+             <th class="column-title">الجهاز</th>
+              <th class="column-title"> الإدارة</th>
+               <th class="column-title">المنطقة </th>
+              <th class="column-title">المدينة </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="odd">
+              <td>الهيئة العامة للإحصاء </td>
+              <td> {{ emp.deptname}}</td>
+              <td> </td>
+              <td class=" "></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="table-responsive">
+          <table id="datatable-responsive" class="table jambo_table  table-bordered">
+            <thead>
+              <tr class="headings">
+               <th class="column-title"> الاسم رباعيا</th>
+                <th class="column-title">مسمى الوظيفة </th>
+                 <th class="column-title">المرتبة </th>
+                <th class="column-title">الرقم </th>
+                <th class="column-title">تاريخ شغلها </th>
+                <th class="column-title">بداية الخدمة </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="odd">
+                <td> {{ emp.name}}</td>
+                <td > {{ emp.jobTitle}}</td>
+                <td > {{ emp.jobGrad}}</td>
+                <td > {{ emp.jobNo}}</td>
+                <td > {{ emp.orgStartDate}}</td>
+                <td > {{ emp.gvrmntStartDate}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+     
+
+                </fieldset>
+
+<!-- evaluation form-->
+                <fieldset class="fieldset_normal">
+                    <legend><h2> <i class="fa fa-clock-o"></i> الثانى : عناصر التقويم </h2></legend>
+                
+                           <div class="table-responsive">
+          <table id="datatable-responsive" class="table jambo_table  table-bordered">
+            <thead>
+              <tr class="headings">
+               <th class="column-title"> # </th>
+               <th> الفئة</th>
+                <th class="column-title">العنصر</th>
+                <th class="column-title">الحد الأعلى للدرجات </th>
+                <th class="column-title">الدرجة المعطاة </th>
+   
+              </tr>
+            </thead>
+            <tbody>
+            {% for evItem in evItems %}
+              <tr class="odd">
+                <td> 
+        {{ forloop.counter }}
+                </td>
+                <td> 
+                  {% if emp.cat == "a" %}
+                أ
+                {% elif emp.cat == "b"  %}
+               ب
+                {% endif %}
+                </td>
+                <td> {{evItem.title}}</td>
+                <td> 
+                {% if emp.cat == "a" %}
+                {{ evItem.max_degree_a }}
+                {% elif emp.cat == "b"  %}
+                {{ evItem.max_degree_b }}
+                {% endif %}
+                  </td>
+                <td> {{ form.q_1.errors }}  {{form.q_1}} </td>
+            
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+                          
+                          
+                
+                                </fieldset>
+
+                                <!-- evaluation total rating-->
+                <fieldset class="fieldset_normal">
+                    <legend>  <h2>  <i class="fa fa-clock-o"></i>  الثالث : مجموع الدرجات والتقدير </h2></legend>
+                
+                    <div class="table-responsive">
+                        <table id="datatable-responsive" class="table  table-bordered jambo_table ">
+                          <thead>
+                            <tr class="headings">
+                             <th class="column-title">درجات الاداء الوظيفى</th>
+                              <th class="column-title"> درجات الصفات الشخصية</th>
+                               <th class="column-title">درجات العلاقات </th>
+                              <th class="column-title">المجموع الكلى(الدرجة النهائية) </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr class="odd">
+                              <td> </td>
+                              <td></td>
+                              <td> </td>
+                              <td class=" "></td>
+                            </tr>
+                          </tbody>
+                        </table>
+
+                        <table id="datatable-responsive" class="table  table-bordered jambo_table ">
+                            <thead>
+                              <tr class="headings">
+                               <th class="column-title">ممتاز<br>(100-90)</th>
+                               <th class="column-title">جيد جدا<br>(89-80)</th>
+                               <th class="column-title">جيد<br>(79-70)</th>
+                               <th class="column-title">مرضى<br>(69-60)</th>
+                               <th class="column-title">غير مرضى<br>(أقل من60)</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr class="odd">
+                                <td> </td>
+                                <td> </td>
+                                <td> </td>
+                                <td></td>
+                                <td></td>
+                              </tr>
+                            </tbody>
+                          </table>
+                      </div>
+                
+                                </fieldset>
+
+
+                                                   <!-- general notes-->
+                <fieldset class="fieldset_normal">
+                    <legend>  <h2>  <i class="fa fa-clock-o"></i> الرابع : ملحوظات عامة </h2></legend>
+                
+                             <div class="table-responsive">
+                                <table id="datatable-responsive" class="table  table-bordered jambo_table ">
+                                    <thead>
+                                      <tr class="headings">
+                                       <th class="column-title">مواطن القوة :(إنجازات او نشاطات أخرى يتميز بها ولم تشتمل عليها العناصر السابقة)</th>
+                                  
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr class="odd">
+                                        <td> </td>
+                              
+                                      </tr>
+                                    </tbody>
+                                  </table>
+
+                        <table id="datatable-responsive" class="table  table-bordered jambo_table ">
+                            <thead>
+                              <tr class="headings">
+                               <th class="column-title">مواطن الضعف :(جوانب سلبيه يتصف بها وتؤثر على عمله دون أن يكون هناك تكرار للعناصر السابقة)</th>
+                          
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr class="odd">
+                                <td> </td>
+                      
+                              </tr>
+                            </tbody>
+                          </table>
+
+                          <table id="datatable-responsive" class="table  table-bordered jambo_table ">
+                              <thead>
+                                <tr class="headings">
+                                 <th class="column-title">التوجيهات والتوصيات العامة لتطوير قدراته:(إن وجدت)</th>
+                            
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr class="odd">
+                                  <td> </td>
+                        
+                                </tr>
+                              </tbody>
+                            </table>
+
+                            <table id="datatable-responsive" class="table  table-bordered jambo_table ">
+                                <thead>
+                                  <tr class="headings">
+                                   <th class="column-title">رأى معد التقرير</th>
+                              
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr >
+                                    <td> form </td>
+                          
+                                  </tr>
+                                  <tr >
+                                      <td>  
+                                       
+                                          <div class="form-group">
+                                              <label class="col-md-3 col-sm-3 col-xs-12 control-label"> الأسم
+                                                <br>
+                                                <small class="text-navy">{# {{ request.session.EmpName }} #}</small>
+                                              </label>
+                                              <label class="col-md-3 col-sm-3 col-xs-12 control-label">الوظيفة
+                                                  <br>
+                                                  <small class="text-navy">{# {{ request.session.JobTitle }} #}</small>
+                                                </label>
+                      
+                                                <label class="col-md-3 col-sm-3 col-xs-12 control-label">التوقيع
+                                                    <br>
+                                                    <small class="text-navy"></small>
+                                                  </label>
+                      
+                                                  <label class="col-md-3 col-sm-3 col-xs-12 control-label">التاريخ
+                                                      <br>
+                                                      <small class="text-navy"></small>
+                                                    </label>
+                            
+                      
+                                           
+                                            </div>
+                                      </td>
+                            
+                                    </tr>
+                                </tbody>
+                              </table>
+
+                              <table id="datatable-responsive" class="table  table-bordered jambo_table ">
+                                  <thead>
+                                    <tr class="headings">
+                                     <th class="column-title">ملحوظات معتمد التقرير</th>
+                                
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr >
+                                      <td> form </td>
+                            
+                                    </tr>
+                                    <tr >
+                                        <td>  
+                                         
+                                            <div class="form-group">
+                                                <label class="col-md-3 col-sm-3 col-xs-12 control-label"> الأسم
+                                                  <br>
+                                                  <small class="text-navy">{# {{ request.session.EmpName }} #}</small>
+                                                </label>
+                                                <label class="col-md-3 col-sm-3 col-xs-12 control-label">الوظيفة
+                                                    <br>
+                                                    <small class="text-navy">{#{{ request.session.JobTitle }} #}</small>
+                                                  </label>
+                        
+                                                  <label class="col-md-3 col-sm-3 col-xs-12 control-label">التوقيع
+                                                      <br>
+                                                      <small class="text-navy"></small>
+                                                    </label>
+                        
+                                                    <label class="col-md-3 col-sm-3 col-xs-12 control-label">التاريخ
+                                                        <br>
+                                                        <small class="text-navy"></small>
+                                                      </label>
+                              
+                        
+                                             
+                                              </div>
+                                        </td>
+                              
+                                      </tr>
+                                  </tbody>
+                                </table>
+                      </div>
+                      <i class="fa fa-info-circle"></i>  <span class="text-danger">  فترة هذا التقرير من   / / /14هـ   الى   / / / 14 هـ</span>
+                    
+                                </fieldset>
+                           
+                          
+                                <div class="form-group">
+                                    <div class="col-md-9 col-sm-9 col-xs-12 col-md-offset-3">
+                                      <button type="button" class="btn btn-md btn-primary"><i class="fa fa-undo"></i> إلغاء</button>
+                           <button class="btn  btn-md btn-primary" type="reset"><i class="fa fa-save"></i> حفظ</button>
+                                      <button type="submit" class="btn   btn-md btn-success"><i class="fa fa-send-o"></i> حفظ وإرسال</button>
+                                    </div>
+                                  </div>
+                                  
+                                     </form>
+                                  
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+{% block javascripts %}
+
+{{ block.super }}
+<script>
+$(document).ready(function(){
+// $(".navbar-right li a").click(function() {
+//   console.log("good ")
+//   $(this).parent().addClass('active').siblings().removeClass('active');
+//
+//   });
+});
+  </script>
+{% endblock javascripts %}

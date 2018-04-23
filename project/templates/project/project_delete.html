@@ -1,0 +1,122 @@
+{% extends "project/base_site.html" %}
+{% load i18n %}
+{% block title %} Plain Page {% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+{% endblock stylesheets %}
+
+{% block content %}
+{% get_current_language as LANGUAGE_CODE %}
+    <div class="right_col" role="main">
+      <div class="">
+        <div class="page-title">
+          <div class="title_left">
+
+          </div>
+   
+          
+         
+        </div>
+
+   
+
+        <div class="row">
+          <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+              <h2><i class="fa fa-warning text-danger"></i> {{ _('delete project confirmation') }}</h2>
+             
+                
+                <ul class="nav navbar-right panel_toolbox">
+                  <a href="{{request.META.HTTP_REFERER}}" >  <button type="button" class="btn btn-primary">{{ _('Back')}} <i class="fa fa-angle-double-left"></i> </button></a>
+             
+                </ul>
+                <div class="clearfix"></div>
+              </div>
+              <div class="x_content">
+              
+              <div class="col-md-12 col-sm-12 col-xs-12">
+
+                      <section class="panel">
+
+                        
+                        <div class="panel-body">
+                        
+                        
+ <fieldset class="fieldset_normal">
+        <legend>  <h2> <i class="fa fa-folder-open"></i>  {{ _('Project Details') }} </h2></legend>
+                        
+                          <h3 class="green"> {{p.name}}</h3>
+
+                          <p>{{p.desc}}</p>
+                          <br>
+
+                          <div class="project_detail">
+
+                            <p class="title">{{_('Created By')}}</p>
+                            <p>{{p.createdby.empname}}</p>
+                             <p class="title">{{_('Departement')}}</p>
+                            <p>{{p.departement.deptname}}</p>
+                            <p class="title">{{_('Created Date')}}</p>
+                            <p>{{p.createddate}}</p>
+                            <p class="title">{{ _('Status')}}</p>
+                            <p>
+                             {% if LANGUAGE_CODE == 'ar' %}
+                      {{ p.status.name_ar  }}
+                      {% else %}
+                      {{ p.status.name  }}
+                      {% endif %}
+                             </p>
+                          </div>
+</fieldset>
+                          
+ <fieldset class="fieldset_normal">
+        <legend>  <h2>  {{_('Attachments')}} </h2></legend>
+                                    <ul class="list-unstyled project_files">
+                        {% for attach in attached_files%}
+                        <li>
+                       <i class="fa fa-paperclip"></i>   <a href="{{MEDIA_URL}}{{attach.filepath}}" style="text-decoration: underline;"> <span style="margin-left:5px;">{{attach.filename}} </span> {{attach.filepath}} </a>
+                        {# name, ext = os.path.splitext('file.txt')  #}
+                        {%endfor%}
+                     
+                    
+                          </ul> 
+                          </fieldset>
+                         
+                    
+                         
+
+               
+                        </div>
+
+                      </section>
+           <div class="text-center mtop20">
+                            <form  action="" method="post" class="form-horizontal form-label-left input_mask" >
+                 {% csrf_token %}
+                 {% if  request.META.HTTP_REFERER ==  request.build_absolute_uri or request.META.HTTP_REFERER == None   %}
+                 <a href="{% url 'ns-project:project-list' %}" >  <button type="button" class="btn btn-primary"><i class="fa fa-angle-double-right"></i> {{ _('Back')}}</button></a>
+                {%else%}
+                 <a href="{{request.META.HTTP_REFERER}}" >  <button type="button" class="btn btn-primary"><i class="fa fa-angle-double-right"></i> {{ _('Back')}}</button></a>
+
+               {% endif %}
+                   <button type="submit" class="btn btn-danger"><i class="fa fa-trash-o"></i>  {{_('Delete')}}</button>
+                 
+
+               </form>
+                          </div>
+                    </div>
+              
+              
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+  {{ block.super }}
+{% endblock javascripts %}
+

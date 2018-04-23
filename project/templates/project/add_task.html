@@ -1,0 +1,334 @@
+{% extends "project/base_site.html" %}
+{% load staticfiles%}
+{% load i18n %}
+{% load widget_tweaks %}
+{% block title %} {% trans "sheets list" %} {% endblock title %}
+{% block stylesheets %}
+{{ block.super }}
+<style>
+#id_assigntype li {list-style: none; display: inline; padding-left:  37px;
+}
+.fileUpload {
+    position: relative;
+    overflow: hidden;
+    margin: 10px;
+}
+.fileUpload input.upload {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0;
+    filter: alpha(opacity=0);
+}
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.2/chosen.css" />
+{% endblock stylesheets %}
+{% block content %}
+<div class="right_col" role="main">
+   <div class="">
+  
+      <!-- top menu bar -->
+{% include "project/project_nave.html" %}
+
+
+
+         
+      
+      <div class="clearfix"></div>
+      <div class="row">
+         <div class="col-md-12">
+            <div class="x_panel">
+               <div class="x_title">
+                  <h2>{% trans "Add Task" %}</h2>
+                  <ul class="nav navbar-right panel_toolbox">
+                                    <a href="{{request.META.HTTP_REFERER}}" >  <button type="button" class="btn btn-primary">{{ _('Back')}} <i class="fa fa-angle-double-left"></i> </button></a>
+                  
+                  </ul>
+                  <div class="clearfix"></div>
+               </div>
+               <div class="x_content">
+                  <!-- #to stop html validation put novalidate in form tag -->
+                  <div class="col-md-8 col-sm-12   col-xs-12" >
+                     <form action="" method="post" id="myForm" class="form-horizontal form-label-left input_mask" novalidate enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group">
+                           <div class=" col-md-12">
+                              {{form.name.label_tag}}
+                              {{form.name}}
+                           </div>
+                        </div>
+                        <div class="form-group">
+                           <div class=" col-md-12">
+                              {{form.desc.label_tag}}
+                              {{form.desc}}
+                           </div>
+                        </div>
+                        <!--  attachmenet -->
+                         {{ upload_file.management_form }}
+                         <fieldset>
+                            <legend> {% trans "Attached files " %}</legend>
+                         {% for form in upload_file%}
+                         <div class="item form-group">
+                           <div class="col-md-6">
+                           {{form.id}}
+                           {{form.filename.label_tag}}
+                          {{ form.filename|add_class:"form-control"}}
+                        </div>
+                          <div class="col-md-5">
+                          {{form.filepath.label_tag}}
+                         {{ form.filepath|add_class:"upload"}}
+                       </div>
+                           {# <span class="input-group-btn"><button class="delete btn btn-danger remove-form-row"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></button></span> #}
+                         </div>
+
+                        {% endfor%}
+                        <div class="col-md-12">
+                        <span id="add" class="input-group-btn"><button class="btn btn-success add-form-row"><span class="glyphicon glyphicon-plus" aria-hidden="true" style="margin-left:5px;"></span>{{_('add new file')}}</button></span>
+</div>
+                        </fieldset>
+
+                        <div class="form-group">
+                           <div class=" col-md-6">
+                              {{form.startdate.label_tag}}
+                              {{form.startdate}}
+                             <span class="fa fa-calendar-o form-control-feedback left" style="margin-top:25px;" aria-hidden="true"></span>
+                              
+                           </div>
+                           <div class=" col-md-6">
+                              {{form.enddate.label_tag}}
+                              {{form.enddate}}
+                            <span class="fa fa-calendar-o form-control-feedback left" style="margin-top:25px;" aria-hidden="true"></span>
+                              
+                           </div>
+                        </div>
+                        <div class="form-group">
+                     <div class=" col-md-12">
+                            {{form.assigntype.label_tag}}
+                            {{form.assigntype}}
+                          </div>
+                      </div>
+                        <div class="form-group">
+                           <div class="col-md-6">
+                              {{form.employee}}
+                           </div>
+                           <div class="col-md-6">
+                              {{form.department_list}}
+                           </div>
+                        </div>
+                        <div class="form-group text-danger ">
+                           <div class="col-md-3"></div>
+                           <div class="col-md-9 col-sm-12 col-xs-12">
+                                  {{ form.name.errors }}
+                                  {{ form.desc.errors }}
+                                  {{ form.assigntype.errors }}
+                                  {{ form.employee.errors }}
+                                  {{ form.department_list.errors }}
+                                  {{ form.startdate.errors }}
+                                  {{ form.enddate.errors }}
+
+                           </div>
+                        </div>
+                        <div class="form-group">
+                           <div class="ln_solid"></div>
+                           <div class="col-md-12 col-sm-12 col-xs-12 col-md-offset-3">
+                              <a href="{{request.META.HTTP_REFERER}}" >  <button type="button" class="btn btn-primary"><i class="fa fa-angle-double-right"></i> {{ _('Back')}}</button></a>
+                              <!--  <button class="btn btn-primary" type="reset">{{_('Reset')}}</button>-->
+                              <button type="submit" class="btn btn-success">{{_('Submit')}}</button>
+                           </div>
+                        </div>
+
+                     </form>
+
+
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+{% endblock content %}
+{% block javascripts %}
+{{ block.super }}
+
+
+{# PHOTOS PAGE SCRIPTS #}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.2/chosen.jquery.js"></script>
+<script>
+   $('#single_cal_1').daterangepicker({
+       singleDatePicker: true,
+       singleClasses: "picker_1",
+        locale: {
+             format: 'YYYY-MM-DD'
+         },
+   }, function(start, end, label) {
+
+   });
+
+   $('#single_cal_2').daterangepicker({
+       autoUpdateInput: true,
+       singleDatePicker: true,
+       singleClasses: "picker_1",
+       locale: {
+             format: 'YYYY-MM-DD',
+             language: 'ar-EG',
+         },
+   }, function(start, end, label) {
+});
+   //choosen list
+$(document).ready(function(){
+  $(".chosen").data("placeholder","Select Frameworks...").chosen();
+  $(".chosen").chosen({no_results_text: "Oops, nothing found!"});
+  $('.chosen').chosen({allow_single_deselect: true,no_results_text: "Ù„Ø§ ÙŠÙˆØ¬Ø¯ Ù†ØªØ§Ø¦Ø¬!"});
+
+  // disable /enable droplis
+  
+  $('#id_assigntype_0').change(function(){
+	   $('#id_employee').prop("disabled", false).trigger("chosen:updated");
+  $('#id_department_list').prop("disabled", true).trigger("chosen:updated");
+	});
+  
+  $('#id_assigntype_1').change(function(){
+  $('#id_employee').prop("disabled", true).trigger("chosen:updated");
+  $('#id_department_list').prop("disabled", false).trigger("chosen:updated");
+  	});
+  
+// Code adapted from http://djangosnippets.org/snippets/1389/
+function updateElementIndex(el, prefix, ndx) {
+    var id_regex = new RegExp('(' + prefix + '-\\d+-)');
+    var replacement = prefix + '-' + ndx + '-';
+    if ($(el).attr("for")) $(el).attr("for", $(el).attr("for").replace(id_regex,
+    replacement));
+    if (el.id) el.id = el.id.replace(id_regex, replacement);
+    if (el.name) el.name = el.name.replace(id_regex, replacement);
+}
+
+function deleteForm(btn, prefix) {
+    var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+    if (formCount > 1) {
+        // Delete the item/form
+        $(btn).parents('.item').remove();
+        var forms = $('.item'); // Get all the forms
+        // Update the total number of forms (1 less than before)
+        $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
+        var i = 0;
+        // Go through the forms and set their indices, names and IDs
+        for (formCount = forms.length; i < formCount; i++) {
+            $(forms.get(i)).children().children().each(function () {
+                if ($(this).attr('type') == 'text') updateElementIndex(this, prefix, i);
+            });
+        }
+    } // End if
+    else {
+        alert("You have to enter at least one todo item!");
+    }
+    return false;
+}
+
+function addForm(btn, prefix) {
+    var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+    // You can only submit a maximum of 10 todo items
+    if (formCount < 10) {
+        // Clone a form (without event handlers) from the first form
+        var row = $(".item:first").clone(false).get(0);
+        // Insert it after the last form
+        $(row).removeAttr('id').hide().insertAfter(".item:last").slideDown(300);
+
+        // Remove the bits we don't want in the new row/form
+        // e.g. error messages
+        $(".errorlist", row).remove();
+        $(row).children().removeClass("error");
+
+        // Relabel or rename all the relevant bits
+        $(row).children().children().each(function () {
+            updateElementIndex(this, prefix, formCount);
+            $(this).val("");
+        });
+
+        // Add an event handler for the delete item/form link
+        $(row).find(".delete").click(function () {
+            return deleteForm(this, prefix);
+        });
+        // Update the total form count
+        $("#id_" + prefix + "-TOTAL_FORMS").val(formCount + 1);
+    } // End if
+    else {
+        alert("Sorry, you can only enter a maximum of ten items.");
+    }
+    return false;
+}
+// Register the click event handlers
+$("#add").click(function () {
+    return addForm(this, "form");
+});
+
+$(".delete").click(function () {
+    return deleteForm(this, "form");
+});
+});
+
+ function updateElementIndex(el, prefix, ndx) {
+     var id_regex = new RegExp('(' + prefix + '-\\d+)');
+     var replacement = prefix + '-' + ndx;
+     if ($(el).attr("for")) $(el).attr("for", $(el).attr("for").replace(id_regex, replacement));
+     if (el.id) el.id = el.id.replace(id_regex, replacement);
+     if (el.name) el.name = el.name.replace(id_regex, replacement);
+ }
+ function cloneMore(selector, prefix) {
+     var newElement = $(selector).clone(true);
+     var total = $('#id_' + prefix + '-TOTAL_FORMS').val();
+     newElement.find(':input').each(function() {
+         var name = $(this).attr('name').replace('-' + (total-1) + '-', '-' + total + '-');
+         var id = 'id_' + name;
+         $(this).attr({'name': name, 'id': id}).val('').removeAttr('checked');
+     });
+     total++;
+     $('#id_' + prefix + '-TOTAL_FORMS').val(total);
+     $(selector).after(newElement);
+     var conditionRow = $('.form-row:not(:last)');
+     conditionRow.find('.btn.add-form-row')
+     .removeClass('btn-success').addClass('btn-danger')
+     .removeClass('add-form-row').addClass('remove-form-row')
+     .html('<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>');
+     return false;
+ }
+ function deleteForm(prefix, btn) {
+     var total = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+     if (total > 1){
+         btn.closest('.form-row').remove();
+         var forms = $('.form-row');
+         $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
+         for (var i=0, formCount=forms.length; i<formCount; i++) {
+             $(forms.get(i)).find(':input').each(function() {
+                 updateElementIndex(this, prefix, i);
+             });
+         }
+     }
+     return false;
+ }
+
+</script>
+  <link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.css" rel="stylesheet">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.js"></script>
+ <script>
+    $(document).ready(function() {
+        $('#summernote').summernote({
+        	  toolbar: [
+        		    // [groupName, [list of button]]
+        		    ['style', ['bold', 'italic', 'underline', 'clear']],
+        		    ['font', ['strikethrough', 'superscript', 'subscript']],
+        		    ['fontsize', ['fontsize']],
+        		    ['color', ['color']],
+        		    ['para', ['ul', 'ol', 'paragraph']],
+        		    ['height', ['height']]
+        		  ]
+        	
+        });
+    });
+    </script>
+{% endblock javascripts %}

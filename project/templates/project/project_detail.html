@@ -1,0 +1,249 @@
+{% extends "project/base_site.html" %}
+{% load i18n %}
+{% block title %} {% trans "Project Details" %} {% endblock title %}
+
+{% block sidebar_class %}menu_fixed{% endblock sidebar_class %}
+
+{% block stylesheets %}
+  {{ block.super }}
+
+  <style>
+ /* .scrollable-menu {
+    height: auto;
+    max-height: 200px;
+    overflow-x: hidden;
+    */
+}
+  </style>
+{% endblock stylesheets %}
+
+{% block content %}
+  <div class="right_col" role="main">
+    <div class="">
+
+   <!-- top menu bar -->
+{% include "project/project_nave.html" %}
+
+      <div class="clearfix"></div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="x_panel">
+            <div class="x_title">
+
+              <h2> <b>{{project_detail.name}} </b> </h2>
+              {% load user_group %}
+
+                 {% if  project_detail.createdby.empid == request.session.EmpID  %}
+                 <a href="{% url 'ns-project:project-delete' project_detail.id %}" style="float:left" >  <button type="button" class="btn btn-danger btn-md"> <i class="fa fa-trash-o"></i>  {% trans "Delete" %}</button></a>
+                {% endif %}
+                {% if  project_detail.createdby.empid == request.session.EmpID  or project_detail.delegationto.empid == request.session.EmpID %}
+                 <a href="{% url 'ns-project:project-edit'  project_detail.id %}" style="float:left" >  <button type="button" class="btn btn-info btn-md"> <i class="fa fa-pencil"></i>  {% trans "Edit" %}</button></a>
+                 {% endif %}
+
+                 <div class="clearfix"></div>
+            </div>
+
+            <div class="x_content">
+
+              <div class="col-md-8 col-sm-8 col-xs-12" style="overflow:hidden;">
+
+                <ul class="stats-overview">
+                  <li style="width:22%;">
+                    <span class="name"> {% trans "Duration" %} </span>
+
+                    <span class="value text-success" > {{ project_detail.start|timesince:project_detail.end }} </span>
+                  </li>
+                  <li class="hidden-phone" style="width:25%;">
+                    <span class="name"> {% trans "Remaining Time" %} </span>
+                     {% now "Ymd" as current_date  %}
+                    <span class="value text-success"> {{  project_detail.end|timeuntil }} </span>
+                  </li>
+                   <li class="hidden-phone" style="width:25%;">
+                    <span class="name">{% trans "Number of tasks" %} </span>
+                    <span class="value text-success"> {{ tasks_list|length}}</span>
+                  </li>
+                  <li class="hidden-phone" style="width:20%;">
+                    <span class="name">{% trans "Completion Rate" %} </span>
+                    <span class="value text-success">% {{ projectProgress}}</span>
+                  </li>
+
+                </ul>
+
+                <br />
+                <div id="chart_div"></div>
+               
+                <div>
+
+
+
+  <section class="panel">
+
+                  <div class="x_title">
+                    <h2> {{ _('Project Description')}} </h2>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="panel-body">
+                    <h3 class="green"><i class="fa fa-folder-open"></i> {{project_detail.name}} </h3>
+
+                    <p>{{project_detail.desc}} </p>
+                    <br />
+
+                  
+                    <h5>  <b>{% trans "Attachments" %}</b></h5>
+                    <ul class="list-unstyled project_files">
+                       {% for attach in attached_files%}
+                        <li>
+                        {% if attach.filepath  %}
+                        <i class="fa fa-paperclip"></i> <a href="{% url 'ns-project:download' attach.filepath %}" style="text-decoration: underline;"> 
+                        <span style="margin-left:5px;">{{attach.filename}} </span> {{attach.filepath}} </a>
+                        {% endif %}
+                        {# name, ext = os.path.splitext('file.txt')  #}
+                        {%endfor%}
+                    </ul>
+                    <br />
+
+                  </div>
+                </section>
+                
+ 
+         
+                  <!-- user messages -->
+                  <ul class="messages"></ul>
+                  <!-- end of user messages -->
+
+                </div>
+              </div>
+
+              <!-- start project-detail sidebar -->
+              <div class="col-md-4 col-sm-4 col-xs-12">
+
+    <!--  basic info  -->
+     <fieldset class="fieldset_normal">
+        <legend>  <h2>  <i class="fa fa-clock-o"></i>  {{ _('Basic Info') }} </h2></legend>
+
+                  <div class="dashboard-widget-content">
+
+           <div class="project_detail">
+
+                      <p class="title">{{ _('Created By')}} </p>
+                      <p> {{ project_detail.createdby.empname }} </p>
+
+ 						<p class="title">{{ _('Departement')}} </p>
+                       <p> {{ project_detail.departement.deptname }} </p>
+                      
+                   <p class="title">{{ _('Created Date') }} </p>
+                   <p >{{project_detail.createddate}}</p>
+
+                        <p class="title">{{ _('Start Date') }} </p>
+                   <p >{{project_detail.start}}</p>
+
+
+                        <p class="title">{{ _('End Date') }} </p>
+                   <p >{{project_detail.end}}</p>
+
+                          <p class="title">{{ _('Status') }} </p>
+                   <p >{{project_detail.status.name_ar}}</p>
+                 
+                   {% if project_detail.delegationto is not None and project_detail.departement.deptcode|slugify   != "1110" %}
+                  
+                        <p class="title">{{ _('Delegation to') }} </p>
+                   <p >{{project_detail.delegationto.empname}}</p>
+                   {%endif%}
+                    </div>
+
+                    <br />
+                  </div>
+               
+         
+         </fieldset>
+          
+          <!--  history -->                        
+ <fieldset class="fieldset_normal">
+        <legend>  <h2>  <i class="fa fa-clock-o"></i>  {{ _('Recent Activity') }} </h2></legend>
+
+                  <div class="dashboard-widget-content">
+
+                    <ul class="list-unstyled timeline widget">
+
+     
+            {% for h in history%}
+                      <li>
+                        <div class="block">
+                          <div class="block_content">
+                            <h2 class="title">
+                               <a style="font-size:12px;">{{h.history_change_reason|safe}}</a>
+                               </h2>
+                            <div class="byline">
+                              <span>{{h.lasteditdate }}</span> by <a>{{h.lasteditby.empname }}</a>
+                            </div>
+                            <p class="excerpt" style="word-break: break-all;">{{h.name|safe}} 
+                            </p>
+                          </div>
+                        </div>
+                      </li>
+        {% endfor %}
+                      
+                    </ul>
+                  </div>
+               
+         
+         </fieldset>
+         
+
+              </div>
+              <!-- end project-detail sidebar -->
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+
+{% block javascripts %}
+
+  {{ block.super }}
+
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+  <script>
+
+
+  google.charts.load('current', {packages: ['corechart', 'line']});
+  google.charts.setOnLoadCallback(drawBasic);
+
+  function drawBasic() {
+
+        var data = new google.visualization.DataTable();
+        data.addColumn('date', 'X');
+        data.addColumn('number', '{{_('Total tasks')}}');
+
+        data.addRows([
+          {% for k, v in time_chart.items %}
+          [new Date({{ k }}), {{ v }}]{% if not forloop.last %},{% endif %}
+        {% endfor %}
+        ]);
+
+        var options = {
+           height: 300,
+           hAxis: {
+
+            format: 'MMM dd, yyyy',
+            gridlines: {count: 8},
+            title: 'Time'
+          },
+          vAxis: {
+            title: '{% trans "Tasks Count" %}'
+          }
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+
+        chart.draw(data, options);
+      }
+
+  </script>
+  <!-- ECharts -->
+  <script src="/static/vendors/echarts/dist/echarts.min.js"></script>
+{% endblock javascripts %}

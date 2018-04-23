@@ -1,0 +1,105 @@
+  {% load i18n %}
+  {% load mathfilters %}
+  <div class="panel panel-default">
+  <div class="panel-heading">{% trans "Assignation" %}</div>
+  <div class="panel-body">
+    <!--  chart -->
+       <div class="col-md-6 col-sm-12 col-xs-12" > 
+       <div id="piechart-assigned" ></div>
+       </div>
+        <!--  table -->
+       <div class="col-md-6 col-sm-12 col-xs-12"> 
+       
+        
+       
+        
+        <table class="table table-bordered table-striped jambo_table">
+                      <thead>
+                        <tr>
+                          <th>{% trans "Account" %}</th>
+                          <th style="width: 20%">{% trans "Tasks Count" %}</th>
+                          <th style="width: 20%">%</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                    
+                      {% for object in list.assignedto %}
+                        <tr>
+                          <td>{{object.assignedto__empname}}</td>
+                          <td>{{object.num_assign}}</td>
+                          <td>
+                            
+                          {{object.num_assign|div:list.all|mul:100|floatformat:"0"}}
+                         
+                          </td>
+                        </tr>
+                     {% endfor%}
+                     
+                     
+                     
+                      </tbody>
+                    </table>
+        
+             <table class="table table-bordered table-striped jambo_table">
+                      <thead>
+                        <tr>
+                          <th>{% trans "Departement" %}</th>
+                          <th style="width: 20%">{% trans "Tasks Count" %}</th>
+                          <th style="width: 20%">%</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+         {% for object in list.assignto_dept %}
+                   
+                        <tr>
+                          <td>{{object.departement__deptname}}</td>
+                          <td>{{object.num_assign}}</td>
+                          <td> 
+                          {% if list.all != 0%} 
+                          {{object.num_assign|div:list.all|mul:100|floatformat:"0"}}
+                           {%endif%} 
+                          </td>
+                        </tr>
+                     {% endfor%}
+                     
+                     {% if list.notasigned  %}
+                     <tr>
+                          <td>{% trans "not assigned" %}</td>
+                          <td>{{list.notasigned }}</td>
+                          <td> 
+                          {% if list.all != 0%} 
+                           {{list.notasigned |div:list.all|mul:100|floatformat:"0"}}
+                            {%endif%} 
+                           </td>
+                        </tr>
+                     {%endif%} 
+                     
+        
+          </tbody>
+                    </table>
+        </div>
+        </div>
+        <!-- google chart -->
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+
+        var data = google.visualization.arrayToDataTable([
+          ['Task', 'Hours per Day'],
+          {% for object in list.assignto_dept %}
+           ['{{object.departement__deptname}}',     {{object.num_assign|div:list.all|mul:100|floatformat:"0"}}],
+           {% endfor%}
+           ['{{_("not assigned")}}',      {% if list.all != 0%} {{list.notasigned |div:list.all|mul:100|floatformat:"0"}} {%endif%}],
+        ]);
+
+        var options = {
+          title: ''
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart-assigned'));
+
+        chart.draw(data, options);
+      }
+      </script>

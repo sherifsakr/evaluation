@@ -1,0 +1,120 @@
+{% extends "project/base_site.html" %}
+{% load i18n %}
+{% block title %} {% trans "Projects" %} {% endblock title %}
+
+{% block stylesheets %}
+{{ block.super }}
+{% endblock stylesheets %}
+
+{% block content %}
+  <div class="right_col" role="main">
+    <div class="">
+   <!-- top menu bar -->
+   {% include "project/project_nave.html" %}
+
+      <div class="clearfix"></div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="x_panel">
+              <div class="x_title">
+                <h2>{% trans "Team members" %} </h2>
+                      <ul class="nav navbar-right panel_toolbox">
+                  <a href="{{request.META.HTTP_REFERER}}" >  <button type="button" class="btn btn-primary">{{ _('Back')}} <i class="fa fa-angle-double-left"></i> </button></a>
+             
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+              {% for message in messages %}
+                <div style="font-size: 16px;" class="alert {{ message.tags }} alert-dismissible" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                  {{ message }}
+                </div>
+              {% endfor %}
+              
+              
+              {% for member in members  %}
+             {#  {{ member}} #}
+              
+              {%endfor%}
+              <!-- start project list -->
+              <table class="table table-striped projects">
+                <thead>
+                  <tr>
+                    <th style="width: 1%">#</th>
+                    <th>{% trans "Employee Name" %}</th>
+                    <th>{% trans "Department" %}</th>
+                    <th>{% trans "Job title" %}</th>
+                    <th>{% trans "Total tasks" %}</th>
+                    <th>{% trans "New" %}</th>
+                    <th>{% trans "Inprogress" %}</th>
+                    <th>{% trans "Done" %}</th>
+                    <th>{% trans "Hold" %}</th>
+                    <th>{% trans "Closed" %}</th>
+                    <th>{% trans "Cancelled" %}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for member in members %}
+                  <tr>
+                    <td>#</td>
+                    <td>
+                     {%  if member.assignedto__empname %}
+                      {{member.assignedto__empname}} 
+                      {%  else  %}
+                      {% trans '----' %}
+                      {% endif %}
+                    </td>
+                    <td>
+                      {%  if member.assignedto__deptname %}
+                      {{member.assignedto__deptname}} 
+                      {%  elif member.departement__deptname %}
+                      {{ member.departement__deptname }}
+                      {% endif %}
+               
+                     
+                     </td>
+                    <td>
+                      {{member.assignedto__jobtitle}}
+                    </td>
+                    <td class="project_progress">
+                      {{member.totaltask}}
+                    </td>
+                    <td>
+                        {{member.new}}
+                    </td>
+                    <td>
+                        {{member.inProgress}}
+                    </td>
+                    <td>
+                        {{member.done}}
+                    </td>
+                     <td>
+                        {{member.hold}}
+                    </td>
+                    <td>
+                        {{member.closed}}
+                    </td>
+                    <td>
+                        {{member.cancelled}}
+                    </td>
+                    </tr>
+                  {% endfor %}
+
+          </tbody>
+              </table>
+              <!-- end project list -->
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+
+{% block javascripts %}
+  {{ block.super }}
+{% endblock javascripts %}

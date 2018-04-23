@@ -1,0 +1,101 @@
+{% extends "project/base_site.html" %}
+{% load i18n %}
+{% block title %} {% trans "Projects" %} {% endblock title %}
+
+{% block stylesheets %}
+{{ block.super }}
+{% endblock stylesheets %}
+
+{% block content %}
+  <div class="right_col" role="main">
+    <div class="">
+      <div class="page-title">
+        <div class="title_left">
+          <h3>{% trans "Tasks List Department" %} </h3>
+{% for emp in AllSheets %}
+  {{ emp.empname }}
+{% endfor %}
+
+        </div>
+        <div class="title_right">
+          <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
+            <div class="input-group">
+              <input type="text" class="form-control" placeholder="{{_('Search for')}}...">
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="button">{% trans "Go"  %}!</button>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="clearfix"></div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="x_panel">
+              <div class="x_title">
+              <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                </li>
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">Settings 1</a>
+                    </li>
+                    <li><a href="#">Settings 2</a>
+                    </li>
+                  </ul>
+                </li>
+                <li><a class="close-link"><i class="fa fa-close"></i></a>
+                </li>
+              </ul>
+              <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+              <!-- start project list -->
+              {% for message in messages %}
+                <div style="font-size: 20px;" class="alert {{ message.tags }} alert-dismissible" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                  {{ message }}
+                </div>
+              {% endfor %}
+              <form method="POST">
+              {% csrf_token %}
+              {{ form.management_form }}
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>{{ _('Task Descreption') }}</th>
+                    <th>{{ _('Task type') }}</th>
+                    <th>{{ _('Duration') }}</th>
+                   <th>{{ _('Task Date') }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for form in form %}
+                  <tr>
+                    {{ form.id}}
+                    <td>{{ form.empname }}</td>
+                    <td>{{ form.empid }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+
+              <button type="submit" name="_submit" class="btn btn-success">{{ _('Submit') }}</button>
+            </form>
+
+              <!-- end project list -->
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+
+{% block javascripts %}
+  {{ block.super }}
+{% endblock javascripts %}
