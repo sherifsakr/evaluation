@@ -98,7 +98,7 @@
                 </fieldset>
 
 <!-- evaluation form-->
-                <fieldset class="fieldset_normal">
+                <fieldset class="fieldset_normal col-md-6  col-sm-12 " >
                     <legend><h2> <i class="fa fa-clock-o"></i> الثانى : عناصر التقويم </h2></legend>
                 
                            <div class="table-responsive">
@@ -207,25 +207,25 @@
                                 </fieldset>
 
                                 <!-- evaluation total rating-->
-                <fieldset class="fieldset_normal">
-                    <legend>  <h2>  <i class="fa fa-clock-o"></i>  الثالث : مجموع الدرجات والتقدير </h2></legend>
+                <fieldset class="fieldset_normal " >
+                    <legend>  <h2>  <i class="fa fa-clock-o"></i>الثالث : مجموع الدرجات والتقدير </h2></legend>
                 
                     <div class="table-responsive">
                         <table id="datatable-responsive" class="table  table-bordered jambo_table ">
                           <thead>
                             <tr class="headings">
-                             <th class="column-title">درجات الاداء الوظيفى</th>
-                              <th class="column-title"> درجات الصفات الشخصية</th>
-                               <th class="column-title">درجات العلاقات </th>
-                              <th class="column-title">المجموع الكلى(الدرجة النهائية) </th>
+                             <th class="column-title" >درجات الاداء الوظيفى </th>
+                             <th class="column-title" > درجات الصفات الشخصية </th>
+                             <th class="column-title" > درجات العلاقات </th>
+                             <th class="column-title" >المجموع الكلى(الدرجة النهائية)  </th>
                             </tr>
                           </thead>
                           <tbody>
                             <tr class="odd">
-                              <td> </td>
-                              <td></td>
-                              <td> </td>
-                              <td class=" "></td>
+                              <td ng-model='group1'> {{ q3  }} {{ q4  }}</td>
+                              <td ng-model='group2'> </td>
+                              <td ng-model='group3'> </td>
+                              <td ng-model='total'>  </td>
                             </tr>
                           </tbody>
                         </table>
@@ -242,11 +242,11 @@
                             </thead>
                             <tbody>
                               <tr class="odd">
-                                <td> </td>
-                                <td> </td>
-                                <td> </td>
-                                <td></td>
-                                <td></td>
+                                <td ng-model='excellent'> </td>
+                                <td ng-model='verygood'> </td>
+                                <td ng-model='good'> </td>
+                                <td ng-model='fair'> </td>
+                                <td ng-model='unsatisfied'> </td>
                               </tr>
                             </tbody>
                           </table>
@@ -256,7 +256,7 @@
 
 
                                                    <!-- general notes-->
-                <fieldset class="fieldset_normal">
+                <fieldset class="fieldset_normal ">
                     <legend>  <h2>  <i class="fa fa-clock-o"></i> الرابع : ملحوظات عامة </h2></legend>
                 
                              <div class="table-responsive">
@@ -401,17 +401,19 @@
                                   </tbody>
                                 </table>
                       </div>
-                       {{form.employeeid}} 
+                       {{form.employeeid}}
+
                       <i class="fa fa-info-circle"></i>  <span class="text-danger">  فترة هذا التقرير من   / / /14هـ   الى   / / / 14 هـ</span>
                     
                                 </fieldset>
                            
                           
-                                <div class="form-group">
-                                    <div class="col-md-9 col-sm-9 col-xs-12 col-md-offset-3">
-                                      <a   class="btn btn-md btn-primary" href="{% url 'ns-project:employee-list' %}"><i class="fa fa-undo"></i> إلغاء</a>
-                           <button class="btn  btn-md btn-primary" type="submit" id="save_only"><i class="fa fa-save"></i> حفظ</button>
-                                      <button type="submit" class="btn   btn-md btn-success" id="save_send"><i class="fa fa-send-o"></i> حفظ وإرسال</button>
+                            <div class="form-group">
+                           <div class="col-md-9 col-sm-9 col-xs-12 col-md-offset-3">
+                           <a   class="btn btn-md btn-primary" href="{% url 'ns-project:employee-list' %}"><i class="fa fa-undo"></i> إلغاء</a>
+                           <button class="btn  btn-md btn-primary" type="submit" id="save_only" name="save_only"><i class="fa fa-save"></i> حفظ</button>
+                           
+                           <button type="submit" class="btn   btn-md btn-success" id="save_send" name="save_send" ><i class="fa fa-send-o"></i> حفظ وإرسال</button>
                                     </div>
                                   </div>
                                   

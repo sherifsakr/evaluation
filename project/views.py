@@ -206,6 +206,8 @@ def EvaluationPage(request,empid):
         emp['cat']="b"
         
     if request.method == 'POST':
+        employee= Employee.objects.get(Q(managercode__exact=request.session['EmpID']) & Q(empid__exact = request.POST['employeeid']))
+
         form = EvaluationForm(request.POST)
         if emp['cat'] == "a":
               form.fields["q16"].required = False
@@ -217,6 +219,45 @@ def EvaluationPage(request,empid):
             evObject= form.save(commit=False) 
             evObject.submit_by = request.session['EmpID']
             evObject.submit_date = datetime.now()
+            evObject.managerid = employee.managercode
+            evObject.authorityid = employee.managercode
+            if 'save_only' in request.POST:
+                evObject.status="Preparation"
+            if 'save_send' in request.POST:
+                evObject.status="InProgress"
+            #count degree
+            #group1
+            evObject.total_group1 = 0
+            for x in range(1, 18):
+                q = str ("q" )+ str(x)
+                v = request.POST.get(q, 0)
+                evObject.total_group1 += int(v)
+            #group2    
+            evObject.total_group2 = 0
+            for x in range(18, 23):
+                q = str ("q" )+ str(x)
+                v = request.POST.get(q, 0)
+                evObject.total_group2 += int(v)
+            #group3       
+            evObject.total_group3 = 0
+            for x in range(23, 26):
+                q = str ("q" )+ str(x)
+                v = request.POST.get(q, 0)
+                evObject.total_group3 += int(v)
+            #total 
+            evObject.total = evObject.total_group1+evObject.total_group2+evObject.total_group3
+            #grad
+            if 90 <= evObject.total <= 100:  
+                evObject.is_excellent = 1
+            elif 80 <= evObject.total <= 90:  
+                evObject.is_vergood = 1
+            elif 70 <= evObject.total <= 79:  
+                evObject.is_good = 1  
+            elif 69 <= evObject.total <= 60:  
+                evObject.is_fair = 1 
+            elif  evObject.total < 60:  
+                evObject.is_unacceptable = 1         
+                    
             evObject.save()
             
             messages.success(request, _("evaluation has been saved successfully for")+" "+emp['name'])

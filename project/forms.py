@@ -227,7 +227,7 @@ class EvaluationForm(ModelForm):
         model = Evaluation
         fields = ['strength_point','weaknesses',
                   'recommendations','director_notes',
-                  'authority_notes','employeeid','managerid','authorityid','status',
+                  'authority_notes','employeeid',
                   'q1', 'q2', 'q3', 'q4', 'q5','q6', 'q7', 'q8', 'q9', 'q10',
                   'q11', 'q12', 'q13', 'q14', 'q15','q16', 'q17',
                   'q18', 'q19', 'q20', 'q21', 'q22','q23', 'q24','q25',
@@ -248,5 +248,11 @@ class EvaluationForm(ModelForm):
              'recommendations': Textarea(attrs={'class':'form-control','placeholder':_('recommendations'),'rows':'3','required': False}),
              'director_notes': Textarea(attrs={'class':'form-control','placeholder':_('director_notes'),'rows':'3','required': False}),
              'authority_notes': Textarea(attrs={'class':'form-control','placeholder':_('authority_notes'),'rows':'3','required': False}),
-             'employeeid':forms.HiddenInput()
+             'employeeid':forms.HiddenInput(),
+             
+            'q1': forms.NumberInput(attrs={'ng-model':'q1', 'class': 'form-control','placeholder':_(''),'required': True, }),
+            'q2': forms.NumberInput(attrs={'ng-model':'q2', 'class': 'form-control','placeholder':_(''),'required': True, }),
+            'q3': forms.NumberInput(attrs={'ng-model':'q3', 'class': 'form-control','placeholder':_(''),'required': True, }),
+            'q4': forms.NumberInput(attrs={'ng-model':'q4', 'class': 'form-control','placeholder':_(''),'required': True, }),
+
         }

@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="ar-EG">
+<html lang="ar-EG" ng-app="">
   <head>
   {% load i18n %}
     {% block head %}
@@ -20,7 +20,6 @@
          url('/static/fonts/neo/NeoSansArabic.woff') format('woff'),
          url('/static/fonts/neo/NeoSansArabic.ttf') format('truetype'),
          url('/static/fonts/neo/NeoSansArabic.svg#ge_neofont') format('svg'); font-style: normal; }
-
         </style>
         <link href="/static/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
       <link href="/static/vendors/bootstrap/dist/css/bootstrap-rtl.min.css" rel="stylesheet">
@@ -35,9 +34,11 @@
       <link href="/static/build/css/custom_rtl.css" rel="stylesheet">
       {% endblock stylesheets %}
   
+    <script src=""project/static/build/js/angular.min.js"></script>
+    
     {% endblock head %}
   </head>
-<body class="{% block body_class %}nav-md {% endblock body_class %}">
+<body class="{% block body_class %}nav-md {% endblock body_class %}"  >
 
     {% block body %}
 
@@ -80,8 +81,7 @@
         <script src="/static/vendors/jquery/dist/jquery-ui.js"></script>
         <!-- Bootstrap -->
         <script src="/static/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
-        <!-- FastClick -->
-        <script src="/static/vendors/fastclick/lib/fastclick.js"></script>
+
         <!-- NProgress -->
         <script src="/static/vendors/nprogress/nprogress.js"></script>
         <!-- bootstrap-progressbar -->

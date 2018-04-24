@@ -28,6 +28,7 @@ class Employee(models.Model):
     managercode = models.BigIntegerField(db_column='ManagerCode', blank=True, null=True)  # Field name made lowercase.
     sexcode = models.CharField(db_column='SexCode', max_length=6, blank=True, null=True)  # Field name made lowercase.
     iscontract = models.IntegerField(db_column='IsContract', blank=True, null=True)  # Field name made lowercase.
+    submission = models.ForeignKey('Evaluation',db_column='submission',to_field='id',related_name='Employee_Evaluation_id',on_delete=models.SET_NULL, blank=True, null=True)
 
 
     class Meta:
@@ -174,7 +175,7 @@ class Evaluation(models.Model):
     STATUS = (
         ('', _('Choice action')),
         ('New', _('New')),
-        ('preparation', _('preparation')),
+        ('Preparation', _('preparation')),
         ('InProgress', _('InProgress')),
         ('Done', _('Done')),
         ('Cancelled', _('Cancelled'))
@@ -189,7 +190,7 @@ class Evaluation(models.Model):
     authority_notes = models.CharField(max_length=400, blank=True, null=True)
     employeeid = models.ForeignKey('Employee',db_column='employeeid',to_field='empid',related_name='Employee_Evaluation_employeeid',on_delete=models.SET_NULL, blank=True, null=True)    
     managerid = models.IntegerField(db_column='managerId')  
-    authorityid = models.IntegerField(db_column='authorId')  
+    authorityid = models.IntegerField(db_column='authorityid')  
     submit_by = models.IntegerField()
     submit_date = models.DateTimeField()
     last_update_by = models.IntegerField(blank=True, null=True)
