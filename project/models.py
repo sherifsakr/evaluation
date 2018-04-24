@@ -153,7 +153,7 @@ class EvaluationItem(models.Model):
     is_class_a = models.IntegerField(blank=True, null=True)
     is_class_b = models.IntegerField()
     degree = models.IntegerField()
-
+    field_col = models.CharField(max_length=10,blank=True, null=True)
     class Meta:
         managed = True
         db_table = 'evaluation_item'
@@ -161,12 +161,80 @@ class EvaluationItem(models.Model):
         
 class EvaluationResult(models.Model):
     id = models.IntegerField(primary_key=True)
-    q_1 = models.IntegerField(blank=True, null=True)
+    q1 = models.IntegerField(blank=True, null=True)
+    q2 = models.IntegerField(blank=True, null=True)
+    q3 = models.IntegerField(blank=True, null=True)
 
     class Meta:
         managed = False
         db_table = 'evaluation_result'
                
+
+class Evaluation(models.Model):
+    STATUS = (
+        ('', _('Choice action')),
+        ('New', _('New')),
+        ('preparation', _('preparation')),
+        ('InProgress', _('InProgress')),
+        ('Done', _('Done')),
+        ('Cancelled', _('Cancelled'))
+    )
+     
+    status = models.CharField(db_column='Status',max_length=10,choices=STATUS, blank=False, null=False)  
+    
+    strength_point = models.CharField(max_length=300, blank=True, null=True)
+    weaknesses = models.CharField(max_length=400, blank=True, null=True)
+    recommendations = models.CharField(max_length=400, blank=True, null=True)
+    director_notes = models.CharField(max_length=400, blank=True, null=True)
+    authority_notes = models.CharField(max_length=400, blank=True, null=True)
+    employeeid = models.ForeignKey('Employee',db_column='employeeid',to_field='empid',related_name='Employee_Evaluation_employeeid',on_delete=models.SET_NULL, blank=True, null=True)    
+    managerid = models.IntegerField(db_column='managerId')  
+    authorityid = models.IntegerField(db_column='authorId')  
+    submit_by = models.IntegerField()
+    submit_date = models.DateTimeField()
+    last_update_by = models.IntegerField(blank=True, null=True)
+    last_update_date = models.DateTimeField(blank=True, null=True)
+    q1 = models.IntegerField(blank=True, null=True)
+    q2 = models.IntegerField(blank=True, null=True)
+    q3 = models.IntegerField()
+    q4 = models.IntegerField()
+    q5 = models.IntegerField()
+    q6 = models.IntegerField()
+    q7 = models.IntegerField()
+    q8 = models.IntegerField()
+    q9 = models.IntegerField()
+    q10 = models.IntegerField()
+    q11 = models.IntegerField()
+    q12 = models.IntegerField()
+    q13 = models.IntegerField()
+    q14 = models.IntegerField()
+    q15 = models.IntegerField()
+    q16 = models.IntegerField(blank=True, null=True)
+    q17 = models.IntegerField(blank=True, null=True)
+    q18 = models.IntegerField()
+    q19 = models.IntegerField()
+    q20 = models.IntegerField()
+    q21 = models.IntegerField()
+    q22 = models.IntegerField()
+    q23 = models.IntegerField()
+    q24 = models.IntegerField()
+    q25 = models.IntegerField()
+    total_group1 = models.IntegerField(blank=True, null=True)
+    total_group2 = models.IntegerField(blank=True, null=True)
+    total_group3 = models.IntegerField(blank=True, null=True)
+    total = models.IntegerField(blank=True, null=True)
+    is_excellent = models.IntegerField(blank=True, null=True)
+    is_vergood = models.IntegerField(blank=True, null=True)
+    is_good = models.IntegerField(blank=True, null=True)
+    is_fair = models.IntegerField(blank=True, null=True)
+    is_unacceptable = models.IntegerField(blank=True, null=True)
+    
+    class Meta:
+        managed = False
+        db_table = 'evaluation'
+
+
+
 
 class AuthUser(models.Model):
     password = models.CharField(max_length=128)

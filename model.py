@@ -35,7 +35,7 @@ class ApIpCurrJobDataView(models.Model):
     emp_name = models.CharField(db_column='EMP_NAME', max_length=42, blank=True, null=True)  # Field name made lowercase.
     gvrmnt_start_date = models.CharField(db_column='GVRMNT_START_DATE', max_length=10, blank=True, null=True)  # Field name made lowercase.
     org_start_date = models.CharField(db_column='ORG_START_DATE', max_length=10, blank=True, null=True)  # Field name made lowercase.
-    office_phone = models.CharField(db_column='OFFICE_PHONE', max_length=7, blank=True, null=True)  # Field name made lowercase.
+    office_phone = models.CharField(db_column='OFFICE_PHONE', max_length=20, blank=True, null=True)  # Field name made lowercase.
     mobile = models.CharField(db_column='MOBILE', max_length=20, blank=True, null=True)  # Field name made lowercase.
     email = models.CharField(db_column='EMAIL', max_length=50, blank=True, null=True)  # Field name made lowercase.
     qual_code = models.IntegerField(db_column='QUAL_CODE', blank=True, null=True)  # Field name made lowercase.
@@ -62,7 +62,7 @@ class ApIpCurrJobDataView(models.Model):
     birth_date = models.CharField(db_column='BIRTH_DATE', max_length=10, blank=True, null=True)  # Field name made lowercase.
     birth_place = models.CharField(db_column='BIRTH_PLACE', max_length=22, blank=True, null=True)  # Field name made lowercase.
     nationality = models.IntegerField(db_column='NATIONALITY', blank=True, null=True)  # Field name made lowercase.
-    nat_descreption = models.CharField(db_column='NAT_DESCREPTION', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    nat_descreption = models.CharField(db_column='NAT_DESCREPTION', max_length=50, blank=True, null=True)  # Field name made lowercase.
     current_dept_code = models.IntegerField(db_column='CURRENT_DEPT_CODE', blank=True, null=True)  # Field name made lowercase.
     dept_name = models.CharField(db_column='DEPT_NAME', max_length=100, blank=True, null=True)  # Field name made lowercase.
     working_dept_code = models.CharField(db_column='WORKING_DEPT_CODE', max_length=4, blank=True, null=True)  # Field name made lowercase.
@@ -70,6 +70,7 @@ class ApIpCurrJobDataView(models.Model):
     authority_id = models.CharField(db_column='AUTHORITY_ID', max_length=10, blank=True, null=True)  # Field name made lowercase.
     work_dept_name = models.CharField(db_column='WORK_DEPT_NAME', max_length=100, blank=True, null=True)  # Field name made lowercase.
     emp_type = models.IntegerField(db_column='EMP_TYPE')  # Field name made lowercase.
+    manager_level = models.CharField(max_length=45, blank=True, null=True)
 
     class Meta:
         managed = False
@@ -162,26 +163,6 @@ class AuthUserUserPermissions(models.Model):
         unique_together = (('user_id', 'permission_id'),)
 
 
-class Contractor(models.Model):
-    id = models.CharField(db_column='Id', max_length=45, blank=True, null=True)  # Field name made lowercase.
-    empid = models.CharField(db_column='EmpId', max_length=45, blank=True, null=True)  # Field name made lowercase.
-    empname = models.CharField(db_column='EmpName', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    deptcode = models.CharField(db_column='DeptCode', max_length=45, blank=True, null=True)  # Field name made lowercase.
-    deptname = models.CharField(db_column='DeptName', max_length=200, blank=True, null=True)  # Field name made lowercase.
-    ismanager = models.IntegerField(db_column='IsManager')  # Field name made lowercase.
-    ext = models.IntegerField(db_column='Ext', blank=True, null=True)  # Field name made lowercase.
-    mobile = models.CharField(db_column='Mobile', max_length=45, blank=True, null=True)  # Field name made lowercase.
-    email = models.CharField(db_column='Email', max_length=100, blank=True, null=True)  # Field name made lowercase.
-    sexcode = models.IntegerField(db_column='SexCode', blank=True, null=True)  # Field name made lowercase.
-    jobtitle = models.CharField(db_column='JobTitle', max_length=200, blank=True, null=True)  # Field name made lowercase.
-    managercode = models.CharField(db_column='ManagerCode', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    iscontract = models.IntegerField(db_column='IsContract', blank=True, null=True)  # Field name made lowercase.
-
-    class Meta:
-        managed = False
-        db_table = 'contractor'
-
-
 class Delegation(models.Model):
     managerid = models.CharField(db_column='ManagerId', max_length=50, blank=True, null=True)  # Field name made lowercase.
     deptcode = models.CharField(db_column='DeptCode', max_length=10, blank=True, null=True)  # Field name made lowercase.
@@ -201,10 +182,23 @@ class Department(models.Model):
     deptname = models.CharField(db_column='DeptName', max_length=200, blank=True, null=True)  # Field name made lowercase.
     managerid = models.CharField(db_column='ManagerId', max_length=45, blank=True, null=True)  # Field name made lowercase.
     deptcode = models.IntegerField(db_column='DeptCode', blank=True, null=True)  # Field name made lowercase.
+    managername = models.CharField(db_column='ManagerName', max_length=100, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = False
         db_table = 'department'
+
+
+class DepartmentUpdate(models.Model):
+    id = models.AutoField(db_column='Id', primary_key=True)  # Field name made lowercase.
+    deptname = models.CharField(db_column='DeptName', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    managerid = models.CharField(db_column='ManagerId', max_length=45, blank=True, null=True)  # Field name made lowercase.
+    deptcode = models.IntegerField(db_column='DeptCode', blank=True, null=True)  # Field name made lowercase.
+    managername = models.CharField(db_column='ManagerName', max_length=100, blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'department_update'
 
 
 class DjangoAdminLog(models.Model):
@@ -271,16 +265,101 @@ class Employee(models.Model):
         db_table = 'employee'
 
 
-class Media(models.Model):
+class EmployeeNew(models.Model):
     id = models.AutoField(db_column='Id', primary_key=True)  # Field name made lowercase.
-    projectid = models.IntegerField(blank=True, null=True)
-    taskid = models.IntegerField(blank=True, null=True)
-    filename = models.CharField(max_length=100, blank=True, null=True)
-    filepath = models.CharField(max_length=100, blank=True, null=True)
+    empid = models.CharField(db_column='EmpId', max_length=50, blank=True, null=True)  # Field name made lowercase.
+    empname = models.CharField(db_column='EmpName', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    deptcode = models.CharField(db_column='DeptCode', max_length=45, blank=True, null=True)  # Field name made lowercase.
+    deptname = models.CharField(db_column='DeptName', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    ismanager = models.IntegerField(db_column='IsManager', blank=True, null=True)  # Field name made lowercase.
+    ext = models.CharField(db_column='Ext', max_length=45, blank=True, null=True)  # Field name made lowercase.
+    mobile = models.CharField(db_column='Mobile', max_length=45, blank=True, null=True)  # Field name made lowercase.
+    email = models.CharField(db_column='Email', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    sexcode = models.CharField(db_column='SexCode', max_length=1, blank=True, null=True)  # Field name made lowercase.
+    jobtitle = models.CharField(db_column='JobTitle', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    managercode = models.BigIntegerField(db_column='ManagerCode', blank=True, null=True)  # Field name made lowercase.
+    iscontract = models.IntegerField(db_column='IsContract', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = False
-        db_table = 'media'
+        db_table = 'employee_new'
+
+
+class Evaluation(models.Model):
+    strength_point = models.CharField(max_length=300, blank=True, null=True)
+    weaknesses = models.CharField(max_length=400, blank=True, null=True)
+    recommendations = models.CharField(max_length=400, blank=True, null=True)
+    director_notes = models.CharField(max_length=400, blank=True, null=True)
+    authority_notes = models.CharField(max_length=400, blank=True, null=True)
+    employeeid = models.IntegerField(db_column='employeeId')  # Field name made lowercase.
+    managerid = models.IntegerField(db_column='managerId')  # Field name made lowercase.
+    authorid = models.IntegerField(db_column='authorId')  # Field name made lowercase.
+    submit_by = models.IntegerField()
+    submit_date = models.DateTimeField()
+    last_update_by = models.IntegerField(blank=True, null=True)
+    last_update_date = models.DateTimeField(blank=True, null=True)
+    q1 = models.IntegerField(blank=True, null=True)
+    q2 = models.IntegerField(blank=True, null=True)
+    q3 = models.IntegerField()
+    q4 = models.IntegerField()
+    q5 = models.IntegerField()
+    q6 = models.IntegerField()
+    q7 = models.IntegerField()
+    q8 = models.IntegerField()
+    q9 = models.IntegerField()
+    q10 = models.IntegerField()
+    q11 = models.IntegerField()
+    q12 = models.IntegerField()
+    q13 = models.IntegerField()
+    q14 = models.IntegerField()
+    q15 = models.IntegerField()
+    q16 = models.IntegerField(blank=True, null=True)
+    q17 = models.IntegerField(blank=True, null=True)
+    q18 = models.IntegerField()
+    q19 = models.IntegerField()
+    q20 = models.IntegerField()
+    q21 = models.IntegerField()
+    q22 = models.IntegerField()
+    q23 = models.IntegerField()
+    q24 = models.IntegerField()
+    q25 = models.IntegerField()
+    total_group1 = models.IntegerField(blank=True, null=True)
+    total_group2 = models.IntegerField(blank=True, null=True)
+    total_group3 = models.IntegerField(blank=True, null=True)
+    total_group4 = models.IntegerField(blank=True, null=True)
+    is_excellent = models.IntegerField(blank=True, null=True)
+    is_vergood = models.IntegerField(blank=True, null=True)
+    is_good = models.IntegerField(blank=True, null=True)
+    is_fair = models.IntegerField(blank=True, null=True)
+    is_unacceptable = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'evaluation'
+
+
+class EvaluationItem(models.Model):
+    field_col = models.CharField(max_length=10, blank=True, null=True)
+    evaluation_fom_id = models.IntegerField(blank=True, null=True)
+    evaluation_group_id = models.CharField(max_length=45, blank=True, null=True)
+    title = models.CharField(max_length=200, blank=True, null=True)
+    max_degree_a = models.IntegerField(blank=True, null=True)
+    max_degree_b = models.IntegerField(blank=True, null=True)
+    is_class_a = models.IntegerField(blank=True, null=True)
+    is_class_b = models.IntegerField()
+    degree = models.IntegerField()
+
+    class Meta:
+        managed = False
+        db_table = 'evaluation_item'
+
+
+class EvaluationResult(models.Model):
+    q_1 = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'evaluation_result'
 
 
 class Member(models.Model):
@@ -314,10 +393,29 @@ class Project(models.Model):
     deleted = models.IntegerField(db_column='Deleted', blank=True, null=True)  # Field name made lowercase.
     lasteditby = models.CharField(db_column='LastEditBy', max_length=20, blank=True, null=True)  # Field name made lowercase.
     delegationto = models.CharField(db_column='DelegationTo', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    delegationdate = models.DateTimeField(db_column='DelegationDate', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = False
         db_table = 'project'
+
+
+class ProjectEmployee1(models.Model):
+    id = models.IntegerField(db_column='Id', primary_key=True)  # Field name made lowercase.
+    empid = models.CharField(db_column='EmpId', unique=True, max_length=45, blank=True, null=True)  # Field name made lowercase.
+    empname = models.CharField(db_column='EmpName', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    deptcode = models.CharField(db_column='DeptCode', max_length=45, blank=True, null=True)  # Field name made lowercase.
+    deptname = models.CharField(db_column='DeptName', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    ismanager = models.IntegerField(db_column='IsManager', blank=True, null=True)  # Field name made lowercase.
+    ext = models.CharField(db_column='Ext', max_length=45, blank=True, null=True)  # Field name made lowercase.
+    mobile = models.CharField(db_column='Mobile', max_length=45, blank=True, null=True)  # Field name made lowercase.
+    email = models.CharField(db_column='Email', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    jobtitle = models.CharField(db_column='JobTitle', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    managercode = models.BigIntegerField(db_column='ManagerCode', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'project_employee1'
 
 
 class ProjectHistoricaltask(models.Model):
@@ -325,7 +423,7 @@ class ProjectHistoricaltask(models.Model):
     assignedto_id = models.IntegerField(db_column='AssignedTo_id', blank=True, null=True)  # Field name made lowercase.
     project_id = models.IntegerField(db_column='Project_id', blank=True, null=True)  # Field name made lowercase.
     projectid = models.IntegerField(db_column='ProjectId')  # Field name made lowercase.
-    name = models.CharField(db_column='Name', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    name = models.CharField(db_column='Name', max_length=200, blank=True, null=True)  # Field name made lowercase.
     desc = models.CharField(db_column='Desc', max_length=2500, blank=True, null=True)  # Field name made lowercase.
     startdate = models.DateTimeField(db_column='StartDate', blank=True, null=True)  # Field name made lowercase.
     enddate = models.DateTimeField(db_column='EndDate', blank=True, null=True)  # Field name made lowercase.
@@ -353,6 +451,7 @@ class ProjectHistoricaltask(models.Model):
     history_change_reason = models.CharField(max_length=360, blank=True, null=True)
     history_type = models.CharField(max_length=1)
     history_user_id = models.IntegerField(blank=True, null=True)
+    cancellreson = models.CharField(db_column='CancellReson', max_length=500, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -371,37 +470,10 @@ class ProjectStatus(models.Model):
         db_table = 'project_status'
 
 
-class Sheet(models.Model):
-    id = models.AutoField(db_column='Id', primary_key=True)  # Field name made lowercase.
-    empid = models.BigIntegerField(db_column='EmpId', blank=True, null=True)  # Field name made lowercase.
-    deptcode = models.IntegerField(db_column='DeptCode', blank=True, null=True)  # Field name made lowercase.
-    managercode = models.BigIntegerField(db_column='ManagerCode', blank=True, null=True)  # Field name made lowercase.
-    managerlevel2 = models.BigIntegerField(db_column='ManagerLevel2', blank=True, null=True)  # Field name made lowercase.
-    managerlevel3 = models.BigIntegerField(db_column='ManagerLevel3', blank=True, null=True)  # Field name made lowercase.
-    managerlevel4 = models.BigIntegerField(db_column='ManagerLevel4', blank=True, null=True)  # Field name made lowercase.
-    taskdesc = models.CharField(db_column='TaskDesc', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    tasktype = models.CharField(db_column='TaskType', max_length=45, blank=True, null=True)  # Field name made lowercase.
-    duration = models.IntegerField(db_column='Duration', blank=True, null=True)  # Field name made lowercase.
-    durationhoure = models.IntegerField(db_column='DurationHoure', blank=True, null=True)  # Field name made lowercase.
-    taskdate = models.DateField(db_column='TaskDate', blank=True, null=True)  # Field name made lowercase.
-    createddate = models.DateTimeField(db_column='CreatedDate', blank=True, null=True)  # Field name made lowercase.
-    editedate = models.DateTimeField(db_column='EditeDate', blank=True, null=True)  # Field name made lowercase.
-    ifsubmitted = models.CharField(db_column='IfSubmitted', max_length=1, blank=True, null=True)  # Field name made lowercase.
-    status = models.CharField(db_column='Status', max_length=1, blank=True, null=True)  # Field name made lowercase.
-    statusdate = models.DateTimeField(db_column='StatusDate', blank=True, null=True)  # Field name made lowercase.
-    reason = models.CharField(db_column='Reason', max_length=1, blank=True, null=True)  # Field name made lowercase.
-    submittedby = models.IntegerField(db_column='SubmittedBy', blank=True, null=True)  # Field name made lowercase.
-    submitteddate = models.DateTimeField(db_column='SubmittedDate', blank=True, null=True)  # Field name made lowercase.
-
-    class Meta:
-        managed = False
-        db_table = 'sheet'
-
-
 class Task(models.Model):
     project_id = models.IntegerField(db_column='Project_id', blank=True, null=True)  # Field name made lowercase.
     projectid = models.IntegerField(db_column='ProjectId')  # Field name made lowercase.
-    name = models.CharField(db_column='Name', max_length=100)  # Field name made lowercase.
+    name = models.CharField(db_column='Name', max_length=200)  # Field name made lowercase.
     desc = models.CharField(db_column='Desc', max_length=2500)  # Field name made lowercase.
     status = models.CharField(db_column='Status', max_length=10, blank=True, null=True)  # Field name made lowercase.
     startdate = models.DateTimeField(db_column='StartDate', blank=True, null=True)  # Field name made lowercase.
@@ -417,6 +489,7 @@ class Task(models.Model):
     finisheddate = models.DateTimeField(db_column='FinishedDate', blank=True, null=True)  # Field name made lowercase.
     cancelledby = models.IntegerField(db_column='CancelledBy', blank=True, null=True)  # Field name made lowercase.
     cancelleddate = models.DateTimeField(db_column='CancelledDate', blank=True, null=True)  # Field name made lowercase.
+    cancellreson = models.CharField(db_column='CancellReson', max_length=500, blank=True, null=True)  # Field name made lowercase.
     closedby = models.IntegerField(db_column='ClosedBy', blank=True, null=True)  # Field name made lowercase.
     closeddate = models.DateTimeField(db_column='ClosedDate', blank=True, null=True)  # Field name made lowercase.
     closereson = models.CharField(db_column='CloseReson', max_length=500, blank=True, null=True)  # Field name made lowercase.
@@ -441,11 +514,17 @@ class TaskStatus(models.Model):
         db_table = 'task_status'
 
 
-class Team(models.Model):
-    teamname = models.CharField(db_column='TeamName', max_length=100, blank=True, null=True)  # Field name made lowercase.
-    projectid = models.IntegerField(db_column='ProjectId', blank=True, null=True)  # Field name made lowercase.
-    createddate = models.DateTimeField(db_column='CreatedDate', blank=True, null=True)  # Field name made lowercase.
+class VFollowup(models.Model):
+    id = models.IntegerField(blank=True, null=True)
+    taskname = models.CharField(db_column='taskName', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    status = models.CharField(max_length=10, blank=True, null=True)
+    assignedto = models.IntegerField(db_column='AssignedTo', blank=True, null=True)  # Field name made lowercase.
+    projectid = models.IntegerField(db_column='projectId', blank=True, null=True)  # Field name made lowercase.
+    projectname = models.CharField(db_column='projectName', max_length=250, blank=True, null=True)  # Field name made lowercase.
+    empname = models.CharField(db_column='EmpName', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    deptcode = models.CharField(db_column='DeptCode', max_length=45, blank=True, null=True)  # Field name made lowercase.
+    deptname = models.CharField(db_column='DeptName', max_length=200, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = False
-        db_table = 'team'
+        db_table = 'v_followup'

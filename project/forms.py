@@ -39,7 +39,7 @@ class ProjectForm(ModelForm):
                      empty_label=_("Select Employee"),
                      widget=forms.Select(attrs={'class': 'chosen form-control col-md-3'} ),
                      label=_("Delegation To"),
-                     required=False,help_text="تفويض إدارة المشروع الى موظف آخر",
+                     required=False,help_text="ØªÙ�ÙˆÙŠØ¶ Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„Ù…Ø´Ø±ÙˆØ¹ Ø§Ù„Ù‰ Ù…ÙˆØ¸Ù� Ø¢Ø®Ø±",
                      )
 
     class Meta:
@@ -221,11 +221,32 @@ class EditTaskForm(ModelForm):
             self.add_error('enddate', msg)
 
 
+
 class EvaluationForm(ModelForm):
     class Meta:
-        model = EvaluationResult
-        fields = ['q_1']
+        model = Evaluation
+        fields = ['strength_point','weaknesses',
+                  'recommendations','director_notes',
+                  'authority_notes','employeeid','managerid','authorityid','status',
+                  'q1', 'q2', 'q3', 'q4', 'q5','q6', 'q7', 'q8', 'q9', 'q10',
+                  'q11', 'q12', 'q13', 'q14', 'q15','q16', 'q17',
+                  'q18', 'q19', 'q20', 'q21', 'q22','q23', 'q24','q25',
+                  'total_group1','total_group2','total_group3','total',
+                  'is_excellent','is_vergood','is_good','is_fair','is_unacceptable',
+                  ]
         labels = {
-            'q_1': _('File Name'),
-
+            'strength_point': _('strength point'),
+            'weaknesses': _('weaknesses'),
+            'recommendations': _('recommendations'),
+            'director_notes': _('director notes'),
+            'authority_notes': _('authority notes'),
+            'employeeid': _('employeeid'),
+        }
+        widgets = {
+            'strength_point': Textarea(attrs={'class':'form-control','placeholder':_('strength point'),'rows':'3','required': False}),
+             'weaknesses': Textarea(attrs={'class':'form-control','placeholder':_('weaknesses'),'rows':'3','required': False}),
+             'recommendations': Textarea(attrs={'class':'form-control','placeholder':_('recommendations'),'rows':'3','required': False}),
+             'director_notes': Textarea(attrs={'class':'form-control','placeholder':_('director_notes'),'rows':'3','required': False}),
+             'authority_notes': Textarea(attrs={'class':'form-control','placeholder':_('authority_notes'),'rows':'3','required': False}),
+             'employeeid':forms.HiddenInput()
         }

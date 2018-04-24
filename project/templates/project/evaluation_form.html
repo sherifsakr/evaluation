@@ -25,7 +25,7 @@
  
         <div class="clearfix"></div>
 
-      <div class="clearfix"></div>
+
 
         <div class="col-md-12 col-sm-12 col-xs-12">
           <div class="x_panel">
@@ -41,7 +41,7 @@
             <div class="x_content">
 
      
-    <form action="" method="post" id="myForm" class="form-horizontal form-label-left input_mask" novalidate enctype="multipart/form-data">
+    <form action="" method="post" id="myForm" class="form-horizontal form-label-left input_mask" novalidate enctype="multipart/form-data" onsubmit="sav_send.disabled = true; return true;">
      {% csrf_token %}      
   <!--  basic info  -->
   <fieldset class="fieldset_normal">
@@ -134,7 +134,67 @@
                 {{ evItem.max_degree_b }}
                 {% endif %}
                   </td>
-                <td> {{ form.q_1.errors }}  {{form.q_1}} </td>
+                
+                <td>
+
+        
+   
+                 {% if evItem.id == 1%}
+                 {{ form.q1.errors }}  {{ form.q1 }}
+                 {% elif evItem.id == 2%}
+                 {{ form.q2.errors }}  {{ form.q2 }}
+                 {% elif evItem.id == 3%}
+                 {{ form.q3.errors }}  {{ form.q3 }}
+                 {% elif evItem.id == 4%}
+                 {{ form.q4.errors }}  {{ form.q4 }}
+                 {% elif evItem.id == 5%}
+                 {{ form.q5.errors }}  {{ form.q5 }}
+                 {% elif evItem.id == 6%}
+                 {{ form.q6.errors }}  {{ form.q6 }}
+                 {% elif evItem.id == 7%}
+                 {{ form.q7.errors }}  {{ form.q7 }}
+                 {% elif evItem.id == 8%}
+                 {{ form.q8.errors }}  {{ form.q8 }}
+                 {% elif evItem.id == 9%}
+                 {{ form.q9.errors }}  {{ form.q9 }}
+                 {% elif evItem.id == 10%}
+                 {{ form.q10.errors }}  {{ form.q10 }}
+                 {% elif evItem.id == 11%}
+                 {{ form.q11.errors }}  {{ form.q11 }}
+                 {% elif evItem.id == 12%}
+                 {{ form.q12.errors }}  {{ form.q12 }}
+                 {% elif evItem.id == 13%}
+                 {{ form.q13.errors }}  {{ form.q13 }}
+                 {% elif evItem.id == 14%}
+                 {{ form.q14.errors }}  {{ form.q14 }}
+                 {% elif evItem.id == 15%}
+                 {{ form.q15.errors }}  {{ form.q15 }}
+                 {% elif evItem.id == 16%}
+                 {{ form.q16.errors }}  {{ form.q16 }}
+                 {% elif evItem.id == 17%}
+                 {{ form.q17.errors }}  {{ form.q17 }}
+                 
+                 {% elif evItem.id == 18%}
+                 {{ form.q18.errors }}  {{ form.q18 }}
+                 {% elif evItem.id == 19%}
+                 {{ form.q19.errors }}  {{ form.q19 }}
+                 {% elif evItem.id == 20%}
+                 {{ form.q20.errors }}  {{ form.q20 }}
+                 {% elif evItem.id == 21%}
+                 {{ form.q21.errors }}  {{ form.q21 }}
+                 {% elif evItem.id == 22%}
+                 {{ form.q22.errors }}  {{ form.q22 }}
+                 
+                 {% elif evItem.id == 23%}
+                 {{ form.q23.errors }}  {{ form.q23 }}
+                 {% elif evItem.id == 24%}
+                 {{ form.q24.errors }}  {{ form.q24 }}
+                 {% elif evItem.id == 25 %}
+                 {{ form.q25.errors }}  {{ form.q25 }}
+                 
+                 {%endif%}
+                
+                  </td>
             
               </tr>
             {% endfor %}
@@ -209,7 +269,10 @@
                                     </thead>
                                     <tbody>
                                       <tr class="odd">
-                                        <td> </td>
+                                        <td> 
+                                        {{form.strength_point}}
+                                        
+                                        </td>
                               
                                       </tr>
                                     </tbody>
@@ -224,7 +287,9 @@
                             </thead>
                             <tbody>
                               <tr class="odd">
-                                <td> </td>
+                                <td> 
+                                  {{form.weaknesses}}  {{ form.weaknesses.errors }}
+                                </td>
                       
                               </tr>
                             </tbody>
@@ -239,7 +304,10 @@
                               </thead>
                               <tbody>
                                 <tr class="odd">
-                                  <td> </td>
+                                  <td>  
+                                   {{form.recommendations}} {{ form.recommendations.errors }}
+                                  
+                                  </td>
                         
                                 </tr>
                               </tbody>
@@ -254,7 +322,7 @@
                                 </thead>
                                 <tbody>
                                   <tr >
-                                    <td> form </td>
+                                    <td>   {{form.director_notes}} {{ form.director_notes.errors }} </td>
                           
                                   </tr>
                                   <tr >
@@ -298,7 +366,7 @@
                                   </thead>
                                   <tbody>
                                     <tr >
-                                      <td> form </td>
+                                      <td>  {{form.authority_notes}} {{ form.authority_notes.errors }}</td>
                             
                                     </tr>
                                     <tr >
@@ -333,6 +401,7 @@
                                   </tbody>
                                 </table>
                       </div>
+                       {{form.employeeid}} 
                       <i class="fa fa-info-circle"></i>  <span class="text-danger">  فترة هذا التقرير من   / / /14هـ   الى   / / / 14 هـ</span>
                     
                                 </fieldset>
@@ -340,14 +409,22 @@
                           
                                 <div class="form-group">
                                     <div class="col-md-9 col-sm-9 col-xs-12 col-md-offset-3">
-                                      <button type="button" class="btn btn-md btn-primary"><i class="fa fa-undo"></i> إلغاء</button>
-                           <button class="btn  btn-md btn-primary" type="reset"><i class="fa fa-save"></i> حفظ</button>
-                                      <button type="submit" class="btn   btn-md btn-success"><i class="fa fa-send-o"></i> حفظ وإرسال</button>
+                                      <a   class="btn btn-md btn-primary" href="{% url 'ns-project:employee-list' %}"><i class="fa fa-undo"></i> إلغاء</a>
+                           <button class="btn  btn-md btn-primary" type="submit" id="save_only"><i class="fa fa-save"></i> حفظ</button>
+                                      <button type="submit" class="btn   btn-md btn-success" id="save_send"><i class="fa fa-send-o"></i> حفظ وإرسال</button>
                                     </div>
                                   </div>
                                   
                                      </form>
-                                  
+                  
+                  {% for field, errors in form.errors.items %}
+    {% for error in errors %}
+     {{error}}{{field}} 
+    {% endfor %}  
+      {% endfor %}  
+      
+      
+                   
 
             </div>
           </div>

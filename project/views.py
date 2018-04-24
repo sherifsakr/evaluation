@@ -184,7 +184,10 @@ def EmployeeList(request):
 @login_required
 def EvaluationPage(request,empid):
     employee= Employee.objects.get(Q(managercode__exact=request.session['EmpID']) & Q(empid__exact=empid))
-    empView= ApIpCurrJobDataView.objects.get(Q(employee_id__exact=empid))
+    try:
+       empView = ApIpCurrJobDataView.objects.get(Q(employee_id__exact=empid))
+    except:
+       empView = None
     emp=dict()
     emp= {'name':employee.empname,
          'deptname':employee.deptname,
@@ -192,9 +195,7 @@ def EvaluationPage(request,empid):
          'jobGrad':empView.job_grade,
          'jobNo':empView.job_no,
          'gvrmntStartDate':empView.gvrmnt_start_date,
-         'orgStartDate':empView.org_start_date,
-       
-        }
+         'orgStartDate':empView.org_start_date,}
     
     #load form evaluation items
     if int(empView.job_grade) >= 47 and int(empView.job_grade) <= 49 :
@@ -206,11 +207,24 @@ def EvaluationPage(request,empid):
         
     if request.method == 'POST':
         form = EvaluationForm(request.POST)
+        if emp['cat'] == "a":
+              form.fields["q16"].required = False
+              form.fields["q17"].required = False
+        elif emp['cat'] == "b":
+              form.fields["q1"].required = False
+              form.fields["q2"].required = False
         if form.is_valid():
             evObject= form.save(commit=False) 
+            evObject.submit_by = request.session['EmpID']
+            evObject.submit_date = datetime.now()
             evObject.save()
+            
+            messages.success(request, _("evaluation has been saved successfully for")+" "+emp['name'])
+            return HttpResponseRedirect(reverse('ns-project:employee-list'  ))
     else :
          form = EvaluationForm()  
+         form.fields["employeeid"].initial=empid
+        
         
     
     context={'emp':emp,'evItems':evaluationItems,'form':form}
