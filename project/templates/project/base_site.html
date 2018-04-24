@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="ar-EG" ng-app="">
+<html lang="ar-EG">
   <head>
   {% load i18n %}
     {% block head %}
@@ -34,11 +34,11 @@
       <link href="/static/build/css/custom_rtl.css" rel="stylesheet">
       {% endblock stylesheets %}
   
-    <script src=""project/static/build/js/angular.min.js"></script>
+    <script src="/static/build/js/angular.min.js"></script>
     
     {% endblock head %}
   </head>
-<body class="{% block body_class %}nav-md {% endblock body_class %}"  >
+<body class="{% block body_class %}nav-md {% endblock body_class %}" ng-app="" >
 
     {% block body %}
 
