@@ -224,8 +224,9 @@ def EvaluationPage(request,empid):
             evObject= form.save(commit=False) 
             evObject.submit_by = request.session['EmpID']
             evObject.submit_date = datetime.now()
-            evObject.managerid = employee.managercode
-            evObject.authorityid = ManagerLevel.objects.filter(manager_id__exact = employee.managercode )[0].manage_level2    
+            evObject.managerid = Employee.objects.get(empid__exact= employee.managercode) 
+            authorityid= ManagerLevel.objects.filter(manager_id__exact = employee.managercode )[0].manage_level2
+            evObject.authorityid = Employee.objects.get(empid__exact= authorityid)   
             if 'save_only' in request.POST:
                 evObject.status="Preparation"
             if 'save_send' in request.POST:
