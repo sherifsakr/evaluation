@@ -61,7 +61,8 @@
                        <th class="column-title">{% trans "Job Title" %} </th>
                       <th class="column-title">{% trans "Status" %} </th>
                       <th class="column-title">{% trans "Degree" %}  </th>
-                      <th class="column-title no-link last"><span class="nobr">{% trans "Action" %} </span>
+                      <th class="column-title no-link last" colspan-2><span class="nobr">{% trans "Action" %} </span>
+                    
                       </th>
            
                     </tr>
@@ -77,13 +78,29 @@
                  
                     
                       <td class=" ">{{emp.jobtitle}}</td>
-                      <td class=" ">Paid</td>
+                      <td class=" ">{{emp.submission.get_status_display }}</td>
                       <td class="a-right a-right ">74</td>
-                      <td class="last"> 
-                      <a class="btn btn-sm btn-primary" href="{% url 'ns-project:evaluation-form' emp.empid   %}">
-                        <i class="fa fa-search"></i>
-                         View
+                      <td class="last" colspan-2> 
+                      
+                      {% if emp.submission.status == '' %}
+                      <a class="btn btn-sm btn-success" href="{% url 'ns-project:evaluation-form' emp.empid   %}">
+                      <i class="fa fa-plus "></i> إضافة تقييم
                         </a>
+                     {% elif  emp.submission.status != '' %}
+                      <a class="btn btn-sm btn-default" disabled href="#">
+                      <i class="fa fa-plus "></i>إضافة تقييم
+                        </a>
+                     {% endif %}
+                       
+                        {% if emp.submission.status == 'Preparation' or  emp.submission.status == 'Cancelled' %} 
+                      <a class="btn btn-sm btn-success" href="{% url 'ns-project:evaluation-form' emp.empid   %}">
+                  <i class="fa fa-edit"></i> تعديل
+                        </a>
+                         {% else %}
+                          <a class="btn btn-sm btn-default"  disabled href="#">
+                  <i class="fa fa-edit"></i> تعديل
+                        </a>
+                         {% endif %}
                       </td>
                     </tr>
                      {% endfor %}

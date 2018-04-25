@@ -28,8 +28,8 @@ class Employee(models.Model):
     managercode = models.BigIntegerField(db_column='ManagerCode', blank=True, null=True)  # Field name made lowercase.
     sexcode = models.CharField(db_column='SexCode', max_length=6, blank=True, null=True)  # Field name made lowercase.
     iscontract = models.IntegerField(db_column='IsContract', blank=True, null=True)  # Field name made lowercase.
-    submission = models.ForeignKey('Evaluation',db_column='submission',to_field='id',related_name='Employee_Evaluation_id',on_delete=models.SET_NULL, blank=True, null=True)
-
+    submission = models.ForeignKey('Evaluation',db_column='submissionId',to_field='id',related_name='Employee_Evaluation_id',on_delete=models.SET_NULL, blank=True, null=True)
+   # status= models.CharField(db_column='DeptCode', max_length=20, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = True
@@ -175,7 +175,7 @@ class Evaluation(models.Model):
     STATUS = (
         ('', _('Choice action')),
         ('New', _('New')),
-        ('Preparation', _('preparation')),
+        ('Preparation', _('Preparation')),
         ('InProgress', _('InProgress')),
         ('Done', _('Done')),
         ('Cancelled', _('Cancelled'))

@@ -20,8 +20,8 @@
 </style>
 
 
- <div class="right_col" role="main">
-    <div class="">
+ <div class="right_col" role="main"  ng-controller="myCtrl" >
+    <div class="" >
       <div class="clearfix"></div>
       <div class="row">
  
@@ -224,10 +224,10 @@
                           </thead>
                           <tbody>
                             <tr class="odd">
-                              <td ng-model='group1'> {{ q1 +q2 +q3 +q4 +q5+q6 +q7 +q8 }}  </td>
-                              <td ng-model='group2'> </td>
-                              <td ng-model='group3'> </td>
-                              <td ng-model='total'>  </td>
+                              <td ng-model='group1'> {{group1}}  </td>
+                              <td ng-model='group2'> {{group2}} </td>
+                              <td ng-model='group3'> {{group3}} </td>
+                              <td ng-model='total'>  {{total}} </td>
                             </tr>
                           </tbody>
                         </table>
@@ -244,11 +244,11 @@
                             </thead>
                             <tbody>
                               <tr class="odd">
-                                <td ng-model='excellent'> </td>
-                                <td ng-model='verygood'> </td>
-                                <td ng-model='good'> </td>
-                                <td ng-model='fair'> </td>
-                                <td ng-model='unsatisfied'> </td>
+                                <td ng-bind-html='excellent'> {{ excellent }} </td>
+                                <td ng-bind-html='verygood'> {{ verygood }}</td>
+                                <td ng-bind-html='good'>{{ good }} </td>
+                                <td ng-bind-html='fair'> {{ fair }}</td>
+                                <td ng-bind-html='unsatisfied'> {{ unsatisfied }}</td>
                               </tr>
                             </tbody>
                           </table>
@@ -421,11 +421,13 @@
                                   
                                      </form>
                   
-                  {% for field, errors in form.errors.items %}
+               <!--   {# 
+                 {% for field, errors in form.errors.items %}
     {% for error in errors %}
      {{error}}{{field}} 
     {% endfor %}  
-      {% endfor %}  
+      {% endfor %}
+         #} -->
       
       
                    

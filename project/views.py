@@ -183,7 +183,21 @@ def EmployeeList(request):
 
 @login_required
 def EvaluationPage(request,empid):
-    employee= Employee.objects.get(Q(managercode__exact=request.session['EmpID']) & Q(empid__exact=empid))
+    #check if corect employee
+    try:
+        employee= Employee.objects.get(Q(managercode__exact=request.session['EmpID']) & Q(empid__exact=empid))
+    except:
+       raise Http404 
+   
+   #check if employee has evaluation in db
+    try:
+        evaluation = Evaluation.objects.get(Q(employeeid__exact = empid))
+        if evaluation is not None :
+            messages.success(request, _("the employee already has evaluation"))
+            return HttpResponseRedirect(reverse('ns-project:employee-list'  ))
+    except:
+        pass
+   
     try:
        empView = ApIpCurrJobDataView.objects.get(Q(employee_id__exact=empid))
     except:
@@ -206,6 +220,7 @@ def EvaluationPage(request,empid):
         emp['cat']="b"
         
     if request.method == 'POST':
+        #validat correct employee again
         employee= Employee.objects.get(Q(managercode__exact=request.session['EmpID']) & Q(empid__exact = request.POST['employeeid']))
 
         form = EvaluationForm(request.POST)
@@ -257,9 +272,11 @@ def EvaluationPage(request,empid):
                 evObject.is_fair = 1 
             elif  evObject.total < 60:  
                 evObject.is_unacceptable = 1         
-                    
-            evObject.save()
             
+            evObject.save()
+            evaInstant= Evaluation.objects.get(id__exact=evObject.id)
+            employee.submission = evaInstant 
+            employee.save()
             messages.success(request, _("evaluation has been saved successfully for")+" "+emp['name'])
             return HttpResponseRedirect(reverse('ns-project:employee-list'  ))
     else :
