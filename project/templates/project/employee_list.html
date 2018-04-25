@@ -30,7 +30,7 @@
           <div class="x_panel">
             <div class="x_title">
           
-              <h2>{% trans "Employees List" %}<small>{% trans "employee data" %}</small></h2>
+              <h2>{% trans "قائمة موظفين الإدارة" %}</h2>
               <ul class="nav navbar-right panel_toolbox">
     
               </ul>
@@ -93,7 +93,7 @@
                      {% endif %}
                        
                         {% if emp.submission.status == 'Preparation' or  emp.submission.status == 'Cancelled' %} 
-                      <a class="btn btn-sm btn-success" href="{% url 'ns-project:evaluation-form' emp.empid   %}">
+                      <a class="btn btn-sm btn-success" href="{% url 'ns-project:evaluation-edit' emp.empid   %}">
                   <i class="fa fa-edit"></i> تعديل
                         </a>
                          {% else %}

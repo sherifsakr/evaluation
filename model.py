@@ -259,6 +259,7 @@ class Employee(models.Model):
     jobtitle = models.CharField(db_column='JobTitle', max_length=200, blank=True, null=True)  # Field name made lowercase.
     managercode = models.BigIntegerField(db_column='ManagerCode', blank=True, null=True)  # Field name made lowercase.
     iscontract = models.IntegerField(db_column='IsContract', blank=True, null=True)  # Field name made lowercase.
+    submissionid = models.IntegerField(db_column='submissionId')  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -292,8 +293,9 @@ class Evaluation(models.Model):
     director_notes = models.CharField(max_length=400, blank=True, null=True)
     authority_notes = models.CharField(max_length=400, blank=True, null=True)
     employeeid = models.IntegerField(db_column='employeeId')  # Field name made lowercase.
-    managerid = models.IntegerField(db_column='managerId')  # Field name made lowercase.
-    authorid = models.IntegerField(db_column='authorId')  # Field name made lowercase.
+    managerid = models.IntegerField(db_column='managerId', blank=True, null=True)  # Field name made lowercase.
+    authorityid = models.IntegerField(blank=True, null=True)
+    status = models.CharField(max_length=20)
     submit_by = models.IntegerField()
     submit_date = models.DateTimeField()
     last_update_by = models.IntegerField(blank=True, null=True)
@@ -313,8 +315,8 @@ class Evaluation(models.Model):
     q13 = models.IntegerField()
     q14 = models.IntegerField()
     q15 = models.IntegerField()
-    q16 = models.IntegerField(blank=True, null=True)
-    q17 = models.IntegerField(blank=True, null=True)
+    q16 = models.IntegerField()
+    q17 = models.IntegerField()
     q18 = models.IntegerField()
     q19 = models.IntegerField()
     q20 = models.IntegerField()
@@ -326,7 +328,7 @@ class Evaluation(models.Model):
     total_group1 = models.IntegerField(blank=True, null=True)
     total_group2 = models.IntegerField(blank=True, null=True)
     total_group3 = models.IntegerField(blank=True, null=True)
-    total_group4 = models.IntegerField(blank=True, null=True)
+    total = models.IntegerField(blank=True, null=True)
     is_excellent = models.IntegerField(blank=True, null=True)
     is_vergood = models.IntegerField(blank=True, null=True)
     is_good = models.IntegerField(blank=True, null=True)
@@ -360,6 +362,16 @@ class EvaluationResult(models.Model):
     class Meta:
         managed = False
         db_table = 'evaluation_result'
+
+
+class ManagerLevel(models.Model):
+    employee_id = models.IntegerField(blank=True, null=True)
+    manager_id = models.IntegerField(blank=True, null=True)
+    manage_level2 = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'manager_level'
 
 
 class Member(models.Model):

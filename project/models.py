@@ -174,11 +174,11 @@ class EvaluationResult(models.Model):
 class Evaluation(models.Model):
     STATUS = (
         ('', _('Choice action')),
-        ('New', _('New')),
-        ('Preparation', _('Preparation')),
+        ('New', _('جديد')),
+        ('Preparation', _('تحت الإعداد')),
         ('InProgress', _('InProgress')),
-        ('Done', _('Done')),
-        ('Cancelled', _('Cancelled'))
+        ('Done', _('معتمد')),
+        ('Cancelled', _('ملغى'))
     )
      
     status = models.CharField(db_column='Status',max_length=10,choices=STATUS, blank=False, null=False)  
@@ -189,8 +189,8 @@ class Evaluation(models.Model):
     director_notes = models.CharField(max_length=400, blank=True, null=True)
     authority_notes = models.CharField(max_length=400, blank=True, null=True)
     employeeid = models.ForeignKey('Employee',db_column='employeeid',to_field='empid',related_name='Employee_Evaluation_employeeid',on_delete=models.SET_NULL, blank=True, null=True)    
-    managerid = models.IntegerField(db_column='managerId')  
-    authorityid = models.IntegerField(db_column='authorityid')  
+    managerid = models.ForeignKey('Employee',db_column='managerId',to_field='empid',related_name='Employee_Evaluation_managerid',on_delete=models.SET_NULL, blank=True, null=True)     
+    authorityid =models.ForeignKey('Employee',db_column='authorityId',to_field='empid',related_name='Employee_Evaluation_authorityId',on_delete=models.SET_NULL, blank=True, null=True)      
     submit_by = models.IntegerField()
     submit_date = models.DateTimeField()
     last_update_by = models.IntegerField(blank=True, null=True)
@@ -210,8 +210,8 @@ class Evaluation(models.Model):
     q13 = models.IntegerField()
     q14 = models.IntegerField()
     q15 = models.IntegerField()
-    q16 = models.IntegerField(blank=True, null=True)
-    q17 = models.IntegerField(blank=True, null=True)
+    q16 = models.IntegerField()
+    q17 = models.IntegerField()
     q18 = models.IntegerField()
     q19 = models.IntegerField()
     q20 = models.IntegerField()
@@ -235,7 +235,16 @@ class Evaluation(models.Model):
         db_table = 'evaluation'
 
 
+class ManagerLevel(models.Model):
+    Employee_id =models.IntegerField(blank=True, null=True)
+    manager_id = models.IntegerField(blank=True, null=True)
+    manage_level2 = models.IntegerField(blank=True, null=True)
 
+
+    class Meta:
+        managed = False
+        db_table = 'manager_level'
+        
 
 class AuthUser(models.Model):
     password = models.CharField(max_length=128)

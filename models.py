@@ -259,6 +259,7 @@ class Employee(models.Model):
     jobtitle = models.CharField(db_column='JobTitle', max_length=200, blank=True, null=True)  # Field name made lowercase.
     managercode = models.BigIntegerField(db_column='ManagerCode', blank=True, null=True)  # Field name made lowercase.
     iscontract = models.IntegerField(db_column='IsContract', blank=True, null=True)  # Field name made lowercase.
+    submissionid = models.IntegerField(db_column='submissionId')  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -292,10 +293,47 @@ class Evaluation(models.Model):
     director_notes = models.CharField(max_length=400, blank=True, null=True)
     authority_notes = models.CharField(max_length=400, blank=True, null=True)
     employeeid = models.IntegerField(db_column='employeeId')  # Field name made lowercase.
+    managerid = models.IntegerField(db_column='managerId', blank=True, null=True)  # Field name made lowercase.
+    authorityid = models.IntegerField(blank=True, null=True)
+    status = models.CharField(max_length=20)
     submit_by = models.IntegerField()
     submit_date = models.DateTimeField()
-    last_update_by = models.IntegerField()
-    last_update_date = models.DateTimeField()
+    last_update_by = models.IntegerField(blank=True, null=True)
+    last_update_date = models.DateTimeField(blank=True, null=True)
+    q1 = models.IntegerField(blank=True, null=True)
+    q2 = models.IntegerField(blank=True, null=True)
+    q3 = models.IntegerField()
+    q4 = models.IntegerField()
+    q5 = models.IntegerField()
+    q6 = models.IntegerField()
+    q7 = models.IntegerField()
+    q8 = models.IntegerField()
+    q9 = models.IntegerField()
+    q10 = models.IntegerField()
+    q11 = models.IntegerField()
+    q12 = models.IntegerField()
+    q13 = models.IntegerField()
+    q14 = models.IntegerField()
+    q15 = models.IntegerField()
+    q16 = models.IntegerField()
+    q17 = models.IntegerField()
+    q18 = models.IntegerField()
+    q19 = models.IntegerField()
+    q20 = models.IntegerField()
+    q21 = models.IntegerField()
+    q22 = models.IntegerField()
+    q23 = models.IntegerField()
+    q24 = models.IntegerField()
+    q25 = models.IntegerField()
+    total_group1 = models.IntegerField(blank=True, null=True)
+    total_group2 = models.IntegerField(blank=True, null=True)
+    total_group3 = models.IntegerField(blank=True, null=True)
+    total = models.IntegerField(blank=True, null=True)
+    is_excellent = models.IntegerField(blank=True, null=True)
+    is_vergood = models.IntegerField(blank=True, null=True)
+    is_good = models.IntegerField(blank=True, null=True)
+    is_fair = models.IntegerField(blank=True, null=True)
+    is_unacceptable = models.IntegerField(blank=True, null=True)
 
     class Meta:
         managed = False
@@ -303,6 +341,7 @@ class Evaluation(models.Model):
 
 
 class EvaluationItem(models.Model):
+    field_col = models.CharField(max_length=10, blank=True, null=True)
     evaluation_fom_id = models.IntegerField(blank=True, null=True)
     evaluation_group_id = models.CharField(max_length=45, blank=True, null=True)
     title = models.CharField(max_length=200, blank=True, null=True)

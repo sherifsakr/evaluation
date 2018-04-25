@@ -134,7 +134,7 @@ msgstr "حالة الإعتماد"
 #: .\project\templates\project\emp_sheet.html:184
 #: .\project\templates\project\my_tasks.html:111
 msgid "in progres"
-msgstr "قيد التنفيذ"
+msgstr "تحت الإعتماد"
 
 #: .\project\forms.py:51 .\project\forms.py:324 .\project\models.py:107
 #: .\project\models.py:200

@@ -16,7 +16,9 @@ urlpatterns = [
     url(r'^$', views.EmployeeList, name='employee-list'),
     url(r'^employee_list/$', views.EmployeeList, name='employee_list'),
     url(r'^evaluation_form/(?P<empid>\d+)$', views.EvaluationPage, name='evaluation-form'),
- 
+    url(r'^evaluation-edit/(?P<empid>\d+)$', views.EvaluationEdit, name='evaluation-edit'),
+    url(r'^approval_requests/$', views.ApprovalRequests, name='approval-requests'),
+    url(r'^edit_approval/(?P<empid>\d+)$', views.ApprovalEdit, name='edit-approval'),
     #login from drupal
     url(r'^auth/(?P<email>.*)/(?P<signature>.*)/(?P<time>.*)/$', views.loginfromdrupal, name='loginfromdrupal'),
     #main temp

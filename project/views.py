@@ -163,16 +163,6 @@ def myuser(request, *args, **kwargs):
             return login(request, *args, **kwargs)
     return login(request, *args, **kwargs)
 
-@login_required
-def index(request):
-    # Populate User From Ldap Without Login
-    from django_auth_ldap.backend import LDAPBackend
-    # ldap_backend = LDAPBackend()
-    # ldap_backend.populate_user('aalbatil@stats.gov.sa')
-    logged = request.COOKIES.get('logged_in_status')
-    context = {'logged':logged}
-    template = loader.get_template('project/index.html')
-    return HttpResponse(template.render(context, request))
 
 @login_required
 def EmployeeList(request):
@@ -183,7 +173,7 @@ def EmployeeList(request):
 
 @login_required
 def EvaluationPage(request,empid):
-    #check if corect employee
+    #check if correct employee
     try:
         employee= Employee.objects.get(Q(managercode__exact=request.session['EmpID']) & Q(empid__exact=empid))
     except:
@@ -235,7 +225,7 @@ def EvaluationPage(request,empid):
             evObject.submit_by = request.session['EmpID']
             evObject.submit_date = datetime.now()
             evObject.managerid = employee.managercode
-            evObject.authorityid = employee.managercode
+            evObject.authorityid = ManagerLevel.objects.filter(manager_id__exact = employee.managercode )[0].manage_level2    
             if 'save_only' in request.POST:
                 evObject.status="Preparation"
             if 'save_send' in request.POST:
@@ -290,6 +280,210 @@ def EvaluationPage(request,empid):
  
 
 #remove it in production         
+
+
+@login_required
+def EvaluationEdit(request,empid):
+     #check if corect employee
+    try:
+        employee= Employee.objects.get(Q(managercode__exact= request.session['EmpID']) & Q(empid__exact = empid))
+    except:
+       raise Http404 
+   
+   #check if employee has evaluation in db
+    try:
+        evaluation = Evaluation.objects.get(Q(employeeid__exact = empid))
+       
+    except:
+          return HttpResponseRedirect(reverse('ns-project:employee-list'  ))
+   
+    try:
+       empView = ApIpCurrJobDataView.objects.get(Q(employee_id__exact=empid))
+    except:
+       empView = None
+    #profile data   
+    emp=dict()
+    emp= {'name':employee.empname,
+         'deptname':employee.deptname,
+         'jobTitle':employee.jobtitle,
+         'jobGrad':empView.job_grade,
+         'jobNo':empView.job_no,
+         'gvrmntStartDate':empView.gvrmnt_start_date,
+         'orgStartDate':empView.org_start_date,}
+    
+     #load form evaluation items
+    if int(empView.job_grade) >= 47 and int(empView.job_grade) <= 49 :
+        evaluationItems= EvaluationItem.objects.filter(Q(is_class_a__exact = 1)).order_by('id')
+        emp['cat']="a"
+    elif int(empView.job_grade) <= 46 :
+        evaluationItems= EvaluationItem.objects.filter(is_class_b__exact = 1).order_by('id')
+        emp['cat']="b"
+        
+        #load form
+        form = EvaluationForm(request.POST or None, instance=evaluation)
+        if emp['cat'] == "a":
+              form.fields["q16"].required = False
+              form.fields["q17"].required = False
+        elif emp['cat'] == "b":
+              form.fields["q1"].required = False
+              form.fields["q2"].required = False
+        if form.is_valid():
+            evObject= form.save(commit=False) 
+            evObject.last_update_by = datetime.now()
+            evObject.managerid = employee.managercode
+            evObject.authorityid = employee.managercode
+            if 'save_only' in request.POST:
+                evObject.status="Preparation"
+            if 'save_send' in request.POST:
+                evObject.status="InProgress"
+            #count degree
+            #group1
+            evObject.total_group1 = 0
+            for x in range(1, 18):
+                q = str ("q" )+ str(x)
+                v = request.POST.get(q, 0)
+                evObject.total_group1 += int(v)
+            #group2    
+            evObject.total_group2 = 0
+            for x in range(18, 23):
+                q = str ("q" )+ str(x)
+                v = request.POST.get(q, 0)
+                evObject.total_group2 += int(v)
+            #group3       
+            evObject.total_group3 = 0
+            for x in range(23, 26):
+                q = str ("q" )+ str(x)
+                v = request.POST.get(q, 0)
+                evObject.total_group3 += int(v)
+            #total 
+            evObject.total = evObject.total_group1+evObject.total_group2+evObject.total_group3
+            #grad
+            if 90 <= evObject.total <= 100:  
+                evObject.is_excellent = 1
+            elif 80 <= evObject.total <= 90:  
+                evObject.is_vergood = 1
+            elif 70 <= evObject.total <= 79:  
+                evObject.is_good = 1  
+            elif 69 <= evObject.total <= 60:  
+                evObject.is_fair = 1 
+            elif  evObject.total < 60:  
+                evObject.is_unacceptable = 1         
+            
+            evObject.save()
+            evaInstant= Evaluation.objects.get(id__exact=evObject.id)
+            employee.submission = evaInstant 
+            employee.save()
+            messages.success(request, _("evaluation has been saved successfully for")+" "+emp['name'])
+            return HttpResponseRedirect(reverse('ns-project:employee-list'  ))
+            
+    context={'emp':emp,'evItems':evaluationItems,'form':form}
+    return render(request, 'project/evaluation_form.html', context)
+
+
+
+@login_required
+def ApprovalEdit(request,empid):
+
+   #check if employee has evaluation in db
+    try:
+        evaluation = Evaluation.objects.get(Q(employeeid__exact = empid) & Q(authorityid__exact = request.session['EmpID']))
+        employee = evaluation.employeeid
+    except:
+          return HttpResponseRedirect(reverse('ns-project:employee-list'  ))
+   
+    try:
+       empView = ApIpCurrJobDataView.objects.get(Q(employee_id__exact=empid))
+    except:
+       empView = None
+    #profile data   
+    emp=dict()
+    emp= {'name':employee.empname,
+         'deptname':employee.deptname,
+         'jobTitle':employee.jobtitle,
+         'jobGrad':empView.job_grade,
+         'jobNo':empView.job_no,
+         'gvrmntStartDate':empView.gvrmnt_start_date,
+         'orgStartDate':empView.org_start_date,}
+    
+     #load form evaluation items
+    if int(empView.job_grade) >= 47 and int(empView.job_grade) <= 49 :
+        evaluationItems= EvaluationItem.objects.filter(Q(is_class_a__exact = 1)).order_by('id')
+        emp['cat']="a"
+    elif int(empView.job_grade) <= 46 :
+        evaluationItems= EvaluationItem.objects.filter(is_class_b__exact = 1).order_by('id')
+        emp['cat']="b"
+        
+        #load form
+        form = EvaluationForm(request.POST or None, instance=evaluation)
+        #form.fields["employeeid"].readonly=False
+        
+        if emp['cat'] == "a":
+              form.fields["q16"].required = False
+              form.fields["q17"].required = False
+        elif emp['cat'] == "b":
+              form.fields["q1"].required = False
+              form.fields["q2"].required = False
+        if form.is_valid() or False:
+            evObject= form.save(commit=False) 
+            evObject.last_update_by = datetime.now()
+         
+          
+            if 'save_only' in request.POST:
+                evObject.status="Preparation"
+            if 'save_send' in request.POST:
+                evObject.status="InProgress"
+            #count degree
+            #group1
+            evObject.total_group1 = 0
+            for x in range(1, 18):
+                q = str ("q" )+ str(x)
+                v = request.POST.get(q, 0)
+                evObject.total_group1 += int(v)
+            #group2    
+            evObject.total_group2 = 0
+            for x in range(18, 23):
+                q = str ("q" )+ str(x)
+                v = request.POST.get(q, 0)
+                evObject.total_group2 += int(v)
+            #group3       
+            evObject.total_group3 = 0
+            for x in range(23, 26):
+                q = str ("q" )+ str(x)
+                v = request.POST.get(q, 0)
+                evObject.total_group3 += int(v)
+            #total 
+            evObject.total = evObject.total_group1+evObject.total_group2+evObject.total_group3
+            #grad
+            if 90 <= evObject.total <= 100:  
+                evObject.is_excellent = 1
+            elif 80 <= evObject.total <= 90:  
+                evObject.is_vergood = 1
+            elif 70 <= evObject.total <= 79:  
+                evObject.is_good = 1  
+            elif 69 <= evObject.total <= 60:  
+                evObject.is_fair = 1 
+            elif  evObject.total < 60:  
+                evObject.is_unacceptable = 1         
+            
+            evObject.save(update_fields=['authority_notes', ])
+           
+
+            messages.success(request, _("evaluation has been saved successfully for")+" "+emp['name'])
+            return HttpResponseRedirect(reverse('ns-project:employee-list'  ))
+            
+    context={'emp':emp,'evItems':evaluationItems,'form':form}
+    return render(request, 'project/approval_edit.html', context)
+
+
+@login_required
+def ApprovalRequests(request):
+    submissions= Evaluation.objects.filter(Q(authorityid__exact=request.session['EmpID']) & Q(status__exact= "InProgress") |  Q(status__exact= "Done") )
+    context={'submissions':submissions,}
+    return render(request, 'project/approval_requests.html', context)
+
+    
+
+
 def gentella_html(request):
     context = {'LANG': request.LANGUAGE_CODE}
     # The template to be loaded as per gentelella.

@@ -252,7 +252,7 @@ class EvaluationForm(ModelForm):
              
             'q1': forms.NumberInput(attrs={'ng-model':'q1', 'class': 'form-control','placeholder':_(''),'required': True,'ng-change':'myFunc()' }),
             'q2': forms.NumberInput(attrs={'ng-model':'q2', 'class': 'form-control','placeholder':_(''),'required': True,'ng-change':'myFunc()' }),
-            'q3': forms.NumberInput(attrs={'ng-model':'q3', 'class': 'form-control','placeholder':_(''),'required': True,'ng-change':'myFunc()' }),
+            'q3': forms.NumberInput(attrs={'ng-model':'q3', 'class': 'form-control','placeholder':_(''),'required': True,'ng-click':'myFunc()' }),
             'q4': forms.NumberInput(attrs={'ng-model':'q4', 'class': 'form-control','placeholder':_(''),'required': True,'ng-change':'myFunc()' }),
             'q5': forms.NumberInput(attrs={'ng-model':'q5', 'class': 'form-control','placeholder':_(''),'required': True,'ng-change':'myFunc()' }),
             'q6': forms.NumberInput(attrs={'ng-model':'q6', 'class': 'form-control','placeholder':_(''),'required': True,'ng-change':'myFunc()' }),
