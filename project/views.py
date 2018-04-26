@@ -191,7 +191,7 @@ def EvaluationPage(request,empid):
     try:
        empView = ApIpCurrJobDataView.objects.get(Q(employee_id__exact = empid))
     except:
-            messages.warning(request, _("بيانات الموظف غير محدثة"))
+            messages.info(request, _("بيانات الموظف غير محدثة"))
             return HttpResponseRedirect(reverse('ns-project:employee-list'  ))
     emp=dict()
     emp= {'name':employee.empname,
