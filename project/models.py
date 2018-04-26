@@ -176,9 +176,9 @@ class Evaluation(models.Model):
         ('', _('Choice action')),
         ('New', _('جديد')),
         ('Preparation', _('تحت الإعداد')),
-        ('InProgress', _('InProgress')),
+        ('InProgress', _('تحت الإعتماد')),
         ('Done', _('معتمد')),
-        ('Cancelled', _('ملغى'))
+        ('Cancelled', _('إعادة التقييم'))
     )
      
     status = models.CharField(db_column='Status',max_length=10,choices=STATUS, blank=False, null=False)  

@@ -222,6 +222,17 @@ class EditTaskForm(ModelForm):
 
 
 
+class AuthorityForm(ModelForm):
+    class Meta:
+        model = Evaluation
+        fields = ['authority_notes',]
+        labels = {
+            'authority_notes': _('authority notes'),
+        }
+        widgets = {
+            'authority_notes': Textarea(attrs={'class':'form-control','placeholder':_('strength point'),'rows':'3','required': False}),
+           }
+
 class EvaluationForm(ModelForm):
     class Meta:
         model = Evaluation
@@ -250,30 +261,32 @@ class EvaluationForm(ModelForm):
              'authority_notes': Textarea(attrs={'class':'form-control','placeholder':_('authority_notes'),'rows':'3','required': False}),
              'employeeid':forms.HiddenInput(),
              
-            'q1': forms.NumberInput(attrs={'ng-model':'q1', 'class': 'form-control','placeholder':_(''),'required': True,'ng-change':'myFunc()' }),
-            'q2': forms.NumberInput(attrs={'ng-model':'q2', 'class': 'form-control','placeholder':_(''),'required': True,'ng-change':'myFunc()' }),
-            'q3': forms.NumberInput(attrs={'ng-model':'q3', 'class': 'form-control','placeholder':_(''),'required': True,'ng-click':'myFunc()' }),
-            'q4': forms.NumberInput(attrs={'ng-model':'q4', 'class': 'form-control','placeholder':_(''),'required': True,'ng-change':'myFunc()' }),
-            'q5': forms.NumberInput(attrs={'ng-model':'q5', 'class': 'form-control','placeholder':_(''),'required': True,'ng-change':'myFunc()' }),
-            'q6': forms.NumberInput(attrs={'ng-model':'q6', 'class': 'form-control','placeholder':_(''),'required': True,'ng-change':'myFunc()' }),
-            'q7': forms.NumberInput(attrs={'ng-model':'q7', 'class': 'form-control','placeholder':_(''),'required': True,'ng-change':'myFunc()' }),
-            'q8': forms.NumberInput(attrs={'ng-model':'q8', 'class': 'form-control','placeholder':_(''),'required': True,'ng-change':'myFunc()' }),
-            'q9': forms.NumberInput(attrs={'ng-model':'q9', 'class': 'form-control','placeholder':_(''),'required': True,'ng-change':'myFunc()' }),
-            'q10': forms.NumberInput(attrs={'ng-model':'q10', 'class': 'form-control','placeholder':_(''),'required': True,'ng-change':'myFunc()' }),
-            'q11': forms.NumberInput(attrs={'ng-model':'q11', 'class': 'form-control','placeholder':_(''),'required': True, 'ng-change':'myFunc()'}),
-            'q12': forms.NumberInput(attrs={'ng-model':'q12', 'class': 'form-control','placeholder':_(''),'required': True, 'ng-change':'myFunc()'}),
-            'q13': forms.NumberInput(attrs={'ng-model':'q13', 'class': 'form-control','placeholder':_(''),'required': True,'ng-change':'myFunc()' }),
-            'q14': forms.NumberInput(attrs={'ng-model':'q14', 'class': 'form-control','placeholder':_(''),'required': True, 'ng-change':'myFunc()'}),
-            'q15': forms.NumberInput(attrs={'ng-model':'q15', 'class': 'form-control','placeholder':_(''),'required': True,'ng-change':'myFunc()' }),
-            'q16': forms.NumberInput(attrs={'ng-model':'q16', 'class': 'form-control','placeholder':_(''),'required': True, 'ng-change':'myFunc()'}),
-            'q17': forms.NumberInput(attrs={'ng-model':'q17', 'class': 'form-control','placeholder':_(''),'required': True,'ng-change':'myFunc()' }),
-            'q18': forms.NumberInput(attrs={'ng-model':'q18', 'class': 'form-control','placeholder':_(''),'required': True, 'ng-change':'myFunc()'}),
-            'q19': forms.NumberInput(attrs={'ng-model':'q19', 'class': 'form-control','placeholder':_(''),'required': True,'ng-change':'myFunc()' }),
-            'q20': forms.NumberInput(attrs={'ng-model':'q20', 'class': 'form-control','placeholder':_(''),'required': True, 'ng-change':'myFunc()'}),
-            'q21': forms.NumberInput(attrs={'ng-model':'q21', 'class': 'form-control','placeholder':_(''),'required': True,'ng-change':'myFunc()' }),
-            'q22': forms.NumberInput(attrs={'ng-model':'q22', 'class': 'form-control','placeholder':_(''),'required': True,'ng-change':'myFunc()' }),
-            'q23': forms.NumberInput(attrs={'ng-model':'q23', 'class': 'form-control','placeholder':_(''),'required': True,'ng-change':'myFunc()' }),
-            'q24': forms.NumberInput(attrs={'ng-model':'q24', 'class': 'form-control','placeholder':_(''),'required': True,'ng-change':'myFunc()' }),
-            'q25': forms.NumberInput(attrs={'ng-model':'q25', 'class': 'form-control','placeholder':_(''),'required': True, 'ng-change':'myFunc()'}),
+            'q1': forms.NumberInput(attrs={'ng-model':'q1', 'class': 'form-control target','placeholder':_(''),'required': True }),
+            'q2': forms.NumberInput(attrs={'ng-model':'q2', 'class': 'form-control target','placeholder':_(''),'required': True }),
+            'q3': forms.NumberInput(attrs={'onchange':"this.value =minmax(this.value, 0, 7);loadData();", 'class': 'form-control target','placeholder':_(''),'required': True }),
+            'q4': forms.NumberInput(attrs={'onchange':"this.value =minmax(this.value, 0, 6);loadData();", 'class': 'form-control target','placeholder':_(''),'required': True }),
+            'q5': forms.NumberInput(attrs={'onchange':"this.value =minmax(this.value, 0, 6);loadData();", 'class': 'form-control target','placeholder':_(''),'required': True }),
+            'q6': forms.NumberInput(attrs={'ng-model':'q6', 'class': 'form-control target','placeholder':_(''),'required': True }),
+            'q7': forms.NumberInput(attrs={'ng-model':'q7', 'class': 'form-control target','placeholder':_(''),'required': True }),
+            'q8': forms.NumberInput(attrs={'ng-model':'q8', 'class': 'form-control target','placeholder':_(''),'required': True }),
+            'q9': forms.NumberInput(attrs={'ng-model':'q9', 'class': 'form-control target','placeholder':_(''),'required': True }),
+            'q10': forms.NumberInput(attrs={'ng-model':'q10', 'class': 'form-control target','placeholder':_(''),'required': True }),
+            'q11': forms.NumberInput(attrs={'ng-model':'q11', 'class': 'form-control target','placeholder':_(''),'required': True}),
+            'q12': forms.NumberInput(attrs={'ng-model':'q12', 'class': 'form-control target','placeholder':_(''),'required': True,}),
+            'q13': forms.NumberInput(attrs={'ng-model':'q13', 'class': 'form-control target','placeholder':_(''),'required': True }),
+            'q14': forms.NumberInput(attrs={'ng-model':'q14', 'class': 'form-control target','placeholder':_(''),'required': True,}),
+            'q15': forms.NumberInput(attrs={'ng-model':'q15', 'class': 'form-control target','placeholder':_(''),'required': True }),
+            'q16': forms.NumberInput(attrs={'ng-model':'q16', 'class': 'form-control target','placeholder':_(''),'required': True }),
+            'q17': forms.NumberInput(attrs={'ng-model':'q17', 'class': 'form-control target','placeholder':_(''),'required': True }),
+            'q18': forms.NumberInput(attrs={'ng-model':'q18', 'class': 'form-control target','placeholder':_(''),'required': True }),
+            'q19': forms.NumberInput(attrs={'ng-model':'q19', 'class': 'form-control target','placeholder':_(''),'required': True }),
+            'q20': forms.NumberInput(attrs={'ng-model':'q20', 'class': 'form-control target','placeholder':_(''),'required': True }),
+            'q21': forms.NumberInput(attrs={'ng-model':'q21', 'class': 'form-control target','placeholder':_(''),'required': True }),
+            'q22': forms.NumberInput(attrs={'ng-model':'q22', 'class': 'form-control target','placeholder':_(''),'required': True }),
+            'q23': forms.NumberInput(attrs={'ng-model':'q23', 'class': 'form-control target','placeholder':_(''),'required': True }),
+            'q24': forms.NumberInput(attrs={'ng-model':'q24', 'class': 'form-control target','placeholder':_(''),'required': True }),
+            'q25': forms.NumberInput(attrs={'ng-model':'q25', 'class': 'form-control target','placeholder':_(''),'required': True }),
+            
+            'total_group1': forms.NumberInput(attrs={'class': 'form-control ','placeholder':_('') }),
 
         }

@@ -5,10 +5,7 @@
 {% block stylesheets %}
   {{ block.super }}
   <link href="/static/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
-  <link href="/static/vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
-  <link href="/static/vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css" rel="stylesheet">
   <link href="/static/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
-  <link href="/static/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
 {% endblock stylesheets %}
 
 {% block content %}
@@ -30,7 +27,7 @@
           <div class="x_panel">
             <div class="x_title">
           
-              <h2>{% trans "طلبات الإعتماد" %}</h2>
+               <h2>{% trans "قائمة موظفين الإدارة" %}</h2>
               <ul class="nav navbar-right panel_toolbox">
     
               </ul>
@@ -57,10 +54,10 @@
                      <th class="column-title"> #</th>
                       <th class="column-title">{% trans "Name" %} </th>
                    
-                    <th class="column-title">{% trans "القسم" %} </th>
-                       <th class="column-title">{% trans "الوظيفة" %} </th>
-                      <th class="column-title">{% trans "الحالة" %} </th>
-                      <th class="column-title">{% trans "التقدير" %}  </th>
+                      <th class="column-title">{% trans "Departement" %} </th>
+                      <th class="column-title">{% trans "Job title" %} </th>
+                      <th class="column-title">{% trans "Status" %} </th>
+                      <th class="column-title">{% trans "التقييم" %}  </th>
                       <th class="column-title no-link last" colspan-2><span class="nobr">{% trans "Action" %} </span>
                     
                       </th>
@@ -85,15 +82,11 @@
                       
               
                        
-                        {% if submit.status == 'InProgress'  %} 
+                      
                       <a class="btn btn-sm btn-primary" href="{% url 'ns-project:edit-approval' submit.employeeid.empid   %}">
-                  <i class="fa fa-search"></i> تعديل
+                  <i class="fa fa-search"></i> معاينة
                         </a>
-                         {% else %}
-                          <a class="btn btn-sm btn-primary"  disabled href="#">
-                  <i class="fa fa-search"></i> تعديل
-                        </a>
-                         {% endif %}
+                        
                       </td>
                     </tr>
                      {% endfor %}
@@ -115,17 +108,11 @@
   <!-- Datatables -->
   <script src="/static/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
   <script src="/static/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-  <script src="/static/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
-  <script src="/static/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
-  <script src="/static/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
-  <script src="/static/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
-  <script src="/static/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
-  <script src="/static/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
-  <script src="/static/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
-  <script src="/static/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
-  <script src="/static/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
-  <script src="/static/vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
-  <script src="/static/vendors/jszip/dist/jszip.min.js"></script>
-  <script src="/static/vendors/pdfmake/build/pdfmake.min.js"></script>
-  <script src="/static/vendors/pdfmake/build/vfs_fonts.js"></script>
+  <script>
+		$('#datatable-responsive').dataTable( {
+		    "language": {
+		        "url": "/static/json/Arabic.json"
+		    }
+		} );
+  </script>
 {% endblock javascripts %}

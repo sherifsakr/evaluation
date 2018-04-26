@@ -47,27 +47,25 @@
      {% csrf_token %}      
   <!--  basic info  -->
   <fieldset class="fieldset_normal">
-    <legend>  <h2>  <i class="fa fa-clock-o"></i>  الأول : معلومات عامة</h2></legend>
+    <legend>  <h2>  <i class="fa fa-clock-o"></i>   الأول : معلومات عامة</h2></legend>
     <div class="table-responsive">
      
       
       <table id="datatable-responsive" class="table  table-bordered jambo_table ">
           <thead>
-            <tr class="headings">
+           <tr class="headings">
              <th class="column-title">الجهاز</th>
               <th class="column-title"> الإدارة</th>
                <th class="column-title">المنطقة </th>
               <th class="column-title">المدينة </th>
             </tr>
           </thead>
-          <tbody>
-            <tr class="odd">
+         <tr class="odd">
               <td>الهيئة العامة للإحصاء </td>
               <td> {{ emp.deptname}}</td>
               <td> </td>
               <td class=" "></td>
             </tr>
-          </tbody>
         </table>
       </div>
       <div class="table-responsive">
@@ -94,25 +92,21 @@
             </tbody>
           </table>
         </div>
-
-
-
                 </fieldset>
 
 <!-- evaluation form-->
                 <fieldset class="fieldset_normal col-md-6  col-sm-12 " >
-                    <legend><h2> <i class="fa fa-clock-o"></i> الثانى : عناصر التقويم </h2></legend>
+                   <legend><h2> <i class="fa fa-clock-o"></i> الثانى : عناصر التقويم </h2></legend>
                 
                            <div class="table-responsive">
           <table id="datatable-responsive" class="table jambo_table  table-bordered">
             <thead>
-              <tr class="headings">
+           <tr class="headings">
                <th class="column-title"> # </th>
                <th> الفئة</th>
                 <th class="column-title">العنصر</th>
                 <th class="column-title">الحد الأعلى للدرجات </th>
                 <th class="column-title">الدرجة المعطاة </th>
-   
               </tr>
             </thead>
             <tbody>
@@ -123,7 +117,7 @@
                 </td>
                 <td> 
                   {% if emp.cat == "a" %}
-                أ
+              أ
                 {% elif emp.cat == "b"  %}
                ب
                 {% endif %}
@@ -142,57 +136,57 @@
         
    
                  {% if evItem.id == 1%}
-                  {{ form.q1.value }}
+                  {{ evaluation.q1 }} 
                  {% elif evItem.id == 2%}
-                 {{ form.q2.errors }}  {{ form.q2.value }}
+                {{ evaluation.q2 }} 
                  {% elif evItem.id == 3%}
-                 {{ form.q3.errors }}  {{ form.q3.value }}
+               {{ evaluation.q3 }} 
                  {% elif evItem.id == 4%}
-                 {{ form.q4.errors }}  {{ form.q4.value }}
+                 {{ evaluation.q4 }} 
                  {% elif evItem.id == 5%}
-                 {{ form.q5.errors }}  {{ form.q5.value }}
+                {{ evaluation.q5 }} 
                  {% elif evItem.id == 6%}
-                 {{ form.q6.errors }}  {{ form.q6.value }}
+               {{ evaluation.q6 }} 
                  {% elif evItem.id == 7%}
-                 {{ form.q7.errors }}  {{ form.q7.value }}
+              {{ evaluation.q7 }} 
                  {% elif evItem.id == 8%}
-                 {{ form.q8.errors }}  {{ form.q8.value }}
+               {{ evaluation.q8 }} 
                  {% elif evItem.id == 9%}
-                 {{ form.q9.errors }}  {{ form.q9.value }}
+             {{ evaluation.q9 }} 
                  {% elif evItem.id == 10%}
-                 {{ form.q10.errors }}  {{ form.q10.value }}
+               {{ evaluation.q10 }} 
                  {% elif evItem.id == 11%}
-                 {{ form.q11.errors }}  {{ form.q11.value }}
+            {{ evaluation.q11 }} 
                  {% elif evItem.id == 12%}
-                 {{ form.q12.errors }}  {{ form.q12.value }}
+            {{ evaluation.q12 }} 
                  {% elif evItem.id == 13%}
-                 {{ form.q13.errors }}  {{ form.q13.value }}
+            {{ evaluation.q13 }} 
                  {% elif evItem.id == 14%}
-                 {{ form.q14.errors }}  {{ form.q14.value}}
+             {{ evaluation.q14 }} 
                  {% elif evItem.id == 15%}
-                 {{ form.q15.errors }}  {{ form.q15.value }}
+             {{ evaluation.q15 }} 
                  {% elif evItem.id == 16%}
-                 {{ form.q16.errors }}  {{ form.q16.value }}
+             {{ evaluation.q16 }} 
                  {% elif evItem.id == 17%}
-                 {{ form.q17.errors }}  {{ form.q17.value }}
+               {{ evaluation.q17 }} 
                  
                  {% elif evItem.id == 18%}
-                 {{ form.q18.errors }}  {{ form.q18.value }}
+               {{ evaluation.q18 }} 
                  {% elif evItem.id == 19%}
-                 {{ form.q19.errors }}  {{ form.q19.value }}
+               {{ evaluation.q19 }} 
                  {% elif evItem.id == 20%}
-                 {{ form.q20.errors }}  {{ form.q20.value }}
+                {{ evaluation.q20 }} 
                  {% elif evItem.id == 21%}
-                 {{ form.q21.errors }}  {{ form.q21.value }}
+                {{ evaluation.q21 }} 
                  {% elif evItem.id == 22%}
-                 {{ form.q22.errors }}  {{ form.q22.value }}
+              {{ evaluation.q22 }} 
                  
                  {% elif evItem.id == 23%}
-                 {{ form.q23.errors }}  {{ form.q23.value }}
+                {{ evaluation.q23 }} 
                  {% elif evItem.id == 24%}
-                 {{ form.q24.errors }}  {{ form.q24.value }}
+                {{ evaluation.q24 }} 
                  {% elif evItem.id == 25 %}
-                 {{ form.q25.errors }}  {{ form.q25.value }}
+              {{ evaluation.q25 }} 
                  
                  {%endif%}
                 
@@ -208,9 +202,9 @@
                 
                                 </fieldset>
 
-                                <!-- evaluation total rating-->
+                 <!-- evaluation total rating-->
                 <fieldset class="fieldset_normal " >
-                    <legend>  <h2>  <i class="fa fa-clock-o"></i>الثالث : مجموع الدرجات والتقدير </h2></legend>
+                  <legend>  <h2>  <i class="fa fa-clock-o"></i>الثالث : مجموع الدرجات والتقدير </h2></legend>
                 
                     <div class="table-responsive">
                         <table id="datatable-responsive" class="table  table-bordered jambo_table ">
@@ -224,16 +218,16 @@
                           </thead>
                           <tbody>
                             <tr class="odd">
-                              <td ng-model='group1'> {{form.total_group1.value}}  </td>
-                              <td ng-model='group2'> {{form.total_group2.value}} </td>
-                              <td ng-model='group3'> {{form.total_group3.value}} </td>
-                              <td ng-model='total'>  {{form.total.value}} </td>
+                              <td > {{evaluation.total_group1}}  </td>
+                              <td > {{evaluation.total_group2}} </td>
+                              <td > {{evaluation.total_group3}} </td>
+                              <td >  {{evaluation.total}} </td>
                             </tr>
                           </tbody>
                         </table>
 
                         <table id="datatable-responsive" class="table  table-bordered jambo_table ">
-                            <thead>
+                          <thead>
                               <tr class="headings">
                                <th class="column-title">ممتاز<br>(100-90)</th>
                                <th class="column-title">جيد جدا<br>(89-80)</th>
@@ -245,31 +239,31 @@
                             <tbody>
                               <tr class="odd">
                                 <td ng-bind-html='excellent'> 
-                                {% if form.is_excellent.value %}
+                                {% if evaluation.is_excellent %}
                                 <i class="fa fa-check"></i>
                                 {% endif %}
                                 </td>
                                 <td ng-bind-html='verygood'> 
                        
-                                    {% if form.is_vergood.value %}
+                                    {% if evaluation.is_vergood %}
                                 <i class="fa fa-check"></i>
                                 {% endif %}
                                 </td>
                                 <td ng-bind-html='good'>
                                
-                                        {% if form.is_good.value %}
+                                        {% if evaluation.is_good %}
                                 <i class="fa fa-check"></i>
                                 {% endif %}
                                  </td>
                                 <td ng-bind-html='fair'> 
                                
-                                 {% if form.is_fair.value %}
+                                 {% if evaluation.is_fair %}
                                 <i class="fa fa-check"></i>
                                 {% endif %}
                                 </td>
                                 <td ng-bind-html='unsatisfied'> 
                           
-                                {% if form.is_unacceptable.value %}
+                                {% if evaluation.is_unacceptable %}
                                 <i class="fa fa-check"></i>
                                 {% endif %}
                                 </td>
@@ -281,22 +275,22 @@
                                 </fieldset>
 
 
-                                                   <!-- general notes-->
+                    <!-- general notes-->
                 <fieldset class="fieldset_normal ">
-                    <legend>  <h2>  <i class="fa fa-clock-o"></i> الرابع : ملحوظات عامة </h2></legend>
+                     <legend>  <h2>  <i class="fa fa-clock-o"></i> الرابع : ملحوظات عامة </h2></legend>
                 
                              <div class="table-responsive">
                                 <table id="datatable-responsive" class="table  table-bordered jambo_table ">
                                     <thead>
                                       <tr class="headings">
-                                       <th class="column-title">مواطن القوة :(إنجازات او نشاطات أخرى يتميز بها ولم تشتمل عليها العناصر السابقة)</th>
+                                       <th class="column-title">مواطن القوة  : (إنجازات او نشاطات أخرى يتميز بها ولم تشتمل عليها العناصر السابقة)</th>
                                   
                                       </tr>
                                     </thead>
                                     <tbody>
                                       <tr class="odd">
                                         <td> 
-                                        {{form.strength_point.value}}
+                                        {{evaluation.strength_point}}
                                         
                                         </td>
                               
@@ -307,14 +301,14 @@
                         <table id="datatable-responsive" class="table  table-bordered jambo_table ">
                             <thead>
                               <tr class="headings">
-                               <th class="column-title">مواطن الضعف :(جوانب سلبيه يتصف بها وتؤثر على عمله دون أن يكون هناك تكرار للعناصر السابقة)</th>
+                               <th class="column-title">مواطن الضعف  : (جوانب سلبيه يتصف بها وتؤثر على عمله دون أن يكون هناك تكرار للعناصر السابقة)</th>
                           
                               </tr>
                             </thead>
                             <tbody>
                               <tr class="odd">
                                 <td> 
-                                  {{form.weaknesses.value}}  
+                                  {{evaluation.weaknesses}}  
                                 </td>
                       
                               </tr>
@@ -324,14 +318,13 @@
                           <table id="datatable-responsive" class="table  table-bordered jambo_table ">
                               <thead>
                                 <tr class="headings">
-                                 <th class="column-title">التوجيهات والتوصيات العامة لتطوير قدراته:(إن وجدت)</th>
-                            
+   <th class="column-title">التوجيهات والتوصيات العامة لتطوير قدراته : (إن وجدت)</th>                            
                                 </tr>
                               </thead>
                               <tbody>
                                 <tr class="odd">
                                   <td>  
-                                   {{form.recommendations.value}} 
+                                   {{evaluation.recommendations}} 
                                   
                                   </td>
                         
@@ -342,26 +335,25 @@
                             <table id="datatable-responsive" class="table  table-bordered jambo_table ">
                                 <thead>
                                   <tr class="headings">
-                                   <th class="column-title">رأى معد التقرير</th>
+                                 <th class="column-title">رأى معد التقرير</th>
                               
                                   </tr>
                                 </thead>
                                 <tbody>
                                   <tr >
-                                    <td>   {{form.director_notes.value}}  </td>
-                          
+                                    <td> {{evaluation.director_notes}} </td>
                                   </tr>
                                   <tr >
                                       <td>  
                                        
-                                          <div class="form-group">
+                                           <div class="form-group">
                                               <label class="col-md-3 col-sm-3 col-xs-12 control-label"> الأسم
                                                 <br>
-                                                <small class="text-navy"> {{form.managerid.managerid.empname.value}} </small>
+                                                <small class="text-navy">{{ evaluation.managerid.empname }}</small>
                                               </label>
                                               <label class="col-md-3 col-sm-3 col-xs-12 control-label">الوظيفة
                                                   <br>
-                                                  <small class="text-navy"> {{form.managerid.managerid.jobtitle.value}} </small>
+                                                  <small class="text-navy">{{ evaluation.managerid.jobtitle }}</small>
                                                 </label>
                       
                                                 <label class="col-md-3 col-sm-3 col-xs-12 control-label">التوقيع
@@ -386,26 +378,28 @@
                               <table id="datatable-responsive" class="table  table-bordered jambo_table ">
                                   <thead>
                                     <tr class="headings">
-                                     <th class="column-title">ملحوظات معتمد التقرير</th>
-                                
+  								<th class="column-title">ملحوظات معتمد التقرير</th>                                
                                     </tr>
                                   </thead>
                                   <tbody>
                                     <tr >
-                                      <td>  {{form.authority_notes}} {{ form.authority_notes.errors }}</td>
+                                      <td>  
+                                    
+                                      {{form.authority_notes}}
+                                       </td>
                             
                                     </tr>
                                     <tr >
                                         <td>  
                                          
                                             <div class="form-group">
-                                                <label class="col-md-3 col-sm-3 col-xs-12 control-label"> الأسم
+                                                <label class="col-md-3 col-sm-3 col-xs-12 control-label" > الأسم
                                                   <br>
-                                                  <small class="text-navy">{{form.managerid.authorityid.empname.value}}</small>
+                                                  <small class="text-navy" >{{ evaluation.authorityid.empname }} </small>
                                                 </label>
                                                 <label class="col-md-3 col-sm-3 col-xs-12 control-label">الوظيفة
                                                     <br>
-                                                    <small class="text-navy">{{form.managerid.authorityid.jobtitle.value}}</small>
+                                                    <small class="text-navy">{{ evaluation.authorityid.jobtitle }} </small>
                                                   </label>
                         
                                                   <label class="col-md-3 col-sm-3 col-xs-12 control-label">التوقيع
@@ -417,8 +411,6 @@
                                                         <br>
                                                         <small class="text-navy"></small>
                                                       </label>
-                              
-                        
                                              
                                               </div>
                                         </td>
@@ -433,18 +425,17 @@
                     
                                 </fieldset>
                            
-                          
+                          {% if evaluation.status == "InProgress" %}
                             <div class="form-group">
                            <div class="col-md-9 col-sm-9 col-xs-12 col-md-offset-3">
-             
                            <button class="btn  btn-md btn-danger" type="submit" id="decline" name="decline"><i class="fa fa-ban"></i> عدم الإعتماد</button>
-                           
-                           <button type="submit" class="btn   btn-md btn-success" id="approve" name="approve" ><i class="fa fa-check-circle"></i> إعتماد التقييم</button>
-                                    </div>
+                           <button type="submit" class="btn   btn-md btn-success" id="approve" name="approve" ><i class="fa fa-check-circle"></i>إعتماد التقييم</button>
+                              </div>
                                   </div>
-                                  
+                                 {% endif %} 
                                      </form>
                   
+                
                <!--   {# 
                  {% for field, errors in form.errors.items %}
     {% for error in errors %}
@@ -452,9 +443,7 @@
     {% endfor %}  
       {% endfor %}
          #} -->
-      
-      
-                   
+
 
             </div>
           </div>

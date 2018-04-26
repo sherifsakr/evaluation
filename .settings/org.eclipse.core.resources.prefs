@@ -1,4 +1,11 @@
 eclipse.preferences.version=1
 encoding//project/forms.py=UTF-8
+encoding//project/static/json/Arabic.json=UTF-8
+encoding//project/templates/project/approval_edit.html=UTF-8
+encoding//project/templates/project/approval_requests.html=UTF-8
 encoding//project/templates/project/employee_list.html=UTF-8
+encoding//project/templates/project/employee_list_all.html=UTF-8
 encoding//project/templates/project/evaluation_form.html=UTF-8
+encoding//project/templates/project/evaluation_view.html=UTF-8
+encoding//project/templates/project/sidebar.html=UTF-8
+encoding/<project>=UTF-8
