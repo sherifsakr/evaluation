@@ -276,43 +276,11 @@ def EvaluationPage(request,empid):
         form.fields["employeeid"].initial=empid
         form.fields["authority_notes"].disabled=True
          #add javascript validation
+        checkvalidation(form, emp['cat'])
          
-        form.fields["q3"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 7);loadData();"
-        form.fields["q5"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 6);loadData();"
-        form.fields["q7"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 5);loadData();"
-        form.fields["q8"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 4);loadData();"
-        form.fields["q9"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 4);loadData();"
-        form.fields["q14"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 3);loadData();"
-        form.fields["q15"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 3);loadData();"
-        form.fields["q19"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 4);loadData();"
-        form.fields["q20"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 4);loadData();"
-        form.fields["q21"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 4);loadData();" 
-        form.fields["q23"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 3);loadData();"
-        form.fields["q24"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 3);loadData();" 
-        form.fields["q25"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 3);loadData();" 
+     
             
-    if emp['cat'] == "b":
-            form.fields["q4"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 6);loadData();"
-            form.fields["q6"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 7);loadData();"
-            form.fields["q10"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 3);loadData();"
-            form.fields["q11"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 3);loadData();"
-            form.fields["q12"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 3);loadData();"
-            form.fields["q13"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 4);loadData();"
-            form.fields["q16"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 7);loadData();"
-            form.fields["q17"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 7);loadData();"
-            form.fields["q18"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 4);loadData();"
-            form.fields["q22"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 3);loadData();"  
-    elif emp['cat'] == "a":
-            form.fields["q1"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 6);loadData();"
-            form.fields["q2"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 6);loadData();"
-            form.fields["q4"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 7);loadData();"
-            form.fields["q6"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 6);loadData();"
-            form.fields["q10"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 4);loadData();"
-            form.fields["q11"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 4);loadData();"
-            form.fields["q12"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 4);loadData();"
-            form.fields["q13"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 3);loadData();"  
-            form.fields["q18"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 3);loadData();"
-            form.fields["q22"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 4);loadData();"   
+ 
 
     context={'emp':emp,'evItems':evaluationItems,'form':form}
     return render(request, 'project/evaluation_form.html', context)
@@ -360,6 +328,8 @@ def EvaluationEdit(request,empid):
 
     #load form
     form = EvaluationForm(request.POST or None, instance=evaluation)
+    #add javascript validation
+    checkvalidation(form, emp['cat'])
     #disable edit in authity field
     form.fields["authority_notes"].disabled=True
         
@@ -536,6 +506,45 @@ def EvalutionView(request,empid):
     context={'emp':emp,'evItems':evaluationItems,'evaluation':evaluation}
     return render(request, 'project/evaluation_view.html', context)
 
+
+def checkvalidation(form,itemCat):
+    form.fields["q3"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 7);loadData();"
+    form.fields["q5"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 6);loadData();"
+    form.fields["q7"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 5);loadData();"
+    form.fields["q8"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 4);loadData();"
+    form.fields["q9"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 4);loadData();"
+    form.fields["q14"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 3);loadData();"
+    form.fields["q15"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 3);loadData();"
+    form.fields["q19"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 4);loadData();"
+    form.fields["q20"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 4);loadData();"
+    form.fields["q21"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 4);loadData();" 
+    form.fields["q23"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 3);loadData();"
+    form.fields["q24"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 3);loadData();" 
+    form.fields["q25"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 3);loadData();" 
+    if itemCat == "b":
+            form.fields["q4"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 6);loadData();"
+            form.fields["q6"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 7);loadData();"
+            form.fields["q10"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 3);loadData();"
+            form.fields["q11"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 3);loadData();"
+            form.fields["q12"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 3);loadData();"
+            form.fields["q13"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 4);loadData();"
+            form.fields["q16"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 7);loadData();"
+            form.fields["q17"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 7);loadData();"
+            form.fields["q18"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 4);loadData();"
+            form.fields["q22"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 3);loadData();"  
+    elif itemCat == "a":
+            form.fields["q1"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 6);loadData();"
+            form.fields["q2"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 6);loadData();"
+            form.fields["q4"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 7);loadData();"
+            form.fields["q6"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 6);loadData();"
+            form.fields["q10"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 4);loadData();"
+            form.fields["q11"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 4);loadData();"
+            form.fields["q12"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 4);loadData();"
+            form.fields["q13"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 3);loadData();"  
+            form.fields["q18"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 3);loadData();"
+            form.fields["q22"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 4);loadData();"  
+    
+    
 
 def gentella_html(request):
     context = {'LANG': request.LANGUAGE_CODE}
