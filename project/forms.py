@@ -263,9 +263,9 @@ class EvaluationForm(ModelForm):
              
             'q1': forms.NumberInput(attrs={'ng-model':'q1', 'class': 'form-control target','placeholder':_(''),'required': True }),
             'q2': forms.NumberInput(attrs={'ng-model':'q2', 'class': 'form-control target','placeholder':_(''),'required': True }),
-            'q3': forms.NumberInput(attrs={'onchange':"this.value =minmax(this.value, 0, 7);loadData();", 'class': 'form-control target','placeholder':_(''),'required': True }),
-            'q4': forms.NumberInput(attrs={'onchange':"this.value =minmax(this.value, 0, 6);loadData();", 'class': 'form-control target','placeholder':_(''),'required': True }),
-            'q5': forms.NumberInput(attrs={'onchange':"this.value =minmax(this.value, 0, 6);loadData();", 'class': 'form-control target','placeholder':_(''),'required': True }),
+            'q3': forms.NumberInput(attrs={'onchange':'','class': 'form-control target','placeholder':_(''),'required': True }),
+            'q4': forms.NumberInput(attrs={'class': 'form-control target','placeholder':_(''),'required': True }),
+            'q5': forms.NumberInput(attrs={'onchange':"this.value = minmax(this.value, 0, 6);loadData();", 'class': 'form-control target','placeholder':_(''),'required': True }),
             'q6': forms.NumberInput(attrs={'ng-model':'q6', 'class': 'form-control target','placeholder':_(''),'required': True }),
             'q7': forms.NumberInput(attrs={'ng-model':'q7', 'class': 'form-control target','placeholder':_(''),'required': True }),
             'q8': forms.NumberInput(attrs={'ng-model':'q8', 'class': 'form-control target','placeholder':_(''),'required': True }),

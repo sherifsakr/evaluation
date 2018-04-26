@@ -272,11 +272,48 @@ def EvaluationPage(request,empid):
             messages.success(request, _("evaluation has been saved successfully for")+" "+emp['name'])
             return HttpResponseRedirect(reverse('ns-project:employee-list'  ))
     else :
-         form = EvaluationForm()  
-         form.fields["employeeid"].initial=empid
-         form.fields["authority_notes"].disabled=True
-        
-    
+        form = EvaluationForm()  
+        form.fields["employeeid"].initial=empid
+        form.fields["authority_notes"].disabled=True
+         #add javascript validation
+         
+        form.fields["q3"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 7);loadData();"
+        form.fields["q5"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 6);loadData();"
+        form.fields["q7"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 5);loadData();"
+        form.fields["q8"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 4);loadData();"
+        form.fields["q9"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 4);loadData();"
+        form.fields["q14"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 3);loadData();"
+        form.fields["q15"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 3);loadData();"
+        form.fields["q19"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 4);loadData();"
+        form.fields["q20"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 4);loadData();"
+        form.fields["q21"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 4);loadData();" 
+        form.fields["q23"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 3);loadData();"
+        form.fields["q24"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 3);loadData();" 
+        form.fields["q25"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 3);loadData();" 
+            
+    if emp['cat'] == "b":
+            form.fields["q4"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 6);loadData();"
+            form.fields["q6"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 7);loadData();"
+            form.fields["q10"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 3);loadData();"
+            form.fields["q11"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 3);loadData();"
+            form.fields["q12"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 3);loadData();"
+            form.fields["q13"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 4);loadData();"
+            form.fields["q16"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 7);loadData();"
+            form.fields["q17"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 7);loadData();"
+            form.fields["q18"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 4);loadData();"
+            form.fields["q22"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 3);loadData();"  
+    elif emp['cat'] == "a":
+            form.fields["q1"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 6);loadData();"
+            form.fields["q2"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 6);loadData();"
+            form.fields["q4"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 7);loadData();"
+            form.fields["q6"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 6);loadData();"
+            form.fields["q10"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 4);loadData();"
+            form.fields["q11"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 4);loadData();"
+            form.fields["q12"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 4);loadData();"
+            form.fields["q13"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 3);loadData();"  
+            form.fields["q18"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 3);loadData();"
+            form.fields["q22"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 4);loadData();"   
+
     context={'emp':emp,'evItems':evaluationItems,'form':form}
     return render(request, 'project/evaluation_form.html', context)
  
@@ -313,77 +350,77 @@ def EvaluationEdit(request,empid):
          'gvrmntStartDate':empView.gvrmnt_start_date,
          'orgStartDate':empView.org_start_date,}
     
-     #load form evaluation items
+    #load form evaluation items
     if int(empView.job_grade) >= 47 and int(empView.job_grade) <= 49 :
-        evaluationItems= EvaluationItem.objects.filter(Q(is_class_a__exact = 1)).order_by('id')
-        emp['cat']="a"
+       evaluationItems= EvaluationItem.objects.filter(Q(is_class_a__exact = 1)).order_by('id')
+       emp['cat']="a"
     elif int(empView.job_grade) <= 46 :
-        evaluationItems= EvaluationItem.objects.filter(is_class_b__exact = 1).order_by('id')
-        emp['cat']="b"
+       evaluationItems= EvaluationItem.objects.filter(is_class_b__exact = 1).order_by('id')
+       emp['cat']="b"
+
+    #load form
+    form = EvaluationForm(request.POST or None, instance=evaluation)
+    #disable edit in authity field
+    form.fields["authority_notes"].disabled=True
         
-        #load form
-        form = EvaluationForm(request.POST or None, instance=evaluation)
-        #disable edit in authity field
-        form.fields["authority_notes"].disabled=True
+    if emp['cat'] == "a":
+          form.fields["q16"].required = False
+          form.fields["q17"].required = False
+    elif emp['cat'] == "b":
+          form.fields["q1"].required = False
+          form.fields["q2"].required = False
+    if form.is_valid():
+        evObject= form.save(commit=False) 
+        evObject.last_update_by =  request.session['EmpID']
+        evObject.last_update_date = datetime.now()
+        evObject.managerid = Employee.objects.get(empid__exact= employee.managercode) 
+        authorityid= ManagerLevel.objects.filter(manager_id__exact = employee.managercode )[0].manage_level2
+        evObject.authorityid = Employee.objects.get(empid__exact= authorityid)   
+      
+        if 'save_only' in request.POST:
+            evObject.status="Preparation"
+        if 'save_send' in request.POST:
+            evObject.status="InProgress"
+       
+        #count degree
+        #group1
+        evObject.total_group1 = 0
+        for x in range(1, 18):
+            q = str ("q" )+ str(x)
+            v = request.POST.get(q, 0)
+            evObject.total_group1 += int(v)
+        #group2    
+        evObject.total_group2 = 0
+        for x in range(18, 23):
+            q = str ("q" )+ str(x)
+            v = request.POST.get(q, 0)
+            evObject.total_group2 += int(v)
+        #group3       
+        evObject.total_group3 = 0
+        for x in range(23, 26):
+            q = str ("q" )+ str(x)
+            v = request.POST.get(q, 0)
+            evObject.total_group3 += int(v)
+        #total 
+        evObject.total = evObject.total_group1+evObject.total_group2+evObject.total_group3
+        #grad
+        if 90 <= evObject.total <= 100:  
+            evObject.is_excellent = 1
+        elif 80 <= evObject.total <= 90:  
+            evObject.is_vergood = 1
+        elif 70 <= evObject.total <= 79:  
+            evObject.is_good = 1  
+        elif 69 <= evObject.total <= 60:  
+            evObject.is_fair = 1 
+        elif  evObject.total < 60:  
+            evObject.is_unacceptable = 1         
         
-        if emp['cat'] == "a":
-              form.fields["q16"].required = False
-              form.fields["q17"].required = False
-        elif emp['cat'] == "b":
-              form.fields["q1"].required = False
-              form.fields["q2"].required = False
-        if form.is_valid():
-            evObject= form.save(commit=False) 
-            evObject.last_update_by =  request.session['EmpID']
-            evObject.last_update_date = datetime.now()
-            evObject.managerid = Employee.objects.get(empid__exact= employee.managercode) 
-            authorityid= ManagerLevel.objects.filter(manager_id__exact = employee.managercode )[0].manage_level2
-            evObject.authorityid = Employee.objects.get(empid__exact= authorityid)   
-          
-            if 'save_only' in request.POST:
-                evObject.status="Preparation"
-            if 'save_send' in request.POST:
-                evObject.status="InProgress"
-           
-            #count degree
-            #group1
-            evObject.total_group1 = 0
-            for x in range(1, 18):
-                q = str ("q" )+ str(x)
-                v = request.POST.get(q, 0)
-                evObject.total_group1 += int(v)
-            #group2    
-            evObject.total_group2 = 0
-            for x in range(18, 23):
-                q = str ("q" )+ str(x)
-                v = request.POST.get(q, 0)
-                evObject.total_group2 += int(v)
-            #group3       
-            evObject.total_group3 = 0
-            for x in range(23, 26):
-                q = str ("q" )+ str(x)
-                v = request.POST.get(q, 0)
-                evObject.total_group3 += int(v)
-            #total 
-            evObject.total = evObject.total_group1+evObject.total_group2+evObject.total_group3
-            #grad
-            if 90 <= evObject.total <= 100:  
-                evObject.is_excellent = 1
-            elif 80 <= evObject.total <= 90:  
-                evObject.is_vergood = 1
-            elif 70 <= evObject.total <= 79:  
-                evObject.is_good = 1  
-            elif 69 <= evObject.total <= 60:  
-                evObject.is_fair = 1 
-            elif  evObject.total < 60:  
-                evObject.is_unacceptable = 1         
-            
-            evObject.save()
-            evaInstant= Evaluation.objects.get(id__exact=evObject.id)
-            employee.submission = evaInstant 
-            employee.save()
-            messages.success(request, _("evaluation has been saved successfully for")+" "+emp['name'])
-            return HttpResponseRedirect(reverse('ns-project:employee-list'  ))
+        evObject.save()
+        evaInstant= Evaluation.objects.get(id__exact=evObject.id)
+        employee.submission = evaInstant 
+        employee.save()
+        messages.success(request, _("evaluation has been saved successfully for")+" "+emp['name'])
+        return HttpResponseRedirect(reverse('ns-project:employee-list'  ))
             
     context={'emp':emp,'evItems':evaluationItems,'form':form,'evaluation':evaluation}
     return render(request, 'project/evaluation_form.html', context)

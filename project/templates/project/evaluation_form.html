@@ -140,11 +140,13 @@ function minmax(value, min, max)
                 </td>
                 <td> {{evItem.title}}</td>
                 <td> 
+                <span >
                 {% if emp.cat == "a" %}
                 {{ evItem.max_degree_a }}
                 {% elif emp.cat == "b"  %}
                 {{ evItem.max_degree_b }}
                 {% endif %}
+                </span>
                   </td>
                 
                 <td>
