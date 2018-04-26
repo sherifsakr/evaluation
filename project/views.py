@@ -183,7 +183,7 @@ def EvaluationPage(request,empid):
     try:
         evaluation = Evaluation.objects.get(Q(employeeid__exact = empid))
         if evaluation is not None :
-            messages.success(request, _("the employee already has evaluation"))
+            messages.success(request, _("تم عمل التقييم للموظف سابقا"))
             return HttpResponseRedirect(reverse('ns-project:employee-list'  ))
     except:
         pass
@@ -191,7 +191,7 @@ def EvaluationPage(request,empid):
     try:
        empView = ApIpCurrJobDataView.objects.get(Q(employee_id__exact = empid))
     except:
-            messages.WARNING(request, _("employee information not updated"))
+            messages.warning(request, _("بيانات الموظف غير محدثة"))
             return HttpResponseRedirect(reverse('ns-project:employee-list'  ))
     emp=dict()
     emp= {'name':employee.empname,

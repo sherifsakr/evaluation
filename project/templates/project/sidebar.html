@@ -20,9 +20,10 @@
 			<li><a href="{% url 'ns-project:approval-requests'  %}"><i class="fa fa-wpforms"></i> {% trans "طلبات الإعتماد" %} <span class="fa"></span></a>
 				</li> 
 				
-				
+				 {% if request.user|has_group:"hr"  %}
 				<li><a href="{% url 'ns-project:all-employee'  %}"><i class="fa fa-search-plus"></i> {% trans "متابعة الطلبات" %} <span class="fa"></span></a>
 				</li> 
+				{% endif %}
 			</ul>
 		</div>
 	</div>
