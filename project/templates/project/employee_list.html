@@ -98,6 +98,16 @@
                   <i class="fa fa-edit"></i> تعديل
                         </a>
                          {% endif %}
+                         
+                          {% if emp.submission.status  %}
+                       <a class="btn btn-sm btn-primary" href="{% url 'ns-project:evalution-view' emp.empid  %}">
+                  <i class="fa fa-search"></i> معاينة
+                        </a>
+                             {% else %}
+                          <a class="btn btn-sm btn-default"  disabled href="#">
+                  <i class="fa fa-search"></i> معاينة
+                        </a>
+                         {% endif %}
                       </td>
                     </tr>
                      {% endfor %}
@@ -116,7 +126,6 @@
 
 {% block javascripts %}
   {{ block.super }}
-  <!-- Datatables -->
   <script src="/static/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
   <script src="/static/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
   <script>
@@ -126,4 +135,5 @@
 		    }
 		} );
   </script>
+
 {% endblock javascripts %}

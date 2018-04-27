@@ -467,9 +467,46 @@ def ApprovalRequests(request):
 
 @login_required    
 def AllEmployee(request):
-    employees= Employee.objects.filter()
-    context={'emps':employees,}
+  
+   
+
+    form = FollowupForm(request.GET)
+    dept = request.GET.get('departement')
+    status = request.GET.get('status')
+
+
+   
+    if status and dept:
+        employees = Employee.objects.filter(Q(submission__status__exact=status) & Q(deptcode__exact=dept))
+
+    elif dept :
+         employees = Employee.objects.filter(Q(deptcode__exact=dept) )
+         
+    elif status:
+        employees = Employee.objects.filter(Q(submission__status__exact=status) )
+    else:
+        employees= Employee.objects.filter( )
+        
+  
+    if employees is not None:
+        employees=employees.order_by('-id')
+    
+    res=employees.count()
+    paginator = Paginator(employees,20) 
+    page = request.GET.get('page')
+    try:
+        _plist = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        _plist = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        _plist = paginator.page(paginator.num_pages)
+        
+    context={'emps':_plist,'form':form,'res':res}
     return render(request, 'project/employee_list_all.html', context)
+
+
 
 @login_required  
 def EvalutionView(request,empid):

@@ -3,6 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.db import models
 from simple_history.models import HistoricalRecords
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.utils.encoding import  python_2_unicode_compatible
 
 class Department(models.Model):
     id = models.AutoField(db_column='Id', primary_key=True)  # Field name made lowercase.
@@ -15,6 +16,7 @@ class Department(models.Model):
         managed = False
         db_table = 'department'
 
+@python_2_unicode_compatible
 class Employee(models.Model):
     empid = models.IntegerField(db_column='EmpId', unique=True)  # Field name made lowercase.
     empname = models.CharField(db_column='EmpName', max_length=255, blank=True, null=True)  # Field name made lowercase.
@@ -30,121 +32,16 @@ class Employee(models.Model):
     iscontract = models.IntegerField(db_column='IsContract', blank=True, null=True)  # Field name made lowercase.
     submission = models.ForeignKey('Evaluation',db_column='submissionId',to_field='id',related_name='Employee_Evaluation_id',on_delete=models.SET_NULL, blank=True, null=True)
    # status= models.CharField(db_column='DeptCode', max_length=20, blank=True, null=True)  # Field name made lowercase.
-
+    
+    def __str__(self):
+        return "List: {}".format(self.empname)
+    
     class Meta:
         managed = True
         db_table = 'employee'
 
-class Project(models.Model):
-    name = models.CharField(db_column='Name', max_length=250)  # Field name made lowercase.
-    start = models.DateField(db_column='Start')  # Field name made lowercase.
-    end = models.DateField(db_column='End')
-    teamname = models.CharField(db_column='TeamName', max_length=100, blank=True, null=True)  # Field name made lowercase.
-    desc = models.CharField(db_column='Desc', max_length=1500)  # Field name made lowercase.
-    #createdby = models.CharField(db_column='CreatedBy', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    createdby = models.ForeignKey('Employee',db_column='createdby',to_field='empid',related_name='Employee_createdby',on_delete=models.SET_NULL, blank=True, null=True)
 
-    createddate = models.DateTimeField(db_column='CreatedDate', blank=True, null=True)  # Field name made lowercase.
-    departement = models.ForeignKey('Department',db_column='DepartementId', to_field='deptcode',on_delete=models.SET_NULL, blank=True, null=True)
-    #statusid = models.IntegerField(db_column='StatusId', blank=True, null=True)  # Field name made lowercase.
-    status = models.ForeignKey('ProjectStatus', on_delete=models.SET_NULL, null=True)
-    openedby = models.CharField(db_column='OpenedBy', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    openeddate = models.DateTimeField(db_column='OpenedDate', blank=True, null=True)  # Field name made lowercase.
-    closedby = models.CharField(db_column='ClosedBy', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    closeddate = models.DateTimeField(db_column='ClosedDate', blank=True, null=True)  # Field name made lowercase.
-    canceledby = models.CharField(db_column='CanceledBy', max_length=20, blank=True, null=True)  # Field name made lowercase.
-    canceleddate = models.DateTimeField(db_column='CanceledDate', blank=True, null=True)  # Field name made lowercase.
-    deleted = models.IntegerField(db_column='Deleted', blank=True, null=True)  # Field name made lowercase.
-    lasteditby = models.ForeignKey('Employee',db_column='LastEditBy',to_field='empid',related_name='Project_Employee_LastEditBy',on_delete=models.SET_NULL, blank=True, null=True)
-    delegationto = models.ForeignKey('Employee',db_column='DelegationTo',to_field='empid',related_name='Project_Employee_DelegationTo',on_delete=models.SET_NULL, blank=True, null=True)
-    delegationdate= models.DateTimeField(db_column='DelegationDate', blank=True, null=True) 
-    class Meta:
-        managed = False
-        db_table = 'project'
-
-class ProjectStatus(models.Model):
-    name = models.CharField(db_column='Name', max_length=20)  # Field name made lowercase.
-    name_ar = models.CharField(db_column='Name_Ar', max_length=10)  # Field name made lowercase.
-    priority = models.IntegerField(db_column='Priority')  # Field name made lowercase.
-    isdefault = models.IntegerField(db_column='IsDefault')  # Field name made lowercase.
-    color = models.CharField(db_column='Color', max_length=10)  # Field name made lowercase.
-
-    def __str__(self):
-        return self.name_ar
-        self.fields['verb'].empty_label = 'None'
-
-    class Meta:
-        managed = False
-        db_table = 'project_status'
-
-
-
-
-class Task(models.Model):
-    assignedto = models.ForeignKey('Employee',db_column='assignedto',to_field='empid',related_name='Emp3', on_delete=models.SET_NULL, blank=True, null=True)
-    departement = models.ForeignKey('Department',db_column='departementid', to_field='deptcode',on_delete=models.SET_NULL, blank=True, null=True)
-    project = models.ForeignKey('Project',db_column='projectid', to_field='id', on_delete=models.SET_NULL,blank=True,  null=True)
-
-    name = models.CharField(db_column='Name', max_length=200)  # Field name made lowercase.
-    desc = models.CharField(db_column='Desc', max_length=2500)  # Field name made lowercase.
-
-    TASK_STATUS = (
-        ('', _('Choice action')),
-        ('New', _('New')),
-        ('InProgress', _('InProgress')),
-        ('Done', _('Done')),
-        ('Hold', _('Hold')),
-        ('Cancelled', _('Cancelled')),
-        ('Closed', _('Closed')),
-    )
-    status = models.CharField(db_column='Status',max_length=10,choices=TASK_STATUS, blank=False, null=False)  # Field name made lowercase.
-    startdate = models.DateTimeField(db_column='StartDate', blank=True, null=True)  # Field name made lowercase.
-    enddate = models.DateTimeField(db_column='EndDate', blank=True, null=True)  # Field name made lowercase.
-
-    assigneddate = models.DateTimeField(db_column='AssignedDate', blank=True, null=True)  # Field name made lowercase.
-    progress = models.PositiveSmallIntegerField(blank=True, null=True)
-    realstartdate = models.DateTimeField(db_column='RealStartDate', blank=True, null=True)  # Field name made lowercase.
-    realstartby = models.IntegerField(db_column='RealStartBy', blank=True, null=True)  # Field name made lowercase.
-    finishedby = models.IntegerField(db_column='FinishedBy', blank=True, null=True)  # Field name made lowercase.
-    finisheddate = models.DateTimeField(db_column='FinishedDate', blank=True, null=True)  # Field name made lowercase.
-    cancelledby = models.IntegerField(db_column='CancelledBy', blank=True, null=True)  # Field name made lowercase.
-    cancelleddate = models.DateTimeField(db_column='CancelledDate', blank=True, null=True)  # Field name made lowercase.
-    cancellreson = models.CharField(db_column='CancellReson', max_length=500, blank=True, null=True)  # Field name made lowercase.
-    closedby = models.IntegerField(db_column='ClosedBy', blank=True, null=True)  # Field name made lowercase.
-    closeddate = models.DateTimeField(db_column='ClosedDate', blank=True, null=True)  # Field name made lowercase.
-    closereson = models.CharField(db_column='CloseReson', max_length=500, blank=True, null=True)  # Field name made lowercase.
-    deleted = models.IntegerField(db_column='Deleted', blank=True, null=True)  # Field name made lowercase.
-    createdby = models.ForeignKey('Employee',to_field='empid',related_name='Emp4',db_column='CreatedBy', blank=True, null=True)  # Field name made lowercase.
-    createddate = models.DateTimeField(db_column='CreatedDate', blank=True, null=True)  # Field name made lowercase.
-    lasteditdate = models.DateTimeField(db_column='LastEditDate', blank=True, null=True)  # Field name made lowercase.
-    lasteditby =models.ForeignKey('Employee',to_field='empid',related_name='Task_Employee_LastEditBy',db_column='LastEditBy', blank=True, null=True)
-
-    history = HistoricalRecords()
-    class Meta:
-        managed = False
-        db_table = 'task'
-
-
-class TaskHistory(models.Model):
-    projectid = models.IntegerField(db_column='ProjectId')  # Field name made lowercase.
-    taskid = models.IntegerField(db_column='TaskId')  # Field name made lowercase.
-    actionname = models.IntegerField(db_column='ActionName')  # Field name made lowercase.
-    actiondate = models.IntegerField(db_column='ActionDate')  # Field name made lowercase.
-    notes = models.IntegerField(db_column='Notes')  # Field name made lowercase.
-
-    class Meta:
-        managed = False
-        db_table = 'task_history'
-
-class TaskStatus(models.Model):
-    name = models.CharField(db_column='Name', max_length=20)  # Field name made lowercase.
-    name_ar = models.CharField(db_column='Name_Ar', max_length=20)  # Field name made lowercase.
-
-    class Meta:
-        managed = False
-        db_table = 'task_status'
-
-
+@python_2_unicode_compatible
 class EvaluationItem(models.Model):
     evaluation_fom_id = models.IntegerField(blank=True, null=True)
     evaluation_group_id = models.CharField(max_length=45, blank=True, null=True)
@@ -155,21 +52,15 @@ class EvaluationItem(models.Model):
     is_class_b = models.IntegerField()
     degree = models.IntegerField()
     field_col = models.CharField(max_length=10,blank=True, null=True)
+    
+    def __str__(self):
+        return "List: {}".format(self.title)
+    
     class Meta:
         managed = True
         db_table = 'evaluation_item'
         
-        
-class EvaluationResult(models.Model):
-    id = models.IntegerField(primary_key=True)
-    q1 = models.IntegerField(blank=True, null=True)
-    q2 = models.IntegerField(blank=True, null=True)
-    q3 = models.IntegerField(blank=True, null=True)
 
-    class Meta:
-        managed = False
-        db_table = 'evaluation_result'
-               
 
 class Evaluation(models.Model):
     STATUS = (
@@ -229,6 +120,9 @@ class Evaluation(models.Model):
     is_good = models.IntegerField(blank=True, null=True)
     is_fair = models.IntegerField(blank=True, null=True)
     is_unacceptable = models.IntegerField(blank=True, null=True)
+    
+    def __str__(self):
+        return "List: {}".format(self.evaluation_fom_id)
     
     class Meta:
         managed = False
