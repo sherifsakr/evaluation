@@ -12,6 +12,7 @@ from django.contrib.auth.views import logout
 
 admin.site.site_header = _('Evaluation System cp')
 
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^i18n/', include('django.conf.urls.i18n')),
@@ -34,7 +35,6 @@ urlpatterns = [
     url(r'^accounts/logout/$', logout, {'next_page': settings.LOGOUT_REDIRECT_URL}, name='logout'),
     url(r'^accounts/', include('django.contrib.auth.urls')),
     
-
 
 
 

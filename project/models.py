@@ -41,6 +41,36 @@ class Employee(models.Model):
         db_table = 'employee'
 
 
+
+class EmployeeEv(models.Model):
+    empid = models.IntegerField(db_column='EmpId', unique=True)  # Field name made lowercase.
+    empname = models.CharField(db_column='EmpName', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    deptcode = models.CharField(db_column='DeptCode', max_length=45, blank=True, null=True)  # Field name made lowercase.
+    deptname = models.CharField(db_column='DeptName', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    ismanager = models.IntegerField(db_column='IsManager', blank=True, null=True)  # Field name made lowercase.
+    ext = models.CharField(db_column='Ext', max_length=45, blank=True, null=True)  # Field name made lowercase.
+    mobile = models.CharField(db_column='Mobile', max_length=45, blank=True, null=True)  # Field name made lowercase.
+    email = models.CharField(db_column='Email', max_length=100, blank=True, null=True)  # Field name made lowercase.
+    jobtitle = models.CharField(db_column='JobTitle', max_length=200, blank=True, null=True)  # Field name made lowercase.
+    managercode = models.BigIntegerField(db_column='ManagerCode', blank=True, null=True)  # Field name made lowercase.
+    sexcode = models.CharField(db_column='SexCode', max_length=6, blank=True, null=True)  # Field name made lowercase.
+    iscontract = models.IntegerField(db_column='IsContract', blank=True, null=True)  # Field name made lowercase.
+    submission = models.ForeignKey('Evaluation',db_column='submissionId',to_field='id',related_name='Employee_ev_Evaluation_id',on_delete=models.SET_NULL, blank=True, null=True)
+
+    job_grade = models.CharField(db_column='JOB_GRADE', max_length=2, blank=True, null=True)  # Field name made lowercase.
+    job_no = models.IntegerField(db_column='JOB_NO', blank=True, null=True)  # Field name made lowercase.
+    descreption = models.CharField(db_column='DESCREPTION', max_length=21, blank=True, null=True)  # Field name made lowercase.
+    descreption_1 = models.CharField(db_column='DESCREPTION_1', max_length=15, blank=True, null=True)  # Field name made lowercase.
+    gvrmnt_start_date = models.CharField(db_column='GVRMNT_START_DATE', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    end_date = models.CharField(db_column='END_DATE', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    eval_grade = models.CharField(db_column='EVAL_GRADE', max_length=10, blank=True, null=True)  # Field name made lowercase.
+    org_start_date = models.CharField(db_column='ORG_START_DATE', max_length=10, blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'employee_ev'
+        
+
 @python_2_unicode_compatible
 class EvaluationItem(models.Model):
     evaluation_fom_id = models.IntegerField(blank=True, null=True)
@@ -79,7 +109,7 @@ class Evaluation(models.Model):
     recommendations = models.CharField(max_length=400, blank=True, null=True)
     director_notes = models.CharField(max_length=400, blank=True, null=True)
     authority_notes = models.CharField(max_length=400, blank=True, null=True)
-    employeeid = models.ForeignKey('Employee',db_column='employeeid',to_field='empid',related_name='Employee_Evaluation_employeeid',on_delete=models.SET_NULL, blank=True, null=True)    
+    employeeid = models.ForeignKey('EmployeeEv',db_column='employeeid',to_field='empid',related_name='EmployeeEv_Evaluation_employeeid',on_delete=models.SET_NULL, blank=True, null=True)    
     managerid = models.ForeignKey('Employee',db_column='managerId',to_field='empid',related_name='Employee_Evaluation_managerid',on_delete=models.SET_NULL, blank=True, null=True)     
     authorityid =models.ForeignKey('Employee',db_column='authorityId',to_field='empid',related_name='Employee_Evaluation_authorityId',on_delete=models.SET_NULL, blank=True, null=True)      
     submit_by = models.IntegerField()
@@ -130,7 +160,7 @@ class Evaluation(models.Model):
 
 
 class ManagerLevel(models.Model):
-    Employee_id =models.IntegerField(blank=True, null=True)
+    empid =models.IntegerField(blank=True, null=True)
     manager_id = models.IntegerField(blank=True, null=True)
     manage_level2 = models.IntegerField(blank=True, null=True)
 
