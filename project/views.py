@@ -152,12 +152,7 @@ def myuser(request, *args, **kwargs):
                         g.user_set.add(request.user.id)
                 else:
                         g = Group.objects.get(name='employee')
-                        g.user_set.add(request.user.id)
-                #check if user has delegation in some project and he has not any group at let give him projectdelegation
-                if Project.objects.filter(delegationto__exact=emp.id).count() > 0 :
-                    if request.user.groups.filter(name="ismanager"). exists() == False and request.user.groups.filter(name="projectmanager"). exists() == False:
-                        g = Group.objects.get(name='projectdelegation')
-                        g.user_set.add(request.user.id)
+                        g.user_set.add(request.user.id)             
           
         else:
             return login(request, *args, **kwargs)
