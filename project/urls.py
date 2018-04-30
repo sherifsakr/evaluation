@@ -1,14 +1,14 @@
 from django.conf.urls import url ,include
 from project import views
-from .api import  EmployeeViewSet, EvaluationViewSet
-from rest_framework import routers
+# from .api import  EmployeeViewSet, EvaluationViewSet
+#from rest_framework import routers
 #application namespace
 app_name = 'ns-project'
 
 # Routers provide an easy way of automatically determining the URL conf.
-router = routers.DefaultRouter()
-router.register(r'employees_WebService', EmployeeViewSet)
-router.register(r'evaluations_webservice', EvaluationViewSet)
+# router = routers.DefaultRouter()
+# router.register(r'employees_WebService', EmployeeViewSet)
+# router.register(r'evaluations_webservice', EvaluationViewSet)
 
 urlpatterns = [
     # Matches any html file - to be used for gentella
