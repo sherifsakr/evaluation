@@ -152,12 +152,7 @@ def myuser(request, *args, **kwargs):
                         g.user_set.add(request.user.id)
                 else:
                         g = Group.objects.get(name='employee')
-                        g.user_set.add(request.user.id)
-                #check if user has delegation in some project and he has not any group at let give him projectdelegation
-                if Project.objects.filter(delegationto__exact=emp.id).count() > 0 :
-                    if request.user.groups.filter(name="ismanager"). exists() == False and request.user.groups.filter(name="projectmanager"). exists() == False:
-                        g = Group.objects.get(name='projectdelegation')
-                        g.user_set.add(request.user.id)
+                        g.user_set.add(request.user.id)             
           
         else:
             return login(request, *args, **kwargs)
@@ -166,7 +161,7 @@ def myuser(request, *args, **kwargs):
 
 @login_required
 def EmployeeList(request):
-    employees= Employee.objects.filter(Q(managercode__exact=request.session['EmpID']))
+    employees= EmployeeEv.objects.filter(Q(managercode__exact=request.session['EmpID']))
     context={'emps':employees,}
     return render(request, 'project/employee_list.html', context)
    
@@ -175,10 +170,13 @@ def EmployeeList(request):
 def EvaluationPage(request,empid):
     #check if correct employee
     try:
-        employee= Employee.objects.get(Q(managercode__exact=request.session['EmpID']) & Q(empid__exact=empid))
+        employee= EmployeeEv.objects.get(Q(managercode__exact=request.session['EmpID']) & Q(empid__exact=empid))
     except:
        raise Http404 
-   
+    
+    if employee.job_grade is None :
+          messages.info(request, _("لا يوجد درجة وظيفية  ! الرجاء تحديث البيانات"))
+#         return HttpResponseRedirect(reverse('ns-project:employee-list'  ))
    #check if employee has evaluation in db
     try:
         evaluation = Evaluation.objects.get(Q(employeeid__exact = empid))
@@ -187,32 +185,28 @@ def EvaluationPage(request,empid):
             return HttpResponseRedirect(reverse('ns-project:employee-list'  ))
     except:
         pass
-   
-    try:
-       empView = ApIpCurrJobDataView.objects.get(Q(employee_id__exact = empid))
-    except:
-            messages.info(request, _("بيانات الموظف غير محدثة"))
-            return HttpResponseRedirect(reverse('ns-project:employee-list'  ))
-    emp=dict()
-    emp= {'name':employee.empname,
-         'deptname':employee.deptname,
-         'jobTitle':employee.jobtitle,
-         'jobGrad':empView.job_grade,
-         'jobNo':empView.job_no,
-         'gvrmntStartDate':empView.gvrmnt_start_date,
-         'orgStartDate':empView.org_start_date,}
+#     
+#     try:
+#        empView = ApIpCurrJobDataView.objects.get(Q(employee_id__exact = empid))
+#     except:
+#             messages.info(request, _("بيانات الموظف غير محدثة"))
+#             return HttpResponseRedirect(reverse('ns-project:employee-list'  ))
+  
+    #profile data   
+    emp = dict()
+    emp= getEmpInfo(employee)
     
     #load form evaluation items
-    if int(empView.job_grade) >= 47 and int(empView.job_grade) <= 49 :
-        evaluationItems= EvaluationItem.objects.filter(Q(is_class_a__exact = 1)).order_by('id')
-        emp['cat']="a"
-    elif int(empView.job_grade) <= 46 :
-        evaluationItems= EvaluationItem.objects.filter(is_class_b__exact = 1).order_by('id')
-        emp['cat']="b"
+    empCategory= getEmpCat(employee)
+    emp['cat']= empCategory['cat']
+    evaluationItems = empCategory['evaluationItems'] 
+    if  emp['cat']== None:
+        messages.info(request, _("لا يوجد درجه وظيفية للموظف"))
+        return HttpResponseRedirect(reverse('ns-project:employee-list'  ))
         
     if request.method == 'POST':
         #validat correct employee again
-        employee= Employee.objects.get(Q(managercode__exact=request.session['EmpID']) & Q(empid__exact = request.POST['employeeid']))
+        employee= EmployeeEv.objects.get(Q(managercode__exact=request.session['EmpID']) & Q(empid__exact = request.POST['employeeid']))
 
         form = EvaluationForm(request.POST)
         if emp['cat'] == "a":
@@ -226,8 +220,8 @@ def EvaluationPage(request,empid):
             evObject.submit_by = request.session['EmpID']
             evObject.submit_date = datetime.now()
             evObject.managerid = Employee.objects.get(empid__exact= employee.managercode) 
-            authorityid= ManagerLevel.objects.filter(manager_id__exact = employee.managercode )[0].manage_level2
-            evObject.authorityid = Employee.objects.get(empid__exact= authorityid)   
+            authorityid= ManagerLevel.objects.filter(manager_id__exact = employee.managercode )[0]
+            evObject.authorityid = Employee.objects.get(empid__exact= authorityid.manage_level2)   
             if 'save_only' in request.POST:
                 evObject.status="Preparation"
             if 'save_send' in request.POST:
@@ -269,8 +263,8 @@ def EvaluationPage(request,empid):
             evaInstant= Evaluation.objects.get(id__exact=evObject.id)
             employee.submission = evaInstant 
             employee.save()
-            messages.success(request, _("evaluation has been saved successfully for")+" "+emp['name'])
-            return HttpResponseRedirect(reverse('ns-project:employee-list'  ))
+            messages.success(request, _("تم إضافة التقييم بنجاح للموظف")+" "+emp['name'])
+            return HttpResponseRedirect(reverse('ns-project:employee-list'))
     else :
         form = EvaluationForm()  
         form.fields["employeeid"].initial=empid
@@ -293,7 +287,7 @@ def EvaluationPage(request,empid):
 def EvaluationEdit(request,empid):
      #check if corect employee
     try:
-        employee= Employee.objects.get(Q(managercode__exact= request.session['EmpID']) & Q(empid__exact = empid))
+        employee= EmployeeEv.objects.get(Q(managercode__exact= request.session['EmpID']) & Q(empid__exact = empid))
     except:
        raise Http404 
    
@@ -302,29 +296,19 @@ def EvaluationEdit(request,empid):
         evaluation = Evaluation.objects.get(Q(employeeid__exact = empid))
        
     except:
-          return HttpResponseRedirect(reverse('ns-project:employee-list'  ))
-   
-    try:
-       empView = ApIpCurrJobDataView.objects.get(Q(employee_id__exact=empid))
-    except:
-       empView = None
+          return HttpResponseRedirect(reverse('ns-project:employee-list'))
+
     #profile data   
-    emp=dict()
-    emp= {'name':employee.empname,
-         'deptname':employee.deptname,
-         'jobTitle':employee.jobtitle,
-         'jobGrad':empView.job_grade,
-         'jobNo':empView.job_no,
-         'gvrmntStartDate':empView.gvrmnt_start_date,
-         'orgStartDate':empView.org_start_date,}
+    emp = dict()
+    emp= getEmpInfo(employee)
     
     #load form evaluation items
-    if int(empView.job_grade) >= 47 and int(empView.job_grade) <= 49 :
-       evaluationItems= EvaluationItem.objects.filter(Q(is_class_a__exact = 1)).order_by('id')
-       emp['cat']="a"
-    elif int(empView.job_grade) <= 46 :
-       evaluationItems= EvaluationItem.objects.filter(is_class_b__exact = 1).order_by('id')
-       emp['cat']="b"
+    empCategory= getEmpCat(employee)
+    emp['cat']= empCategory['cat']
+    evaluationItems = empCategory['evaluationItems'] 
+    if  emp['cat']== None:
+        messages.info(request, _("لا يوجد درجه وظيفية للموظف"))
+        return HttpResponseRedirect(reverse('ns-project:employee-list'  ))
 
     #load form
     form = EvaluationForm(request.POST or None, instance=evaluation)
@@ -389,7 +373,7 @@ def EvaluationEdit(request,empid):
         evaInstant= Evaluation.objects.get(id__exact=evObject.id)
         employee.submission = evaInstant 
         employee.save()
-        messages.success(request, _("evaluation has been saved successfully for")+" "+emp['name'])
+        messages.success(request, _("تم تعديل التقييم بنجاه للموظف")+" "+emp['name'])
         return HttpResponseRedirect(reverse('ns-project:employee-list'  ))
             
     context={'emp':emp,'evItems':evaluationItems,'form':form,'evaluation':evaluation}
@@ -406,54 +390,39 @@ def ApprovalEdit(request,empid):
         employee = evaluation.employeeid
     except:
           return HttpResponseRedirect(reverse('ns-project:employee-list'  ))
-   
-    try:
-       empView = ApIpCurrJobDataView.objects.get(Q(employee_id__exact=empid))
-    except:
-       empView = None
     #profile data   
-    emp=dict()
-    emp= {'name':employee.empname,
-         'deptname':employee.deptname,
-         'jobTitle':employee.jobtitle,
-         'jobGrad':empView.job_grade,
-         'jobNo':empView.job_no,
-         'gvrmntStartDate':empView.gvrmnt_start_date,
-         'orgStartDate':empView.org_start_date,}
+    emp = dict()
+    emp= getEmpInfo(employee)
     
-     #load form evaluation items
-    if int(empView.job_grade) >= 47 and int(empView.job_grade) <= 49 :
-        evaluationItems= EvaluationItem.objects.filter(Q(is_class_a__exact = 1)).order_by('id')
-        emp['cat']="a"
-    elif int(empView.job_grade) <= 46 :
-        evaluationItems= EvaluationItem.objects.filter(is_class_b__exact = 1).order_by('id')
-        emp['cat']="b"
-        
-        #load form
-        form = AuthorityForm(request.POST or None, instance=evaluation)
-        #form.fields["employeeid"].readonly=False
-        
-        
-        if form.is_valid() :
-            evObject= form.save(commit=False) 
-            evObject.last_update_by =  request.session['EmpID']
-            evObject.last_update_date = datetime.now()
+    #load form evaluation items
+    empCategory= getEmpCat(employee)
+    emp['cat']= empCategory['cat']
+    evaluationItems = empCategory['evaluationItems'] 
+    if  emp['cat']== None:
+        messages.info(request, _("لا يوجد درجه وظيفية للموظف"))
+        return HttpResponseRedirect(reverse('ns-project:employee-list'  ))
 
-            if 'decline' in request.POST:
-                evObject.status="Cancelled"
-                messages.success(request, _("تم رفض التقييم للموظف")+" "+emp['name'])
-            if 'approve' in request.POST:
-                messages.success(request, _("تم إعتماد التقييم بنجاح للموظف")+" "+emp['name'])
-                evObject.status="Done"
-           
-                
-            
-            evObject.save(update_fields=['authority_notes','status' ])
-        
+    
+    #load form
+    form = AuthorityForm(request.POST or None, instance=evaluation)
+    #form.fields["employeeid"].readonly=False
 
-            return HttpResponseRedirect(reverse('ns-project:approval-requests'  ))
-        else:
-          evaluation = Evaluation.objects.get(Q(employeeid__exact = empid) & Q(authorityid__exact = request.session['EmpID']))
+        
+    if form.is_valid() :
+        evObject= form.save(commit=False) 
+        evObject.last_update_by =  request.session['EmpID']
+        evObject.last_update_date = datetime.now()
+
+        if 'decline' in request.POST:
+            evObject.status="Cancelled"
+            messages.success(request, _("تم رفض التقييم للموظف")+" "+emp['name'])
+        if 'approve' in request.POST:
+            messages.success(request, _("تم إعتماد التقييم بنجاح للموظف")+" "+emp['name'])
+            evObject.status="Done"
+        evObject.save(update_fields=['authority_notes','status' ])
+        return HttpResponseRedirect(reverse('ns-project:approval-requests'  ))
+    else:
+      evaluation = Evaluation.objects.get(Q(employeeid__exact = empid) & Q(authorityid__exact = request.session['EmpID']))
 
     context={'emp':emp,'evItems':evaluationItems,'form':form,'evaluation':evaluation}
     return render(request, 'project/approval_edit.html', context)
@@ -461,47 +430,78 @@ def ApprovalEdit(request,empid):
 
 @login_required
 def ApprovalRequests(request):
-    submissions= Evaluation.objects.filter(Q(authorityid__exact=request.session['EmpID']) & Q(status__exact= "InProgress") |  Q(status__exact= "Done") | Q(status__exact= "Cancelled") ).order_by('-status')
+    submissions= Evaluation.objects.filter(Q(authorityid__exact=request.session['EmpID']) & ~Q(status__exact= "Preparation")).order_by('-status')
     context={'submissions':submissions,}
     return render(request, 'project/approval_requests.html', context)
 
 @login_required    
 def AllEmployee(request):
-    employees= Employee.objects.filter()
-    context={'emps':employees,}
+
+    form = FollowupForm(request.GET)
+    dept = request.GET.get('departement')
+    status = request.GET.get('status')
+
+
+   
+    if status and dept:
+        employees = EmployeeEv.objects.filter(Q(submission__status__exact=status) & Q(deptcode__exact=dept))
+
+    elif dept :
+         employees = EmployeeEv.objects.filter(Q(deptcode__exact=dept) )
+         
+    elif status:
+        employees = EmployeeEv.objects.filter(Q(submission__status__exact=status) )
+    else:
+        employees= EmployeeEv.objects.filter( )
+        
+  
+    if employees is not None:
+        employees=employees.order_by('-id')
+    
+    res=employees.count()
+    paginator = Paginator(employees,20) 
+    page = request.GET.get('page')
+    try:
+        _plist = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        _plist = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        _plist = paginator.page(paginator.num_pages)
+        
+    context={'emps':_plist,'form':form,'res':res}
     return render(request, 'project/employee_list_all.html', context)
+
+
 
 @login_required  
 def EvalutionView(request,empid):
-   #check if employee has evaluation in db
+    
+    
+    #check if employee has evaluation in db
     try:
-        evaluation = Evaluation.objects.get(Q(employeeid__exact = empid) & Q(authorityid__exact = request.session['EmpID']))
+        if  request.user.groups.filter(name="hr").exists() == True:
+             evaluation = Evaluation.objects.get(Q(employeeid__exact = empid))
+        else   :
+             evaluation = Evaluation.objects.get(Q(employeeid__exact = empid) & Q(managerid__exact = request.session['EmpID']))
+    
         employee = evaluation.employeeid
     except:
-         raise Http404 
+      raise Http404 
+         
    
-    try:
-       empView = ApIpCurrJobDataView.objects.get(Q(employee_id__exact=empid))
-    except:
-       empView = None
-    #profile data   
-    emp=dict()
-    emp= {'name':employee.empname,
-         'deptname':employee.deptname,
-         'jobTitle':employee.jobtitle,
-         'jobGrad':empView.job_grade,
-         'jobNo':empView.job_no,
-         'gvrmntStartDate':empView.gvrmnt_start_date,
-         'orgStartDate':empView.org_start_date,}
+  #profile data   
+    emp = dict()
+    emp= getEmpInfo(employee)
     
-     #load form evaluation items
-    if int(empView.job_grade) >= 47 and int(empView.job_grade) <= 49 :
-        evaluationItems= EvaluationItem.objects.filter(Q(is_class_a__exact = 1)).order_by('id')
-        emp['cat']="a"
-    elif int(empView.job_grade) <= 46 :
-        evaluationItems= EvaluationItem.objects.filter(is_class_b__exact = 1).order_by('id')
-        emp['cat']="b"
-        
+    #load form evaluation items
+    empCategory= getEmpCat(employee)
+    emp['cat']= empCategory['cat']
+    evaluationItems = empCategory['evaluationItems'] 
+    if  emp['cat']== None:
+        messages.info(request, _("لا يوجد درجه وظيفية للموظف"))
+        return HttpResponseRedirect(reverse('ns-project:employee-list'))
 
     context={'emp':emp,'evItems':evaluationItems,'evaluation':evaluation}
     return render(request, 'project/evaluation_view.html', context)
@@ -544,8 +544,29 @@ def checkvalidation(form,itemCat):
             form.fields["q18"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 3);loadData();"
             form.fields["q22"].widget.attrs['onchange'] = "this.value = minmax(this.value, 0, 4);loadData();"  
     
-    
+def getEmpCat(employee):
+    result = dict()
+    if int(employee.job_grade) >= 47 and int(employee.job_grade) <= 49 :
+       result['evaluationItems']= EvaluationItem.objects.filter(Q(is_class_a__exact = 1)).order_by('id')
+       result['cat']="a"
+    elif int(employee.job_grade) <= 46 :
+       result['evaluationItems']= EvaluationItem.objects.filter(is_class_b__exact = 1).order_by('id')
+       result['cat']="b"
+    else :
+        result = None
+    return   result
 
+def getEmpInfo(employee):
+    emp = dict()
+    emp= {'name':employee.empname,
+         'deptname':employee.deptname,
+         'jobTitle':employee.jobtitle,
+         'jobGrad':employee.job_grade,
+         'jobNo':employee.job_no,
+         'gvrmntStartDate':employee.gvrmnt_start_date,
+         'orgStartDate':employee.org_start_date,'city':employee.descreption_1,'regon':employee.descreption}
+    return emp
+    
 def gentella_html(request):
     context = {'LANG': request.LANGUAGE_CODE}
     # The template to be loaded as per gentelella.

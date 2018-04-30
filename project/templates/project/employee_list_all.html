@@ -4,8 +4,7 @@
 
 {% block stylesheets %}
   {{ block.super }}
-  <link href="/static/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
-  <link href="/static/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
+ 
 {% endblock stylesheets %}
 
 {% block content %}
@@ -47,8 +46,48 @@
                   {% endif %}
            
 
-              <div class="table-responsive">
-                <table id="datatable-responsive" class="table table-striped table-bordered">
+             <div class="row">
+             <form method="Get" novalidate>
+                {% csrf_token %}
+
+               <div class="form-group col-md-3 col-sm-12 col-xs-12">
+              {{form.departement.label_tag}}
+               {{form.departement}}
+               </div>
+
+            <!--   <div class="form-group col-md-3 col-sm-12 col-xs-12">
+              {{form.employee.label_tag}}
+               {{form.employee}}
+               </div>--> 
+
+                <div class="form-group col-md-2 col-sm-12 col-xs-12">
+
+              {{form.status.label_tag}}
+               {{form.status}}
+               </div>
+
+               <div class="form-group col-md-12">
+              <div class="form-group text-danger ">
+                {{ form.departement.errors }}
+                {{ form.employee.errors }}
+                {{ form.taskstatus.errors }}
+              </div>
+              </div>
+              <div class="form-group col-md-12 col-sm-12 col-xs-12">
+             <button type="submit" class="btn btn-success"><i class="fa fa-search"></i>     {{_('البحث')}}</button>
+
+             </div>
+
+                <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                  <div class="ln_solid"></div>
+               <div>  <i class="fa  fa-eye"></i> {% trans "Result Number :" %} <span>{{res}} </span> </div>
+             </div>
+</form>
+             
+             </div>
+             
+             
+                <table id="allemp" class="table">
                   <thead>
                     <tr class="headings">
                      <th class="column-title"> #</th>
@@ -73,7 +112,7 @@
                       <td> {{ forloop.counter }} </td>
                       <td >{{emp.empname}} </td>
                  
-                    <td class=" ">{{submit.employeeid.deptname }}</td>
+                    <td class=" ">{{emp.deptname }}</td>
                       <td >{{emp.jobtitle}}</td>
                       <td>{{emp.submission.get_status_display }}</td>
                       <td >{{emp.submission.total }}</td>
@@ -88,7 +127,43 @@
                      {% endfor %}
                   </tbody>
                 </table>
-              </div>
+                
+                  <!--  pager -->
+                  <div>
+                     {% if emps.has_other_pages %}
+                     <ul class="pagination">
+     
+                        {% if emps.has_previous %}
+                        <li ><a href="?page={{ emps.previous_page_number }}">&laquo;</a></li>
+                        {% else %}
+                        <li class="disabled"><span>&laquo;</span></li>
+                        {% endif %}
+                        {% for i in emps.paginator.page_range %}
+                        {% if emps.number == i %}
+                        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                        {% else %}
+                        <li><a href="?page={{ i }}">{{ i }}</a></li>
+                        {% endif %}
+                        {% endfor %}
+                        {% if emps.has_next %}
+                        <li><a href="?page={{ emps.next_page_number }}">&raquo;</a></li>
+                        {% else %}
+                        <li class="disabled"><span>&raquo;</span></li>
+                        {% endif %}
+                     </ul>
+                     {% endif %}
+                     <ul class="pagination" >
+                        <li>
+                           <span class="current">
+                           {{ _('Page') }} {{ emps.number }} of {{ emps.paginator.num_pages }}
+                           </span>
+                        </li>
+                  
+                     </ul>
+                  </div>
+                  <!-- end pager -->
+                  
+         
 
 
             </div>
@@ -102,13 +177,5 @@
 {% block javascripts %}
   {{ block.super }}
   <!-- Datatables -->
-  <script src="/static/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
-  <script src="/static/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-  <script>
-		$('#datatable-responsive').dataTable( {
-		    "language": {
-		        "url": "/static/json/Arabic.json"
-		    }
-		} );
-  </script>
+
 {% endblock javascripts %}

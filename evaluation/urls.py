@@ -10,7 +10,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.contrib.auth.views import logout
 
-admin.site.site_header = _('Project Management System cp')
+admin.site.site_header = _('Evaluation System cp')
+
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -34,7 +35,6 @@ urlpatterns = [
     url(r'^accounts/logout/$', logout, {'next_page': settings.LOGOUT_REDIRECT_URL}, name='logout'),
     url(r'^accounts/', include('django.contrib.auth.urls')),
     
-
 
 
 
